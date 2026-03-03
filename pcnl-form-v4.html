@@ -1,0 +1,2566 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#f2f2f7">
+<title>PCNL Registry v4</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#f2f2f7; --surf:#ffffff; --card:#ffffff; --card2:#f9f9fb;
+  --bdr:#d1d1d6; --acc:#007aff; --acc2:#34c759; --acc3:#ff9500;
+  --txt:#1c1c1e; --muted:#8e8e93; --danger:#ff3b30; --warn:#ff9500;
+  --r:13px; --fn:'DM Sans',sans-serif; --mono:'DM Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:var(--fn);background:var(--bg);color:var(--txt);min-height:100vh;padding-bottom:88px}
+
+/* HEADER */
+header{background:var(--card);border-bottom:1px solid var(--bdr);padding:12px 15px;
+  position:sticky;top:0;z-index:200;display:flex;align-items:center;gap:10px}
+.logo{width:36px;height:36px;border-radius:9px;
+  background:linear-gradient(135deg,var(--acc),#1a6fd4);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:11px;color:#fff;flex-shrink:0}
+.htext h1{font-size:14px;font-weight:700}
+.htext p{font-size:10px;color:var(--muted);margin-top:1px}
+.hright{margin-left:auto;display:flex;gap:6px;align-items:center}
+.hbtn{padding:7px 11px;border-radius:7px;font-size:11px;font-weight:600;
+  border:1px solid var(--bdr);background:var(--surf);color:var(--txt);cursor:pointer}
+.hbtn.pri{background:var(--acc);border-color:var(--acc);color:#fff}
+
+/* PROGRESS */
+.pbar{height:3px;background:var(--bdr)}
+.pfill{height:100%;width:0%;background:linear-gradient(90deg,var(--acc),var(--acc2));transition:width .35s}
+
+/* TABS */
+.tabs{display:flex;overflow-x:auto;padding:9px 12px 0;gap:3px;
+  scrollbar-width:none;background:var(--bg);
+  position:sticky;top:61px;z-index:150;border-bottom:1px solid var(--bdr)}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex-shrink:0;padding:7px 11px;border-radius:7px 7px 0 0;
+  font-size:11px;font-weight:600;cursor:pointer;
+  border:1px solid transparent;border-bottom:none;
+  color:var(--muted);transition:all .2s;white-space:nowrap;
+  display:flex;align-items:center;gap:5px}
+.tab.on{background:var(--card);border-color:var(--bdr);color:var(--acc)}
+.tdot{width:5px;height:5px;border-radius:50%;background:var(--bdr);flex-shrink:0}
+.tab.done .tdot{background:var(--acc2)}
+.tab.on .tdot{background:var(--acc)}
+
+/* SECTIONS */
+.sec{display:none;padding:13px;animation:fi .2s}
+.sec.on{display:block}
+@keyframes fi{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+/* CARDS */
+.card{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:15px;margin-bottom:11px}
+.ct{font-size:9px;font-weight:700;letter-spacing:1.3px;text-transform:uppercase;
+  color:var(--acc);margin-bottom:13px;display:flex;align-items:center;gap:8px}
+.ct::after{content:'';flex:1;height:1px;background:var(--bdr)}
+
+/* FIELDS */
+.f{margin-bottom:13px}
+.f:last-child{margin-bottom:0}
+label{display:block;font-size:11px;color:var(--muted);margin-bottom:6px;font-weight:600}
+label .req{color:var(--danger);margin-left:2px}
+
+input[type=text],input[type=number],input[type=date],input[type=time],select,textarea{
+  width:100%;background:var(--surf);border:1px solid var(--bdr);
+  border-radius:8px;color:var(--txt);font-family:var(--fn);
+  font-size:15px;padding:10px 13px;outline:none;
+  transition:border-color .2s;-webkit-appearance:none;appearance:none}
+input:focus,select:focus,textarea:focus{border-color:var(--acc);box-shadow:0 0 0 3px rgba(59,158,255,.1)}
+textarea{resize:vertical;min-height:74px}
+input[readonly]{background:var(--bg);color:var(--acc2);font-family:var(--mono);font-weight:500;cursor:default}
+
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.r3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+
+/* CHIPS */
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{padding:7px 13px;border-radius:20px;border:1px solid var(--bdr);
+  font-size:13px;cursor:pointer;background:var(--surf);color:var(--txt);
+  transition:all .15s;user-select:none}
+.chip:active{transform:scale(.94)}
+.chip.on{background:var(--acc);border-color:var(--acc);color:#fff;font-weight:600}
+.chip.on.g{background:var(--acc2);border-color:var(--acc2);color:#1c1c1e}
+.chip.on.w{background:var(--warn);border-color:var(--warn);color:#1c1c1e}
+.chip.on.r{background:var(--danger);border-color:var(--danger);color:#fff}
+
+/* VITALS */
+.vgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.vbox{background:var(--surf);border:1px solid var(--bdr);border-radius:10px;padding:11px 12px}
+.vlbl{font-size:9px;color:var(--muted);font-weight:700;letter-spacing:.9px;text-transform:uppercase;margin-bottom:4px}
+.vrow{display:flex;align-items:baseline;gap:4px}
+.vin{font-size:20px;font-family:var(--mono);border:none!important;background:transparent!important;
+  color:var(--acc2)!important;width:100%;outline:none;padding:0!important;box-shadow:none!important}
+.vunit{color:var(--muted);font-size:10px;flex-shrink:0}
+
+/* LAB TABLE */
+.lab-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.lab-item{background:var(--surf);border:1px solid var(--bdr);border-radius:9px;padding:10px 12px}
+.lab-name{font-size:10px;color:var(--muted);font-weight:700;letter-spacing:.5px;margin-bottom:5px;text-transform:uppercase}
+.lab-row{display:flex;align-items:baseline;gap:6px}
+.lab-input{flex:1;background:transparent;border:none;border-bottom:1px solid var(--bdr);
+  color:var(--txt);font-family:var(--mono);font-size:16px;font-weight:500;
+  outline:none;padding:2px 0;transition:border-color .2s;width:100%}
+.lab-input:focus{border-color:var(--acc)}
+.lab-unit{color:var(--muted);font-size:10px;flex-shrink:0;white-space:nowrap}
+.lab-ref{font-size:9px;color:var(--muted);margin-top:4px;font-style:italic}
+.lab-item.abn{border-color:rgba(255,79,106,.4);background:rgba(255,79,106,.05)}
+.lab-item.abn .lab-name{color:var(--danger)}
+.abn-tag{font-size:9px;font-weight:700;color:var(--danger);
+  background:rgba(255,79,106,.15);padding:2px 5px;border-radius:3px;
+  margin-left:4px;display:none}
+.abn-tag.show{display:inline}
+
+/* STONE SIZE */
+.stone-row{display:flex;align-items:center;gap:8px}
+.snum{flex:1!important;width:auto!important;min-width:0;text-align:center;
+  font-family:var(--mono);font-size:18px;font-weight:600}
+.sx{color:var(--muted);font-size:22px;flex-shrink:0;font-weight:300}
+.sunit{color:var(--muted);font-size:13px;flex-shrink:0}
+.sburden{margin-top:8px;padding:11px 14px;background:var(--bg);border:1px solid var(--bdr);
+  border-radius:9px;display:none;justify-content:space-between;align-items:center}
+.sburden.on{display:flex}
+.sb-lbl{font-size:11px;color:var(--muted)}
+.sb-val{font-family:var(--mono);font-size:17px;font-weight:600;color:var(--acc2)}
+
+/* ASA */
+.asa-row{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+.asa-chip{padding:9px 2px;border-radius:8px;border:1px solid var(--bdr);
+  font-size:14px;text-align:center;cursor:pointer;background:var(--surf);
+  color:var(--txt);transition:all .15s;user-select:none;font-weight:700}
+.asa-chip.on{background:var(--acc);border-color:var(--acc);color:#fff}
+
+/* ── SAMPAIO CLASSIFICATION ── */
+.sampaio-wrap{position:relative;width:100%;max-width:340px;margin:0 auto}
+.kidney-svg{width:100%;height:auto}
+.calyx-zone{cursor:pointer;transition:all .2s;opacity:.6}
+.calyx-zone:hover{opacity:1}
+.calyx-zone.sel{opacity:1}
+.calyx-zone.sel .cz-fill{filter:brightness(1.4)}
+
+.sampaio-legend{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.sleg{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted)}
+.sleg-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+
+.sampaio-classes{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:12px}
+.sc-card{background:var(--surf);border:2px solid var(--bdr);border-radius:10px;
+  padding:10px;text-align:center;cursor:pointer;transition:all .2s;user-select:none}
+.sc-card:active{transform:scale(.96)}
+.sc-card.on{border-color:var(--acc);background:rgba(59,158,255,.1)}
+.sc-card.on.IIA{border-color:#00d98b;background:rgba(0,217,139,.1)}
+.sc-card.on.IIB{border-color:#ffaa30;background:rgba(255,170,48,.1)}
+.sc-card.on.III{border-color:#ff4f6a;background:rgba(255,79,106,.1)}
+.sc-label{font-size:14px;font-weight:700;margin-bottom:4px}
+.sc-desc{font-size:9px;color:var(--muted);line-height:1.4}
+.sc-risk{font-size:9px;font-weight:700;margin-top:5px;padding:2px 6px;
+  border-radius:4px;display:inline-block}
+.I .sc-risk{background:rgba(0,217,139,.15);color:var(--acc2)}
+.IIA .sc-risk{background:rgba(0,217,139,.1);color:var(--acc2)}
+.IIB .sc-risk{background:rgba(255,170,48,.15);color:var(--warn)}
+.III .sc-risk{background:rgba(255,79,106,.15);color:var(--danger)}
+
+.sampaio-result{margin-top:12px;padding:12px 14px;border-radius:10px;
+  background:var(--surf);border:1px solid var(--bdr);display:none}
+.sampaio-result.on{display:block}
+.sr-class{font-size:24px;font-weight:700;font-family:var(--mono);color:var(--acc)}
+.sr-class.IIA{color:var(--acc2)}
+.sr-class.IIB{color:var(--warn)}
+.sr-class.III{color:var(--danger)}
+.sr-text{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.5}
+
+/* IMAGE UPLOAD */
+.upload-zone{border:2px dashed var(--bdr);border-radius:11px;padding:20px;
+  text-align:center;cursor:pointer;transition:all .2s;background:var(--surf)}
+.upload-zone:hover,.upload-zone.drag{border-color:var(--acc);background:rgba(59,158,255,.05)}
+.upload-zone input[type=file]{display:none}
+.upload-icon{font-size:32px;margin-bottom:8px}
+.upload-title{font-size:13px;font-weight:600;margin-bottom:4px}
+.upload-sub{font-size:11px;color:var(--muted)}
+
+.img-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.img-thumb{position:relative;border-radius:9px;overflow:hidden;
+  border:1px solid var(--bdr);aspect-ratio:4/3;background:var(--bg)}
+.img-thumb img{width:100%;height:100%;object-fit:cover}
+.img-thumb .img-del{position:absolute;top:5px;right:5px;
+  width:22px;height:22px;border-radius:50%;
+  background:rgba(255,79,106,.9);color:#fff;
+  border:none;font-size:12px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;line-height:1}
+.img-thumb .img-lbl{position:absolute;bottom:0;left:0;right:0;
+  background:rgba(6,15,26,.8);font-size:9px;color:#fff;
+  padding:4px 7px;font-weight:600;letter-spacing:.3px}
+.img-type-btn{font-size:10px;padding:4px 8px;border-radius:5px;
+  border:1px solid var(--bdr);background:var(--surf);color:var(--muted);
+  cursor:pointer;margin-top:3px}
+.img-type-btn.on{background:var(--acc);border-color:var(--acc);color:#fff}
+
+.img-viewer{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);
+  z-index:500;align-items:center;justify-content:center;flex-direction:column;gap:12px}
+.img-viewer.on{display:flex}
+.img-viewer img{max-width:95vw;max-height:80vh;border-radius:8px;object-fit:contain}
+.img-viewer .close-v{position:absolute;top:16px;right:16px;
+  background:rgba(255,255,255,.1);border:none;color:#fff;
+  width:36px;height:36px;border-radius:50%;font-size:18px;cursor:pointer}
+.img-viewer .img-v-lbl{color:#fff;font-size:12px;font-weight:600}
+
+/* DATA LIST */
+.dcard{background:var(--card);border:1px solid var(--bdr);
+  border-radius:var(--r);padding:13px;margin-bottom:9px}
+.dname{font-size:15px;font-weight:700}
+.dmeta{font-size:11px;color:var(--muted);margin-top:3px}
+.dbadges{display:flex;gap:5px;margin-top:9px;flex-wrap:wrap}
+.badge{font-size:9px;font-weight:700;padding:3px 7px;border-radius:4px;letter-spacing:.4px;text-transform:uppercase}
+.badge.b{background:rgba(59,158,255,.12);color:var(--acc)}
+.badge.g{background:rgba(0,217,139,.12);color:var(--acc2)}
+.badge.w{background:rgba(255,170,48,.12);color:var(--warn)}
+.badge.r{background:rgba(255,79,106,.12);color:var(--danger)}
+.dc-acts{display:flex;gap:6px}
+.dc-btn{padding:6px 10px;border-radius:6px;font-size:11px;font-weight:700;
+  border:1px solid var(--bdr);cursor:pointer;background:var(--surf);color:var(--txt)}
+.dc-btn.e{border-color:rgba(59,158,255,.4);color:var(--acc)}
+.dc-btn.d{border-color:rgba(255,79,106,.4);color:var(--danger)}
+
+/* STATS */
+.sgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:12px}
+.sbox{background:var(--card);border:1px solid var(--bdr);border-radius:11px;padding:14px;text-align:center}
+.sval{font-size:26px;font-family:var(--mono);font-weight:500;color:var(--acc2)}
+.slbl{font-size:9px;color:var(--muted);margin-top:3px;text-transform:uppercase;letter-spacing:.6px}
+.bar-row{margin-bottom:10px}
+.bar-top{display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px}
+.bar-track{height:7px;background:var(--bdr);border-radius:4px;overflow:hidden}
+.bar-fill{height:100%;background:linear-gradient(90deg,var(--acc),var(--acc2));border-radius:4px;transition:width .6s}
+
+/* BOTTOM NAV */
+.bnav{position:fixed;bottom:0;left:0;right:0;background:var(--card);
+  border-top:1px solid var(--bdr);padding:10px 13px;display:flex;gap:8px;z-index:300}
+.btn{flex:1;padding:12px;border-radius:9px;border:none;
+  font-family:var(--fn);font-size:13px;font-weight:700;cursor:pointer;transition:all .18s}
+.btn:active{transform:scale(.97)}
+.btn-s{background:var(--surf);border:1px solid var(--bdr);color:var(--txt)}
+.btn-p{background:var(--acc);color:#fff}
+.btn-ok{background:var(--acc2);color:#1c1c1e}
+
+/* MODAL */
+.overlay{display:none;position:fixed;inset:0;background:rgba(6,15,26,.9);z-index:500;align-items:flex-end}
+.overlay.on{display:flex}
+.modal{background:var(--card);border:1px solid var(--bdr);border-radius:18px 18px 0 0;
+  padding:20px;width:100%;max-height:88vh;overflow-y:auto}
+.modal-t{font-size:16px;font-weight:700;margin-bottom:4px}
+.modal-s{font-size:12px;color:var(--muted);margin-bottom:18px}
+.modal-a{display:flex;gap:8px;margin-top:16px}
+
+/* SEARCH */
+.srch-wrap{position:relative;margin-bottom:10px}
+.srch-wrap input{padding-left:36px}
+.srch-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:14px;pointer-events:none}
+.fchips{display:flex;gap:6px;margin-bottom:11px;overflow-x:auto}
+.fchips::-webkit-scrollbar{display:none}
+.fc{flex-shrink:0;padding:5px 11px;border-radius:14px;border:1px solid var(--bdr);
+  font-size:11px;font-weight:600;cursor:pointer;background:var(--surf);color:var(--muted)}
+.fc.on{background:var(--acc);border-color:var(--acc);color:#fff}
+
+/* EMPTY */
+.empty{text-align:center;padding:48px 24px;color:var(--muted)}
+.empty .ei{font-size:48px;margin-bottom:14px}
+
+/* TOAST */
+.toast{position:fixed;bottom:84px;left:50%;transform:translateX(-50%) translateY(12px);
+  background:var(--card2);border:1px solid var(--bdr);color:var(--txt);
+  padding:11px 18px;border-radius:9px;font-size:13px;font-weight:500;
+  z-index:600;opacity:0;transition:all .25s;white-space:nowrap;
+  box-shadow:0 8px 32px rgba(0,0,0,.5)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.ok{border-color:var(--acc2);color:var(--acc2)}
+.toast.er{border-color:var(--danger);color:var(--danger)}
+.toast.wn{border-color:var(--warn);color:var(--warn)}
+
+.ebar{display:none;align-items:center;gap:8px;background:rgba(245,200,66,.1);
+  border:1px solid rgba(245,200,66,.25);border-radius:8px;padding:9px 13px;
+  margin-bottom:11px;font-size:12px;color:var(--acc3);font-weight:600}
+.ebar.on{display:flex}
+.ebar button{margin-left:auto;padding:4px 10px;border-radius:5px;font-size:11px;
+  border:1px solid rgba(245,200,66,.3);background:transparent;color:var(--acc3);cursor:pointer;font-weight:600}
+
+.sep{height:1px;background:var(--bdr);margin:12px 0}
+.info-box{background:rgba(59,158,255,.06);border:1px solid rgba(59,158,255,.2);
+  border-radius:8px;padding:10px 13px;font-size:11px;color:var(--muted);line-height:1.6}
+.info-box b{color:var(--acc)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">PCNL</div>
+  <div class="htext">
+    <h1>PCNL Registry v4</h1>
+    <p id="hSub">Form Input Data Pasien</p>
+  </div>
+  <div class="hright">
+    <div class="hbtn" onclick="newRec()">+ Baru</div>
+    <div class="hbtn pri" onclick="goTab(8)">⚙</div>
+  </div>
+</header>
+<div class="pbar"><div class="pfill" id="prog"></div></div>
+
+<!-- TABS -->
+<div class="tabs">
+  <div class="tab on"  onclick="goTab(0)"><div class="tdot" id="d0"></div>Identitas</div>
+  <div class="tab"     onclick="goTab(1)"><div class="tdot" id="d1"></div>Klinis</div>
+  <div class="tab"     onclick="goTab(7)"><div class="tdot" id="d7"></div>Imaging</div>
+  <div class="tab"     onclick="goTab(2)"><div class="tdot" id="d2"></div>Sampaio</div>
+  <div class="tab"     onclick="goTab(3)"><div class="tdot" id="d3"></div>Prosedur</div>
+  <div class="tab"     onclick="goTab(4)"><div class="tdot" id="d4"></div>Intraop</div>
+  <div class="tab"     onclick="goTab(5)"><div class="tdot" id="d5"></div>Hasil</div>
+  <div class="tab"     onclick="goTab(6)"><div class="tdot" id="d6"></div>Lab</div>
+  <div class="tab"     onclick="goTab(9)"><div class="tdot" id="d9"></div>Vital</div>
+  <div class="tab"     onclick="goTab(10)"><div class="tdot" id="d10"></div>Data</div>
+  <div class="tab"     onclick="goTab(11)"><div class="tdot" id="d11"></div>Statistik</div>
+</div>
+
+<!-- ════════════════════════════════════
+     0 · IDENTITAS
+════════════════════════════════════ -->
+<div class="sec on" id="t0">
+  <div class="ebar" id="eb"><span>✏️ Mode Edit Aktif</span><button onclick="cancelEdit()">Batal</button></div>
+  <div class="card">
+    <div class="ct">Data Pasien</div>
+    <div class="f"><label>Nama Lengkap <span class="req">*</span></label>
+      <input type="text" id="nama" placeholder="Nama lengkap" oninput="progUpd()"></div>
+    <div class="r2">
+      <div class="f"><label>Umur (tahun) <span class="req">*</span></label>
+        <input type="number" id="umur" placeholder="Tahun" min="1" max="120" oninput="progUpd()"></div>
+      <div class="f"><label>Jenis Kelamin <span class="req">*</span></label>
+        <div class="chips" id="jkG">
+          <div class="chip" onclick="sc('jkG','jk','L',this)">♂ L</div>
+          <div class="chip" onclick="sc('jkG','jk','P',this)">♀ P</div>
+        </div>
+        <input type="hidden" id="jk"></div>
+    </div>
+    <div class="r2">
+      <div class="f"><label>BB (kg)</label>
+        <input type="number" id="bb" placeholder="kg" min="10" max="300" step="0.5" oninput="calcBMI()"></div>
+      <div class="f"><label>TB (cm)</label>
+        <input type="number" id="tb" placeholder="cm" min="50" max="250" oninput="calcBMI()"></div>
+    </div>
+    <div class="f"><label>BMI (Otomatis)</label>
+      <input type="text" id="bmiVal" placeholder="Isi BB & TB" readonly></div>
+    <div class="r2">
+      <div class="f"><label>Tanggal Operasi</label>
+        <input type="date" id="tglOp"></div>
+      <div class="f"><label>No. Rekam Medis</label>
+        <input type="text" id="noRM" placeholder="RM-XXXX"></div>
+    </div>
+  </div>
+
+  <!-- RIWAYAT OPERASI SEBELUMNYA -->
+  <div class="card">
+    <div class="ct">Riwayat Operasi Sebelumnya</div>
+    <div class="f"><label>Pernah Operasi Sebelumnya?</label>
+      <div class="chips" id="riwOpG">
+        <div class="chip" onclick="sc('riwOpG','riwOp','Tidak Ada',this);toggleRiwOp(false)">Tidak Ada</div>
+        <div class="chip" onclick="sc('riwOpG','riwOp','Ada',this);toggleRiwOp(true)">Ada</div>
+      </div>
+      <input type="hidden" id="riwOp">
+    </div>
+    <div id="riwOpDetail" style="display:none">
+      <div class="f"><label>Jenis Operasi Sebelumnya</label>
+        <div class="chips" id="riwJenisG" style="flex-wrap:wrap">
+          <div class="chip" onclick="multiSel('riwJenisG',this,'selRiwJenis')">PCNL</div>
+          <div class="chip" onclick="multiSel('riwJenisG',this,'selRiwJenis')">ESWL</div>
+          <div class="chip" onclick="multiSel('riwJenisG',this,'selRiwJenis')">URS</div>
+          <div class="chip" onclick="multiSel('riwJenisG',this,'selRiwJenis')">Open Pyelolitotomi</div>
+          <div class="chip" onclick="multiSel('riwJenisG',this,'selRiwJenis')">Open Nefrolitotomi</div>
+          <div class="chip" onclick="multiSel('riwJenisG',this,'selRiwJenis')">Laparoskopi</div>
+          <div class="chip" onclick="multiSel('riwJenisG',this,'selRiwJenis')">Nefrektomi</div>
+          <div class="chip" onclick="multiSel('riwJenisG',this,'selRiwJenis')">Nefrostomi</div>
+        </div>
+      </div>
+      <div class="r2">
+        <div class="f"><label>Sisi Operasi Sebelumnya</label>
+          <div class="chips" id="riwSisiG">
+            <div class="chip" onclick="sc('riwSisiG','riwSisi','Kanan',this)">Ka</div>
+            <div class="chip" onclick="sc('riwSisiG','riwSisi','Kiri',this)">Ki</div>
+            <div class="chip" onclick="sc('riwSisiG','riwSisi','Bilateral',this)">Bilateral</div>
+          </div>
+          <input type="hidden" id="riwSisi">
+        </div>
+        <div class="f"><label>Tahun Operasi</label>
+          <input type="number" id="riwTahun" placeholder="2022" min="1990" max="2030">
+        </div>
+      </div>
+      <div class="f"><label>Keterangan</label>
+        <textarea id="riwNote" placeholder="Komplikasi sebelumnya, scar tissue, kondisi khusus…" style="min-height:56px"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- DOKTER & TIM OPERASI -->
+  <div class="card">
+    <div class="ct">Tim Operasi</div>
+    <div class="f"><label>Nama Operator (Urolog)</label>
+      <input type="text" id="opNama" placeholder="Dr. Nama Sp.U"></div>
+    <div class="f"><label>Nama Dokter Anestesi</label>
+      <input type="text" id="anNama" placeholder="Dr. Nama Sp.An"></div>
+    <div class="f"><label>Asisten Operator</label>
+      <input type="text" id="asisNama" placeholder="Dr. / nama asisten (opsional)"></div>
+    <div class="f"><label>Institusi / Rumah Sakit</label>
+      <input type="text" id="rs" placeholder="RSUP / RSUD / RS Swasta"></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     1 · KLINIS
+════════════════════════════════════ -->
+
+<div class="sec" id="t1">
+  <div class="card">
+    <div class="ct">Diagnosa & Batu</div>
+    <div class="f"><label>Diagnosa Utama <span class="req">*</span></label>
+      <div class="chips" id="diagG">
+        <div class="chip" onclick="sc('diagG','diag','Nefrolitiasis Ka',this)">Nefrolitiasis Ka</div>
+        <div class="chip" onclick="sc('diagG','diag','Nefrolitiasis Ki',this)">Nefrolitiasis Ki</div>
+        <div class="chip" onclick="sc('diagG','diag','Staghorn Ka',this)">Staghorn Ka</div>
+        <div class="chip" onclick="sc('diagG','diag','Staghorn Ki',this)">Staghorn Ki</div>
+        <div class="chip" onclick="sc('diagG','diag','Bilateral',this)">Bilateral</div>
+        <div class="chip" onclick="sc('diagG','diag','Ureterolitiasis',this)">Ureterolitiasis</div>
+      </div>
+      <input type="hidden" id="diag"></div>
+    <div class="f"><label>Keterangan Tambahan</label>
+      <input type="text" id="diagNote" placeholder="+ ISK, + Hidronefrosis…"></div>
+    <div class="f"><label>Ukuran Batu Pre-op (Panjang × Lebar)</label>
+      <div class="stone-row">
+        <input type="number" class="snum" id="batuP" placeholder="P" min="0" step="0.5" oninput="calcBurden()">
+        <span class="sx">×</span>
+        <input type="number" class="snum" id="batuL" placeholder="L" min="0" step="0.5" oninput="calcBurden()">
+        <span class="sunit">mm</span>
+      </div>
+      <div class="sburden" id="sburden">
+        <span class="sb-lbl">Stone Burden</span>
+        <span class="sb-val" id="sburdenVal"></span>
+      </div></div>
+    <div class="f"><label>Tipe Batu</label>
+      <div class="chips" id="btypeG">
+        <div class="chip" onclick="sc('btypeG','btype','Tunggal',this)">Tunggal</div>
+        <div class="chip" onclick="sc('btypeG','btype','Multipel',this)">Multipel</div>
+        <div class="chip" onclick="sc('btypeG','btype','Staghorn Komplit',this)">Staghorn Komplit</div>
+        <div class="chip" onclick="sc('btypeG','btype','Staghorn Parsial',this)">Staghorn Parsial</div>
+      </div>
+      <input type="hidden" id="btype"></div>
+    <div class="f"><label>CT Scan / Imaging Pre-op</label>
+      <div class="chips" id="ctG">
+        <div class="chip" onclick="sc('ctG','ct','Ada (CT Scan)',this)">CT Scan</div>
+        <div class="chip" onclick="sc('ctG','ct','Ada (BNO/KUB)',this)">BNO/KUB</div>
+        <div class="chip" onclick="sc('ctG','ct','USG saja',this)">USG saja</div>
+        <div class="chip" onclick="sc('ctG','ct','Tidak Ada',this)">Tidak Ada</div>
+      </div>
+      <input type="hidden" id="ct"></div>
+  </div>
+  <div class="card">
+    <div class="ct">ASA Score</div>
+    <div class="asa-row" id="asaG">
+      <div class="asa-chip" onclick="sc('asaG','asa','I',this)">I</div>
+      <div class="asa-chip" onclick="sc('asaG','asa','II',this)">II</div>
+      <div class="asa-chip" onclick="sc('asaG','asa','III',this)">III</div>
+      <div class="asa-chip" onclick="sc('asaG','asa','IV',this)">IV</div>
+      <div class="asa-chip" onclick="sc('asaG','asa','V',this)">V</div>
+      <div class="asa-chip" onclick="sc('asaG','asa','E',this)">E</div>
+    </div>
+    <input type="hidden" id="asa">
+    <div style="margin-top:11px">
+      <label>Komorbid</label>
+      <input type="text" id="komorbid" placeholder="DM, HT, CKD…">
+    </div>
+  </div>
+  <div class="card">
+    <div class="ct">Antibiotik & Anestesi</div>
+    <div class="f"><label>Antibiotik Profilaksis</label>
+      <div class="chips" id="abG">
+        <div class="chip" onclick="sc('abG','ab','Ceftriaxone',this)">Ceftriaxone</div>
+        <div class="chip" onclick="sc('abG','ab','Cefazolin',this)">Cefazolin</div>
+        <div class="chip" onclick="sc('abG','ab','Ciprofloxacin',this)">Ciprofloxacin</div>
+        <div class="chip" onclick="sc('abG','ab','Gentamicin',this)">Gentamicin</div>
+        <div class="chip" onclick="sc('abG','ab','Meropenem',this)">Meropenem</div>
+        <div class="chip" onclick="sc('abG','ab','Fosfomycin',this)">Fosfomycin</div>
+        <div class="chip" onclick="sc('abG','ab','Tidak Diberikan',this)">Tidak Diberikan</div>
+        <div class="chip" onclick="abLainnya(this)" id="abLainnyaChip">✏ Lainnya…</div>
+      </div>
+      <input type="hidden" id="ab">
+      <div id="abCustomWrap" style="display:none;margin-top:8px">
+        <input type="text" id="abCustom" placeholder="Ketik nama antibiotik…"
+          oninput="document.getElementById('ab').value=this.value"
+          style="font-size:14px">
+      </div></div>
+    <div class="f"><label>Dosis / Keterangan</label>
+      <input type="text" id="abDosis" placeholder="1g IV 30 mnt sebelum op"></div>
+    <div class="f"><label>Kultur Urin Pre-op</label>
+      <div class="chips" id="kultG">
+        <div class="chip" onclick="sc('kultG','kult','Negatif',this)">Negatif</div>
+        <div class="chip" onclick="sc('kultG','kult','Positif',this)">Positif</div>
+        <div class="chip" onclick="sc('kultG','kult','Tidak Diperiksa',this)">Tidak Diperiksa</div>
+      </div>
+      <input type="hidden" id="kult"></div>
+    <div class="f"><label>Anestesi</label>
+      <div class="chips" id="anG">
+        <div class="chip" onclick="sc('anG','anestesi','General',this)">General</div>
+        <div class="chip" onclick="sc('anG','anestesi','Spinal',this)">Spinal</div>
+        <div class="chip" onclick="sc('anG','anestesi','Sedasi',this)">Sedasi</div>
+      </div>
+      <input type="hidden" id="anestesi"></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     2 · SAMPAIO CLASSIFICATION
+════════════════════════════════════ -->
+<div class="sec" id="t2">
+  <div class="card">
+    <div class="ct">Sampaio Classification</div>
+    <div class="info-box" style="margin-bottom:14px">
+      <b>Sampaio</b> mengklasifikasikan sistem kaliks ginjal berdasarkan anatomy untuk memprediksi akses PCNL dan risiko komplikasi.<br>
+      Pilih kelas di bawah sesuai temuan imaging.
+    </div>
+
+    <!-- VISUAL KIDNEY DIAGRAM -->
+    <div class="sampaio-wrap">
+      <svg class="kidney-svg" viewBox="0 0 200 320" xmlns="http://www.w3.org/2000/svg">
+        <!-- Kidney outline -->
+        <ellipse cx="100" cy="160" rx="72" ry="130" fill="none" stroke="#c7c7cc" stroke-width="2"/>
+        <ellipse cx="100" cy="160" rx="65" ry="122" fill="rgba(11,25,41,0.8)"/>
+
+        <!-- Pelvis Renalis -->
+        <ellipse cx="100" cy="160" rx="22" ry="18" fill="rgba(59,158,255,0.15)" stroke="#3b9eff" stroke-width="1.5" stroke-dasharray="4,2"/>
+        <text x="100" y="164" text-anchor="middle" font-size="8" fill="#3b9eff" font-family="DM Sans">Pelvis</text>
+
+        <!-- Upper Pole / Kaliks Superior -->
+        <g class="calyx-zone" id="cz-sup" onclick="toggleCalyx('Superior Pole')">
+          <ellipse cx="100" cy="50" rx="28" ry="22" class="cz-fill" fill="rgba(0,217,139,0.15)" stroke="#00d98b" stroke-width="1.5"/>
+          <line x1="100" y1="72" x2="100" y2="145" stroke="#00d98b" stroke-width="1" stroke-dasharray="3,3"/>
+          <text x="100" y="47" text-anchor="middle" font-size="8" fill="#00d98b" font-family="DM Sans" font-weight="600">Superior</text>
+          <text x="100" y="58" text-anchor="middle" font-size="7" fill="#00d98b" font-family="DM Sans">Pole</text>
+        </g>
+
+        <!-- Upper Group -->
+        <g class="calyx-zone" id="cz-upg" onclick="toggleCalyx('Upper Group')">
+          <ellipse cx="68" cy="100" rx="20" ry="15" class="cz-fill" fill="rgba(59,158,255,0.15)" stroke="#3b9eff" stroke-width="1.5"/>
+          <line x1="85" y1="105" x2="95" y2="148" stroke="#3b9eff" stroke-width="1" stroke-dasharray="3,3"/>
+          <text x="68" y="97" text-anchor="middle" font-size="7" fill="#3b9eff" font-family="DM Sans" font-weight="600">Upper</text>
+          <text x="68" y="107" text-anchor="middle" font-size="7" fill="#3b9eff" font-family="DM Sans">Group</text>
+        </g>
+
+        <!-- Middle Group -->
+        <g class="calyx-zone" id="cz-mid" onclick="toggleCalyx('Middle Group')">
+          <ellipse cx="52" cy="160" rx="20" ry="15" class="cz-fill" fill="rgba(245,200,66,0.15)" stroke="#f5c842" stroke-width="1.5"/>
+          <line x1="72" y1="160" x2="82" y2="160" stroke="#f5c842" stroke-width="1" stroke-dasharray="3,3"/>
+          <text x="52" y="157" text-anchor="middle" font-size="7" fill="#f5c842" font-family="DM Sans" font-weight="600">Middle</text>
+          <text x="52" y="167" text-anchor="middle" font-size="7" fill="#f5c842" font-family="DM Sans">Group</text>
+        </g>
+
+        <!-- Lower Group -->
+        <g class="calyx-zone" id="cz-low" onclick="toggleCalyx('Lower Group')">
+          <ellipse cx="68" cy="218" rx="20" ry="15" class="cz-fill" fill="rgba(255,170,48,0.15)" stroke="#ffaa30" stroke-width="1.5"/>
+          <line x1="85" y1="213" x2="95" y2="172" stroke="#ffaa30" stroke-width="1" stroke-dasharray="3,3"/>
+          <text x="68" y="215" text-anchor="middle" font-size="7" fill="#ffaa30" font-family="DM Sans" font-weight="600">Lower</text>
+          <text x="68" y="225" text-anchor="middle" font-size="7" fill="#ffaa30" font-family="DM Sans">Group</text>
+        </g>
+
+        <!-- Lower Pole -->
+        <g class="calyx-zone" id="cz-inf" onclick="toggleCalyx('Inferior Pole')">
+          <ellipse cx="100" cy="270" rx="28" ry="22" class="cz-fill" fill="rgba(255,79,106,0.15)" stroke="#ff4f6a" stroke-width="1.5"/>
+          <line x1="100" y1="248" x2="100" y2="177" stroke="#ff4f6a" stroke-width="1" stroke-dasharray="3,3"/>
+          <text x="100" y="267" text-anchor="middle" font-size="8" fill="#ff4f6a" font-family="DM Sans" font-weight="600">Inferior</text>
+          <text x="100" y="278" text-anchor="middle" font-size="7" fill="#ff4f6a" font-family="DM Sans">Pole</text>
+        </g>
+
+        <!-- Ureter -->
+        <path d="M115 175 Q130 200 128 240 Q126 270 125 290" fill="none" stroke="#c7c7cc" stroke-width="2"/>
+        <text x="138" y="255" font-size="7" fill="#8e8e93" font-family="DM Sans">Ureter</text>
+      </svg>
+    </div>
+
+    <div class="sampaio-legend">
+      <div class="sleg"><div class="sleg-dot" style="background:#00d98b"></div>Superior Pole</div>
+      <div class="sleg"><div class="sleg-dot" style="background:#3b9eff"></div>Upper Group</div>
+      <div class="sleg"><div class="sleg-dot" style="background:#f5c842"></div>Middle Group</div>
+      <div class="sleg"><div class="sleg-dot" style="background:#ffaa30"></div>Lower Group</div>
+      <div class="sleg"><div class="sleg-dot" style="background:#ff4f6a"></div>Inferior Pole</div>
+    </div>
+
+    <p id="calyxSelLabel" style="font-size:11px;color:var(--muted);margin-top:8px">Tap kaliks pada diagram untuk pilih</p>
+  </div>
+
+  <div class="card">
+    <div class="ct">Pilih Kelas Sampaio</div>
+    <div class="sampaio-classes">
+      <div class="sc-card I" onclick="setSampaio('I')">
+        <div class="sc-label" style="color:var(--acc2)">I</div>
+        <div class="sc-desc">Sistem kaliks simpel, drainase baik, minimal infundibula</div>
+        <div class="sc-risk">Risiko Rendah</div>
+      </div>
+      <div class="sc-card IIA" onclick="setSampaio('IIA')">
+        <div class="sc-label" style="color:var(--acc2)">IIA</div>
+        <div class="sc-desc">≤2 kelompok kaliks, akses moderat, obstruksi ringan</div>
+        <div class="sc-risk">Risiko Sedang</div>
+      </div>
+      <div class="sc-card IIB" onclick="setSampaio('IIB')">
+        <div class="sc-label" style="color:var(--warn)">IIB</div>
+        <div class="sc-desc">&gt;2 kelompok kaliks, anatomi kompleks, drainase terbatas</div>
+        <div class="sc-risk">Risiko Tinggi</div>
+      </div>
+      <div class="sc-card III" onclick="setSampaio('III')">
+        <div class="sc-label" style="color:var(--danger)">III</div>
+        <div class="sc-desc">Anatomi sangat kompleks, multiple kelompok, drainase buruk</div>
+        <div class="sc-risk">Risiko Sangat Tinggi</div>
+      </div>
+    </div>
+    <input type="hidden" id="sampaio">
+
+    <div class="sampaio-result" id="sampaioResult">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div>
+          <div style="font-size:10px;color:var(--muted);font-weight:600;letter-spacing:.8px;text-transform:uppercase">Sampaio Class</div>
+          <div class="sr-class" id="sampaioClassDisplay"></div>
+        </div>
+        <div style="flex:1">
+          <div class="sr-text" id="sampaioDesc"></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:12px">
+      <label>Catatan Anatomi Kaliks</label>
+      <textarea id="calyxNote" placeholder="Deskripsi anatomi kaliks, infundibula, sudut akses…" style="min-height:60px"></textarea>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ct">Kaliks yang Dipuncture</div>
+    <div class="chips" id="calyxPunctG">
+      <div class="chip" onclick="multiSel('calyxPunctG',this,'selCalyx')">Superior</div>
+      <div class="chip" onclick="multiSel('calyxPunctG',this,'selCalyx')">Medius</div>
+      <div class="chip" onclick="multiSel('calyxPunctG',this,'selCalyx')">Inferior</div>
+      <div class="chip" onclick="multiSel('calyxPunctG',this,'selCalyx')">Pelvis Renalis</div>
+      <div class="chip" onclick="multiSel('calyxPunctG',this,'selCalyx')">Interpolar</div>
+    </div>
+    <div class="r2" style="margin-top:11px">
+      <div class="f"><label>Sisi Ginjal <span class="req">*</span></label>
+        <div class="chips" id="sisiG">
+          <div class="chip" onclick="sc('sisiG','sisi','Kanan',this)">Kanan</div>
+          <div class="chip" onclick="sc('sisiG','sisi','Kiri',this)">Kiri</div>
+          <div class="chip" onclick="sc('sisiG','sisi','Bilateral',this)">Bilateral</div>
+        </div>
+        <input type="hidden" id="sisi"></div>
+      <div class="f"><label>Posisi Pasien</label>
+        <div class="chips" id="posG">
+          <div class="chip" onclick="sc('posG','posisi','Prone',this)">Prone</div>
+          <div class="chip" onclick="sc('posG','posisi','Supine',this)">Supine</div>
+          <div class="chip" onclick="sc('posG','posisi','Lateral',this)">Lateral</div>
+        </div>
+        <input type="hidden" id="posisi"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     3 · PROSEDUR
+════════════════════════════════════ -->
+<div class="sec" id="t3">
+  <div class="card">
+    <div class="ct">Akses Puncture</div>
+    <div class="f"><label>Metode Entri <span class="req">*</span></label>
+      <div class="chips" id="entryG">
+        <div class="chip" onclick="sc('entryG','entry','Fluoroskopi',this)">Fluoroskopi</div>
+        <div class="chip" onclick="sc('entryG','entry','USG Guided',this)">USG Guided</div>
+        <div class="chip" onclick="sc('entryG','entry','Kombinasi',this)">Kombinasi</div>
+        <div class="chip" onclick="sc('entryG','entry','Endoskopi',this)">Endoskopi</div>
+      </div>
+      <input type="hidden" id="entry"></div>
+    <div class="f"><label>Tipe Prosedur <span class="req">*</span></label>
+      <div class="chips" id="pcnlTypeG">
+        <div class="chip" onclick="sc('pcnlTypeG','pcnlType','Standard PCNL',this);setPcnlType('std')">Standard PCNL</div>
+        <div class="chip" onclick="sc('pcnlTypeG','pcnlType','Mini PCNL',this);setPcnlType('mini')">Mini PCNL</div>
+        <div class="chip" onclick="sc('pcnlTypeG','pcnlType','Ultra-Mini PCNL',this);setPcnlType('ultramini')">Ultra-Mini PCNL</div>
+        <div class="chip" onclick="sc('pcnlTypeG','pcnlType','Micro PCNL',this);setPcnlType('micro')">Micro PCNL</div>
+      </div>
+      <input type="hidden" id="pcnlType">
+      <div id="pcnlTypeInfo" style="margin-top:7px;padding:8px 11px;border-radius:7px;
+        background:rgba(59,158,255,.06);border:1px solid rgba(59,158,255,.15);
+        font-size:11px;color:var(--muted);display:none;line-height:1.5"></div>
+    </div>
+    <div class="f"><label>Jumlah Tract</label>
+      <div class="chips" id="tractG">
+        <div class="chip" onclick="sc('tractG','tract','Single',this)">Single</div>
+        <div class="chip" onclick="sc('tractG','tract','2',this)">2</div>
+        <div class="chip" onclick="sc('tractG','tract','3+',this)">3+</div>
+      </div>
+      <input type="hidden" id="tract"></div>
+    <div class="f"><label>Sheath Size (Fr) <span id="sheathHint" style="font-weight:400;color:var(--muted);font-size:10px"></span></label>
+      <div class="chips" id="sheathG">
+        <div class="chip micro-hide" onclick="sc('sheathG','sheath','16 Fr',this)" data-min="std">16</div>
+        <div class="chip micro-hide" onclick="sc('sheathG','sheath','18 Fr',this)" data-min="std">18</div>
+        <div class="chip" onclick="sc('sheathG','sheath','20 Fr',this)" data-min="mini">20</div>
+        <div class="chip" onclick="sc('sheathG','sheath','22 Fr',this)" data-min="mini">22</div>
+        <div class="chip micro-hide" onclick="sc('sheathG','sheath','24 Fr',this)" data-min="std">24</div>
+        <div class="chip micro-hide" onclick="sc('sheathG','sheath','26 Fr',this)" data-min="std">26</div>
+        <div class="chip micro-hide" onclick="sc('sheathG','sheath','28 Fr',this)" data-min="std">28</div>
+        <div class="chip micro-hide" onclick="sc('sheathG','sheath','30 Fr',this)" data-min="std">30</div>
+        <div class="chip" onclick="sc('sheathG','sheath','14 Fr',this)" data-min="mini">14</div>
+        <div class="chip" onclick="sc('sheathG','sheath','12 Fr',this)" data-min="mini">12</div>
+        <div class="chip" onclick="sc('sheathG','sheath','10 Fr',this)" data-min="ultramini">10</div>
+        <div class="chip" onclick="sc('sheathG','sheath','8 Fr',this)" data-min="micro">8 (Micro)</div>
+        <div class="chip" onclick="sc('sheathG','sheath','7 Fr',this)" data-min="micro">7 (Micro)</div>
+      </div>
+      <input type="hidden" id="sheath"></div>
+    <div class="f"><label>Alat Lithotripsy <span class="req">*</span></label>
+      <div class="chips" id="lithoG">
+        <div class="chip" onclick="sc('lithoG','litho','Pneumatik',this)">Pneumatik</div>
+        <div class="chip" onclick="sc('lithoG','litho','Ultrasound',this)">Ultrasound</div>
+        <div class="chip" onclick="sc('lithoG','litho','Laser Ho:YAG',this)">Ho:YAG</div>
+        <div class="chip" onclick="sc('lithoG','litho','Laser Thulium',this)">Thulium</div>
+        <div class="chip" onclick="sc('lithoG','litho','Pneumatik+US',this)">Pneum+US</div>
+        <div class="chip" onclick="sc('lithoG','litho','EMS Swiss',this)">EMS Swiss</div>
+        <div class="chip" onclick="sc('lithoG','litho','Shock Pulse',this)">Shock Pulse</div>
+        <div class="chip" onclick="sc('lithoG','litho','Shock Wave (ESWL)',this)">Shock Wave</div>
+        <div class="chip" onclick="sc('lithoG','litho','Kombinasi',this)">Kombinasi</div>
+      </div>
+      <input type="hidden" id="litho"></div>
+    <div class="f"><label>Volume Kontras (mL)</label>
+      <input type="number" id="kontras" placeholder="mL" min="0" step="5"></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     4 · INTRAOPERATIF
+════════════════════════════════════ -->
+<div class="sec" id="t4">
+  <div class="card">
+    <div class="ct">Waktu Operasi</div>
+    <div class="r2">
+      <div class="f"><label>Jam Mulai</label>
+        <input type="time" id="jMulai" oninput="calcDur()"></div>
+      <div class="f"><label>Jam Selesai</label>
+        <input type="time" id="jSelesai" oninput="calcDur()"></div>
+    </div>
+    <div class="f"><label>Total Lama Operasi (menit)</label>
+      <input type="number" id="lamaOp" placeholder="Otomatis dari jam mulai–selesai" min="0" readonly style="color:var(--acc2);font-family:var(--mono);font-weight:600"></div>
+    <div class="sep"></div>
+    <div class="ct" style="margin-bottom:10px">Rincian Waktu Prosedur</div>
+    <div class="r2">
+      <div class="f"><label>Anestesi → Insisi (mnt)</label>
+        <input type="number" id="tAnestesi" placeholder="mnt" min="0" oninput="calcSubDur()"></div>
+      <div class="f"><label>Akses / Puncture (mnt)</label>
+        <input type="number" id="tAkses" placeholder="mnt" min="0" oninput="calcSubDur()"></div>
+    </div>
+    <div class="r2">
+      <div class="f"><label>Lithotripsy (mnt)</label>
+        <input type="number" id="tLitho" placeholder="mnt" min="0" oninput="calcSubDur()"></div>
+      <div class="f"><label>Pengambilan Fragmen (mnt)</label>
+        <input type="number" id="tFragmen" placeholder="mnt" min="0" oninput="calcSubDur()"></div>
+    </div>
+    <div class="r2">
+      <div class="f"><label>Drainase & Penutupan (mnt)</label>
+        <input type="number" id="tDrainase" placeholder="mnt" min="0" oninput="calcSubDur()"></div>
+      <div class="f"><label>Total Sub-prosedur</label>
+        <input type="number" id="tSubTotal" placeholder="—" min="0" readonly style="color:var(--acc3);font-family:var(--mono)"></div>
+    </div>
+    <div class="f"><label>Eksposure Radiologi (Fluoroskopi)</label>
+      <div class="r2">
+        <input type="number" id="ekspMin" placeholder="Menit" min="0">
+        <input type="number" id="ekspDtk" placeholder="Detik" min="0" max="59">
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ct">Foto Fluoroskopi / C-Arm</div>
+    <div class="info-box" style="margin-bottom:12px">
+      Upload foto hasil <b>fluoroskopi</b> atau <b>C-Arm</b> intraoperatif — akses puncture, posisi batu, kontras pelvis, dan konfirmasi stone free.
+    </div>
+    <label class="upload-zone" id="floroZone" ondragover="dragOver2(event)" ondragleave="dragLeave2(event)" ondrop="dropFile2(event)">
+      <input type="file" id="floroInput" accept="image/*" multiple onchange="handleFloro(this.files)">
+      <div class="upload-icon">🩻</div>
+      <div class="upload-title">Tap untuk upload foto C-Arm / Fluoroskopi</div>
+      <div class="upload-sub">JPG, PNG · Maks 8 foto</div>
+    </label>
+    <div class="img-grid" id="floroGrid"></div>
+    <div id="floroActions" style="display:none;margin-top:8px">
+      <button class="btn btn-s" style="width:100%" onclick="clearAllFloro()">🗑 Hapus Semua Foto C-Arm</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ct">Drainase Post-op</div>
+    <div class="f"><label>Nefrostomi</label>
+      <div class="chips" id="nefroG">
+        <div class="chip" onclick="sc('nefroG','nefro','Terpasang',this)">Terpasang</div>
+        <div class="chip" onclick="sc('nefroG','nefro','Tubeless',this)">Tubeless</div>
+        <div class="chip" onclick="sc('nefroG','nefro','Totally Tubeless',this)">Totally Tubeless</div>
+      </div>
+      <input type="hidden" id="nefro"></div>
+    <div class="f"><label>DJ Stent</label>
+      <div class="chips" id="djG">
+        <div class="chip" onclick="sc('djG','dj','Terpasang',this)">Terpasang</div>
+        <div class="chip" onclick="sc('djG','dj','Tidak',this)">Tidak</div>
+      </div>
+      <input type="hidden" id="dj"></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     5 · HASIL
+════════════════════════════════════ -->
+<div class="sec" id="t5">
+  <div class="card">
+    <div class="ct">Status Batu</div>
+    <div class="chips" id="sbG">
+      <div class="chip" onclick="sc('sbG','sb','Stone Free',this)">✓ Stone Free</div>
+      <div class="chip" onclick="sc('sbG','sb','Batu Sisa Signifikan',this)">⚠ Batu Sisa</div>
+      <div class="chip" onclick="sc('sbG','sb','CIRF',this)">CIRF</div>
+      <div class="chip" onclick="sc('sbG','sb','Second Look',this)">↩ Second Look</div>
+    </div>
+    <input type="hidden" id="sb">
+    <div class="r2" style="margin-top:12px">
+      <div class="f"><label>Sisa (mm)</label>
+        <input type="number" id="sisaMm" placeholder="mm" min="0"></div>
+      <div class="f"><label>Lokasi Sisa</label>
+        <input type="text" id="sisaLok" placeholder="Kaliks inf…"></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ct">Komplikasi</div>
+    <div class="chips" id="kompG">
+      <div class="chip" onclick="multiSel('kompG',this,'selKomp')">Tidak Ada</div>
+      <div class="chip" onclick="multiSel('kompG',this,'selKomp')">Perdarahan</div>
+      <div class="chip" onclick="multiSel('kompG',this,'selKomp')">Demam</div>
+      <div class="chip" onclick="multiSel('kompG',this,'selKomp')">Perforasi</div>
+      <div class="chip" onclick="multiSel('kompG',this,'selKomp')">Sepsis</div>
+      <div class="chip" onclick="multiSel('kompG',this,'selKomp')">Transfusi</div>
+      <div class="chip" onclick="multiSel('kompG',this,'selKomp')">Konversi Terbuka</div>
+      <div class="chip" onclick="multiSel('kompG',this,'selKomp')">Hipotensi</div>
+    </div>
+    <div style="margin-top:11px">
+      <label>Clavien-Dindo</label>
+      <div class="chips" id="clavG">
+        <div class="chip" onclick="sc('clavG','clav','0',this)">0</div>
+        <div class="chip" onclick="sc('clavG','clav','I',this)">I</div>
+        <div class="chip" onclick="sc('clavG','clav','II',this)">II</div>
+        <div class="chip" onclick="sc('clavG','clav','IIIa',this)">IIIa</div>
+        <div class="chip" onclick="sc('clavG','clav','IIIb',this)">IIIb</div>
+        <div class="chip" onclick="sc('clavG','clav','IVa',this)">IVa</div>
+      </div>
+      <input type="hidden" id="clav">
+    </div>
+    <div style="margin-top:11px"><label>Catatan</label>
+      <input type="text" id="kompNote" placeholder="Keterangan komplikasi"></div>
+  </div>
+  <div class="card">
+    <div class="ct">Catatan Operasi</div>
+    <textarea id="opNote" placeholder="Temuan intraoperatif, catatan khusus…"></textarea>
+  </div>
+  <div class="card">
+    <div class="ct">Lama Perawatan</div>
+    <div class="r2">
+      <div class="f"><label>Tanggal Masuk RS</label>
+        <input type="date" id="tglMasuk" oninput="calcRawat()"></div>
+      <div class="f"><label>Tanggal Keluar RS</label>
+        <input type="date" id="tglKeluar" oninput="calcRawat()"></div>
+    </div>
+    <div class="f"><label>Lama Rawat Inap (hari)</label>
+      <input type="number" id="lamaRawat" placeholder="Otomatis dari tgl masuk–keluar" min="0" readonly
+        style="color:var(--acc2);font-family:var(--mono);font-weight:600"></div>
+    <div class="f"><label>Perawatan Post-op</label>
+      <div class="chips" id="rawatG">
+        <div class="chip" onclick="sc('rawatG','rawat','ICU',this)">ICU</div>
+        <div class="chip" onclick="sc('rawatG','rawat','HCU',this)">HCU</div>
+        <div class="chip" onclick="sc('rawatG','rawat','Bangsal Biasa',this)">Bangsal</div>
+        <div class="chip" onclick="sc('rawatG','rawat','Day Care',this)">Day Care</div>
+        <div class="chip" onclick="sc('rawatG','rawat','Rawat Jalan',this)">Rawat Jalan</div>
+      </div>
+      <input type="hidden" id="rawat">
+    </div>
+    <div class="f"><label>Kondisi Pulang</label>
+      <div class="chips" id="kondisiG">
+        <div class="chip" onclick="sc('kondisiG','kondisi','Membaik',this)">Membaik</div>
+        <div class="chip" onclick="sc('kondisiG','kondisi','Sembuh',this)">Sembuh</div>
+        <div class="chip" onclick="sc('kondisiG','kondisi','Dirujuk',this)">Dirujuk</div>
+        <div class="chip" onclick="sc('kondisiG','kondisi','APS',this)">APS</div>
+        <div class="chip" onclick="sc('kondisiG','kondisi','Meninggal',this)">Meninggal</div>
+      </div>
+      <input type="hidden" id="kondisi">
+    </div>
+    <div class="f"><label>Follow-up Berikutnya</label>
+      <input type="date" id="followUp"></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     6 · LABORATORIUM
+════════════════════════════════════ -->
+<div class="sec" id="t6">
+
+  <!-- TOGGLE PRE/POST -->
+  <div style="display:flex;gap:8px;margin-bottom:4px">
+    <div class="hbtn on" id="labTogPre" onclick="showLabPanel('pre')" style="flex:1;text-align:center">🔬 Pre-op</div>
+    <div class="hbtn" id="labTogPost" onclick="showLabPanel('post')" style="flex:1;text-align:center">📊 Post-op</div>
+  </div>
+
+  <!-- ─── PRE-OP PANEL ─── -->
+  <div id="labPanelPre">
+    <div class="info-box" style="margin:0 0 10px">Lab <b>Pre-operatif</b> — diambil sebelum tindakan PCNL</div>
+
+    <div class="card">
+      <div class="ct">Darah Lengkap — Pre-op</div>
+      <div class="lab-grid">
+        <div class="lab-item" id="li-hb">
+          <div class="lab-name">Hemoglobin <span class="abn-tag" id="abn-hb">ABN</span></div>
+          <div class="lab-row">
+            <input type="number" class="lab-input" id="hb" placeholder="12.5" step="0.1" min="0" max="25" oninput="checkAbn('hb',12,17,'abn-hb','li-hb')">
+            <span class="lab-unit">g/dL</span>
+          </div>
+          <div class="lab-ref">Normal: L 13–17, P 12–15</div>
+        </div>
+        <div class="lab-item" id="li-ht">
+          <div class="lab-name">Hematokrit <span class="abn-tag" id="abn-ht">ABN</span></div>
+          <div class="lab-row">
+            <input type="number" class="lab-input" id="ht" placeholder="38" min="0" max="70" oninput="checkAbn('ht',36,54,'abn-ht','li-ht')">
+            <span class="lab-unit">%</span>
+          </div>
+          <div class="lab-ref">Normal: 36–54%</div>
+        </div>
+        <div class="lab-item" id="li-leuko">
+          <div class="lab-name">Leukosit <span class="abn-tag" id="abn-leuko">ABN</span></div>
+          <div class="lab-row">
+            <input type="number" class="lab-input" id="leuko" placeholder="7.5" step="0.1" min="0" oninput="checkAbn('leuko',4,11,'abn-leuko','li-leuko')">
+            <span class="lab-unit">×10³/µL</span>
+          </div>
+          <div class="lab-ref">Normal: 4–11 ×10³</div>
+        </div>
+        <div class="lab-item" id="li-plt">
+          <div class="lab-name">Trombosit <span class="abn-tag" id="abn-plt">ABN</span></div>
+          <div class="lab-row">
+            <input type="number" class="lab-input" id="plt" placeholder="250" min="0" oninput="checkAbn('plt',150,400,'abn-plt','li-plt')">
+            <span class="lab-unit">×10³/µL</span>
+          </div>
+          <div class="lab-ref">Normal: 150–400 ×10³</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="ct">Fungsi Ginjal — Pre-op</div>
+      <div class="lab-grid">
+        <div class="lab-item" id="li-ur">
+          <div class="lab-name">Ureum <span class="abn-tag" id="abn-ur">ABN</span></div>
+          <div class="lab-row">
+            <input type="number" class="lab-input" id="ur" placeholder="25" min="0" oninput="checkAbn('ur',10,50,'abn-ur','li-ur')">
+            <span class="lab-unit">mg/dL</span>
+          </div>
+          <div class="lab-ref">Normal: 10–50</div>
+        </div>
+        <div class="lab-item" id="li-cr">
+          <div class="lab-name">Kreatinin <span class="abn-tag" id="abn-cr">ABN</span></div>
+          <div class="lab-row">
+            <input type="number" class="lab-input" id="cr" placeholder="0.9" step="0.01" min="0" oninput="checkAbn('cr',0.5,1.3,'abn-cr','li-cr')">
+            <span class="lab-unit">mg/dL</span>
+          </div>
+          <div class="lab-ref">Normal: 0.5–1.3</div>
+        </div>
+        <div class="lab-item" id="li-egfr">
+          <div class="lab-name">eGFR <span class="abn-tag" id="abn-egfr">ABN</span></div>
+          <div class="lab-row">
+            <input type="number" class="lab-input" id="egfr" placeholder="90" min="0" oninput="checkAbn('egfr',60,999,'abn-egfr','li-egfr')">
+            <span class="lab-unit">mL/min</span>
+          </div>
+          <div class="lab-ref">Normal: ≥60</div>
+        </div>
+        <div class="lab-item" id="li-ua">
+          <div class="lab-name">Asam Urat <span class="abn-tag" id="abn-ua">ABN</span></div>
+          <div class="lab-row">
+            <input type="number" class="lab-input" id="ua" placeholder="5.5" step="0.1" min="0" oninput="checkAbn('ua',2.4,7,'abn-ua','li-ua')">
+            <span class="lab-unit">mg/dL</span>
+          </div>
+          <div class="lab-ref">Normal: 2.4–7.0</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="ct">Elektrolit & Koagulasi — Pre-op</div>
+      <div class="lab-grid">
+        <div class="lab-item" id="li-na">
+          <div class="lab-name">Natrium <span class="abn-tag" id="abn-na">ABN</span></div>
+          <div class="lab-row">
+            <input type="number" class="lab-input" id="na" placeholder="138" min="0" oninput="checkAbn('na',136,145,'abn-na','li-na')">
+            <span class="lab-unit">mEq/L</span>
+          </div>
+          <div class="lab-ref">Normal: 136–145</div>
+        </div>
+        <div class="lab-item" id="li-k">
+          <div class="lab-name">Kalium <span class="abn-tag" id="abn-k">ABN</span></div>
+          <div class="lab-row">
+            <input type="number" class="lab-input" id="k" placeholder="4.0" step="0.1" min="0" oninput="checkAbn('k',3.5,5,'abn-k','li-k')">
+            <span class="lab-unit">mEq/L</span>
+          </div>
+          <div class="lab-ref">Normal: 3.5–5.0</div>
+        </div>
+        <div class="lab-item" id="li-pt">
+          <div class="lab-name">PT <span class="abn-tag" id="abn-pt">ABN</span></div>
+          <div class="lab-row">
+            <input type="number" class="lab-input" id="pt" placeholder="11" step="0.1" min="0" oninput="checkAbn('pt',10,14,'abn-pt','li-pt')">
+            <span class="lab-unit">detik</span>
+          </div>
+          <div class="lab-ref">Normal: 10–14 dtk</div>
+        </div>
+        <div class="lab-item" id="li-aptt">
+          <div class="lab-name">APTT <span class="abn-tag" id="abn-aptt">ABN</span></div>
+          <div class="lab-row">
+            <input type="number" class="lab-input" id="aptt" placeholder="30" step="0.1" min="0" oninput="checkAbn('aptt',20,35,'abn-aptt','li-aptt')">
+            <span class="lab-unit">detik</span>
+          </div>
+          <div class="lab-ref">Normal: 20–35 dtk</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="ct">Urinalisis — Pre-op</div>
+      <div class="lab-grid">
+        <div class="lab-item">
+          <div class="lab-name">pH Urin</div>
+          <div class="lab-row">
+            <input type="number" class="lab-input" id="uph" placeholder="6.0" step="0.5" min="4" max="9">
+            <span class="lab-unit">pH</span>
+          </div>
+          <div class="lab-ref">Normal: 4.5–8.0</div>
+        </div>
+        <div class="lab-item" id="li-uprot">
+          <div class="lab-name">Protein Urin <span class="abn-tag" id="abn-uprot">ABN</span></div>
+          <div class="lab-row">
+            <select class="lab-input" id="uprot" oninput="checkAbnSelect('uprot','Negatif','abn-uprot','li-uprot')" style="font-size:13px">
+              <option value="">—</option>
+              <option>Negatif</option><option>Trace</option>
+              <option>+1</option><option>+2</option><option>+3</option>
+            </select>
+          </div>
+        </div>
+        <div class="lab-item" id="li-uleuko">
+          <div class="lab-name">Leukosit Urin <span class="abn-tag" id="abn-uleuko">ABN</span></div>
+          <div class="lab-row">
+            <input type="number" class="lab-input" id="uleuko" placeholder="3" min="0" oninput="checkAbn('uleuko',0,5,'abn-uleuko','li-uleuko')">
+            <span class="lab-unit">/lpb</span>
+          </div>
+          <div class="lab-ref">Normal: 0–5/lpb</div>
+        </div>
+        <div class="lab-item" id="li-uery">
+          <div class="lab-name">Eritrosit Urin <span class="abn-tag" id="abn-uery">ABN</span></div>
+          <div class="lab-row">
+            <input type="number" class="lab-input" id="uery" placeholder="2" min="0" oninput="checkAbn('uery',0,3,'abn-uery','li-uery')">
+            <span class="lab-unit">/lpb</span>
+          </div>
+          <div class="lab-ref">Normal: 0–3/lpb</div>
+        </div>
+      </div>
+      <div style="margin-top:11px">
+        <label>Catatan Lab Pre-op</label>
+        <textarea id="labNote" placeholder="Hasil lab lain yang relevan, CKD stage, kultur urin, dll…" style="min-height:56px"></textarea>
+      </div>
+    </div>
+  </div><!-- end labPanelPre -->
+
+  <!-- ─── POST-OP PANEL ─── -->
+  <div id="labPanelPost" style="display:none">
+    <div class="info-box" style="margin:0 0 10px">Lab <b>Post-operatif</b> — diambil 24–48 jam setelah PCNL untuk evaluasi perdarahan dan fungsi ginjal</div>
+
+    <div class="card">
+      <div class="ct">Darah Lengkap — Post-op</div>
+      <div class="lab-grid">
+        <div class="lab-item" id="li-pohb">
+          <div class="lab-name">Hemoglobin <span class="abn-tag" id="abn-pohb">ABN</span></div>
+          <div class="lab-row">
+            <input type="number" class="lab-input" id="pohb" placeholder="11.0" step="0.1" min="0" max="25" oninput="checkAbn('pohb',12,17,'abn-pohb','li-pohb');calcLabDelta()">
+            <span class="lab-unit">g/dL</span>
+          </div>
+          <div class="lab-ref" id="pohb-delta" style="color:var(--acc3)"></div>
+        </div>
+        <div class="lab-item" id="li-poht">
+          <div class="lab-name">Hematokrit <span class="abn-tag" id="abn-poht">ABN</span></div>
+          <div class="lab-row">
+            <input type="number" class="lab-input" id="poht" placeholder="34" min="0" max="70" oninput="checkAbn('poht',36,54,'abn-poht','li-poht');calcLabDelta()">
+            <span class="lab-unit">%</span>
+          </div>
+          <div class="lab-ref" id="poht-delta" style="color:var(--acc3)"></div>
+        </div>
+        <div class="lab-item" id="li-poleuko">
+          <div class="lab-name">Leukosit <span class="abn-tag" id="abn-poleuko">ABN</span></div>
+          <div class="lab-row">
+            <input type="number" class="lab-input" id="poleuko" placeholder="9.0" step="0.1" min="0" oninput="checkAbn('poleuko',4,11,'abn-poleuko','li-poleuko');calcLabDelta()">
+            <span class="lab-unit">×10³/µL</span>
+          </div>
+          <div class="lab-ref" id="poleuko-delta" style="color:var(--acc3)"></div>
+        </div>
+        <div class="lab-item" id="li-poplt">
+          <div class="lab-name">Trombosit <span class="abn-tag" id="abn-poplt">ABN</span></div>
+          <div class="lab-row">
+            <input type="number" class="lab-input" id="poplt" placeholder="220" min="0" oninput="checkAbn('poplt',150,400,'abn-poplt','li-poplt')">
+            <span class="lab-unit">×10³/µL</span>
+          </div>
+          <div class="lab-ref">Normal: 150–400 ×10³</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="ct">Fungsi Ginjal — Post-op</div>
+      <div class="lab-grid">
+        <div class="lab-item" id="li-pour">
+          <div class="lab-name">Ureum <span class="abn-tag" id="abn-pour">ABN</span></div>
+          <div class="lab-row">
+            <input type="number" class="lab-input" id="pour" placeholder="30" min="0" oninput="checkAbn('pour',10,50,'abn-pour','li-pour')">
+            <span class="lab-unit">mg/dL</span>
+          </div>
+          <div class="lab-ref">Normal: 10–50</div>
+        </div>
+        <div class="lab-item" id="li-pocr">
+          <div class="lab-name">Kreatinin <span class="abn-tag" id="abn-pocr">ABN</span></div>
+          <div class="lab-row">
+            <input type="number" class="lab-input" id="pocr" placeholder="1.0" step="0.01" min="0" oninput="checkAbn('pocr',0.5,1.3,'abn-pocr','li-pocr');calcLabDelta()">
+            <span class="lab-unit">mg/dL</span>
+          </div>
+          <div class="lab-ref" id="pocr-delta" style="color:var(--acc3)"></div>
+        </div>
+        <div class="lab-item" id="li-poegfr">
+          <div class="lab-name">eGFR <span class="abn-tag" id="abn-poegfr">ABN</span></div>
+          <div class="lab-row">
+            <input type="number" class="lab-input" id="poegfr" placeholder="80" min="0" oninput="checkAbn('poegfr',60,999,'abn-poegfr','li-poegfr');calcLabDelta()">
+            <span class="lab-unit">mL/min</span>
+          </div>
+          <div class="lab-ref" id="poegfr-delta" style="color:var(--acc3)"></div>
+        </div>
+        <div class="lab-item" id="li-pona">
+          <div class="lab-name">Natrium <span class="abn-tag" id="abn-pona">ABN</span></div>
+          <div class="lab-row">
+            <input type="number" class="lab-input" id="pona" placeholder="138" min="0" oninput="checkAbn('pona',136,145,'abn-pona','li-pona')">
+            <span class="lab-unit">mEq/L</span>
+          </div>
+          <div class="lab-ref">Normal: 136–145</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="ct">Urinalisis — Post-op</div>
+      <div class="lab-grid">
+        <div class="lab-item" id="li-pouery">
+          <div class="lab-name">Eritrosit Urin <span class="abn-tag" id="abn-pouery">ABN</span></div>
+          <div class="lab-row">
+            <input type="number" class="lab-input" id="pouery" placeholder="5" min="0" oninput="checkAbn('pouery',0,3,'abn-pouery','li-pouery')">
+            <span class="lab-unit">/lpb</span>
+          </div>
+          <div class="lab-ref">Normal: 0–3/lpb</div>
+        </div>
+        <div class="lab-item" id="li-pouleuko">
+          <div class="lab-name">Leukosit Urin <span class="abn-tag" id="abn-pouleuko">ABN</span></div>
+          <div class="lab-row">
+            <input type="number" class="lab-input" id="pouleuko" placeholder="5" min="0" oninput="checkAbn('pouleuko',0,5,'abn-pouleuko','li-pouleuko')">
+            <span class="lab-unit">/lpb</span>
+          </div>
+          <div class="lab-ref">Normal: 0–5/lpb</div>
+        </div>
+        <div class="lab-item" id="li-pouprot">
+          <div class="lab-name">Protein Urin <span class="abn-tag" id="abn-pouprot">ABN</span></div>
+          <div class="lab-row">
+            <select class="lab-input" id="pouprot" oninput="checkAbnSelect('pouprot','Negatif','abn-pouprot','li-pouprot')" style="font-size:13px">
+              <option value="">—</option>
+              <option>Negatif</option><option>Trace</option>
+              <option>+1</option><option>+2</option><option>+3</option>
+            </select>
+          </div>
+        </div>
+        <div class="lab-item">
+          <div class="lab-name">pH Urin Post-op</div>
+          <div class="lab-row">
+            <input type="number" class="lab-input" id="pouph" placeholder="6.0" step="0.5" min="4" max="9">
+            <span class="lab-unit">pH</span>
+          </div>
+          <div class="lab-ref">Normal: 4.5–8.0</div>
+        </div>
+      </div>
+      <div style="margin-top:11px">
+        <label>Catatan Lab Post-op</label>
+        <textarea id="labNotePost" placeholder="Kondisi lab post-op, transfusi, terapi yang diberikan…" style="min-height:56px"></textarea>
+      </div>
+    </div>
+
+    <!-- DELTA SUMMARY -->
+    <div class="card" id="labDeltaCard" style="display:none">
+      <div class="ct">Perbandingan Pre vs Post-op</div>
+      <div id="labDeltaBody" style="display:grid;grid-template-columns:1fr 1fr;gap:10px"></div>
+    </div>
+  </div><!-- end labPanelPost -->
+
+</div>
+
+<!-- ════════════════════════════════════
+     7 · IMAGING (FOTO)
+════════════════════════════════════ -->
+<div class="sec" id="t7">
+
+  <!-- CT SCAN MANDATORY -->
+  <div class="card">
+    <div class="ct">CT Scan Urologi (Mandatory PCNL)</div>
+    <div class="info-box" style="margin-bottom:12px">
+      CT Scan Non-Kontras adalah standar baku evaluasi pre-op PCNL — untuk mengukur batu, menilai anatomi kaliks, dan mengukur <b>Hounsfield Unit (HU)</b> kekerasan batu.
+    </div>
+    <div class="f"><label>Modalitas CT Scan</label>
+      <div class="chips" id="ctModG">
+        <div class="chip" onclick="sc('ctModG','ctMod','Non-Kontras (NCCT)',this)">Non-Kontras</div>
+        <div class="chip" onclick="sc('ctModG','ctMod','Kontras (CCT)',this)">Kontras</div>
+        <div class="chip" onclick="sc('ctModG','ctMod','NCCT + CCT',this)">NCCT + CCT</div>
+        <div class="chip" onclick="sc('ctModG','ctMod','Tidak Ada CT',this)">Tidak Ada</div>
+      </div>
+      <input type="hidden" id="ctMod">
+    </div>
+    <div class="r2">
+      <div class="f"><label>Slice Thickness (mm)</label>
+        <input type="number" id="ctSlice" placeholder="1.0" step="0.5" min="0.5" max="10"></div>
+      <div class="f"><label>Tanggal CT Scan</label>
+        <input type="date" id="ctTgl"></div>
+    </div>
+    <div class="f"><label>Hidronefrosis</label>
+      <div class="chips" id="hidroG">
+        <div class="chip" onclick="sc('hidroG','hidro','Tidak Ada',this)">Tidak Ada</div>
+        <div class="chip" onclick="sc('hidroG','hidro','Grade I',this)">Grade I</div>
+        <div class="chip" onclick="sc('hidroG','hidro','Grade II',this)">Grade II</div>
+        <div class="chip" onclick="sc('hidroG','hidro','Grade III',this)">Grade III</div>
+        <div class="chip" onclick="sc('hidroG','hidro','Grade IV',this)">Grade IV</div>
+      </div>
+      <input type="hidden" id="hidro">
+    </div>
+    <div class="f"><label>Ketebalan Korteks Ginjal</label>
+      <div class="r2">
+        <input type="number" id="korteks" placeholder="mm" min="0" step="0.5">
+        <select id="korteksKel" style="font-size:14px">
+          <option value="">— Kesan —</option>
+          <option>Normal</option>
+          <option>Menipis Ringan</option>
+          <option>Menipis Sedang</option>
+          <option>Menipis Berat</option>
+          <option>Atrofi</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- PENGUKURAN BATU DARI CT -->
+  <div class="card">
+    <div class="ct">Pengukuran Batu (CT Scan)</div>
+    <div class="f"><label>Dimensi Batu (Panjang × Lebar × Tinggi)</label>
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px">
+        <input type="number" id="ctBatuP" placeholder="P" min="0" step="0.5"
+          style="flex:1;text-align:center;font-family:var(--mono);font-size:16px;font-weight:600"
+          oninput="calcCTBurden()">
+        <span style="color:var(--muted);font-size:16px">×</span>
+        <input type="number" id="ctBatuL" placeholder="L" min="0" step="0.5"
+          style="flex:1;text-align:center;font-family:var(--mono);font-size:16px;font-weight:600"
+          oninput="calcCTBurden()">
+        <span style="color:var(--muted);font-size:16px">×</span>
+        <input type="number" id="ctBatuT" placeholder="T" min="0" step="0.5"
+          style="flex:1;text-align:center;font-family:var(--mono);font-size:16px;font-weight:600"
+          oninput="calcCTBurden()">
+        <span style="color:var(--muted);font-size:13px;flex-shrink:0">mm</span>
+      </div>
+      <div id="ctBurdenResult" style="display:none;padding:11px 14px;border-radius:9px;
+        background:var(--bg);border:1px solid var(--bdr)">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+          <div>
+            <div style="font-size:9px;color:var(--muted);font-weight:700;letter-spacing:.8px;text-transform:uppercase">Stone Volume (Ellipsoid)</div>
+            <div id="ctVol" style="font-family:var(--mono);font-size:18px;color:var(--acc2);font-weight:600"></div>
+          </div>
+          <div>
+            <div style="font-size:9px;color:var(--muted);font-weight:700;letter-spacing:.8px;text-transform:uppercase">Stone Burden (2D)</div>
+            <div id="ctBurden2d" style="font-family:var(--mono);font-size:18px;color:var(--acc);font-weight:600"></div>
+          </div>
+          <div>
+            <div style="font-size:9px;color:var(--muted);font-weight:700;letter-spacing:.8px;text-transform:uppercase">Max Diameter</div>
+            <div id="ctDiam" style="font-family:var(--mono);font-size:18px;color:var(--acc3);font-weight:600"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="f"><label>Jumlah Batu</label>
+      <div class="chips" id="ctJmlG">
+        <div class="chip" onclick="sc('ctJmlG','ctJml','1',this)">1</div>
+        <div class="chip" onclick="sc('ctJmlG','ctJml','2',this)">2</div>
+        <div class="chip" onclick="sc('ctJmlG','ctJml','3',this)">3</div>
+        <div class="chip" onclick="sc('ctJmlG','ctJml','4+',this)">4+</div>
+        <div class="chip" onclick="sc('ctJmlG','ctJml','Staghorn',this)">Staghorn</div>
+      </div>
+      <input type="hidden" id="ctJml">
+    </div>
+    <div class="f"><label>Lokasi Batu (CT)</label>
+      <div class="chips" id="ctLokG" style="flex-wrap:wrap">
+        <div class="chip" onclick="multiSel('ctLokG',this,'selCtLok')">Pelvis Renalis</div>
+        <div class="chip" onclick="multiSel('ctLokG',this,'selCtLok')">Kaliks Superior</div>
+        <div class="chip" onclick="multiSel('ctLokG',this,'selCtLok')">Kaliks Medius</div>
+        <div class="chip" onclick="multiSel('ctLokG',this,'selCtLok')">Kaliks Inferior</div>
+        <div class="chip" onclick="multiSel('ctLokG',this,'selCtLok')">UPJ</div>
+        <div class="chip" onclick="multiSel('ctLokG',this,'selCtLok')">Ureter Proksimal</div>
+      </div>
+    </div>
+    <div class="f"><label>Jarak Kulit ke Batu (Skin-to-Stone Distance)</label>
+      <div style="display:flex;align-items:center;gap:10px">
+        <input type="number" id="ssd" placeholder="mm" min="0" step="1"
+          style="flex:1;font-family:var(--mono);font-size:16px;font-weight:600" oninput="checkSSD()">
+        <span style="color:var(--muted);font-size:13px;flex-shrink:0">mm</span>
+        <div id="ssdTag" style="display:none;font-size:10px;font-weight:700;padding:3px 8px;border-radius:5px"></div>
+      </div>
+      <div style="font-size:10px;color:var(--muted);margin-top:4px">SSD &gt;100mm → risiko lebih tinggi pada obese / prone</div>
+    </div>
+  </div>
+
+  <!-- HOUNSFIELD UNIT -->
+  <div class="card">
+    <div class="ct">Hounsfield Unit (HU)</div>
+    <div class="info-box" style="margin-bottom:13px">
+      Diukur dari <b>CT Non-Kontras</b> pada ROI batu. Menentukan kekerasan batu dan pilihan alat lithotripsy. Wajib dicatat untuk PCNL.
+    </div>
+
+    <!-- HU Input utama -->
+    <div style="background:var(--surf);border:1px solid var(--bdr);border-radius:11px;padding:14px;margin-bottom:11px">
+      <div style="font-size:10px;color:var(--muted);font-weight:700;letter-spacing:.8px;text-transform:uppercase;margin-bottom:8px">HU Rata-rata Batu</div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <input type="number" id="hu" placeholder="650" min="0" max="2000"
+          oninput="calcHU()"
+          style="flex:1;background:transparent;border:none;border-bottom:2px solid var(--bdr);
+          color:var(--txt);font-family:var(--mono);font-size:32px;font-weight:700;
+          outline:none;padding:4px 0;transition:border-color .2s">
+        <span style="color:var(--muted);font-size:16px;flex-shrink:0;font-weight:600">HU</span>
+        <div id="abn-hu" style="display:none;font-size:10px;font-weight:700;padding:4px 9px;border-radius:6px;flex-shrink:0"></div>
+      </div>
+    </div>
+
+    <!-- HU Meter -->
+    <div id="huMeterWrap" style="display:none">
+      <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-bottom:5px;letter-spacing:.3px">
+        <span>0</span><span>500</span><span>1000</span><span>1500</span><span>2000 HU</span>
+      </div>
+      <div style="height:12px;border-radius:6px;background:linear-gradient(90deg,#00d98b 0%,#f5c842 35%,#ffaa30 60%,#ff4f6a 80%,#c0392b 100%);position:relative;margin-bottom:6px">
+        <div id="huNeedle" style="position:absolute;top:-4px;width:4px;height:20px;background:#fff;border-radius:2px;box-shadow:0 2px 8px rgba(0,0,0,.6);transition:left .5s cubic-bezier(.34,1.56,.64,1)"></div>
+      </div>
+      <div id="huClass" style="border-radius:10px;padding:12px 14px;font-size:13px;font-weight:600;text-align:center;margin-bottom:10px"></div>
+    </div>
+
+    <!-- HU Range & Detail -->
+    <div class="r2">
+      <div class="f"><label>HU Min (titik terlunak)</label>
+        <input type="number" id="huMin" placeholder="420" min="0" max="2000" oninput="calcHU()"></div>
+      <div class="f"><label>HU Max (titik terkeras)</label>
+        <input type="number" id="huMax" placeholder="980" min="0" max="2000" oninput="calcHU()"></div>
+    </div>
+    <div class="f"><label>Lokasi ROI Pengukuran</label>
+      <input type="text" id="huLok" placeholder="ROI sentral batu, kaliks inf, dll…"></div>
+    <div class="f"><label>Prediksi Respons Lithotripsy</label>
+      <div class="chips" id="huPredG">
+        <div class="chip on g" onclick="sc('huPredG','huPred','Sangat Baik',this)" style="background:rgba(0,217,139,.15)">✓ Sangat Baik</div>
+        <div class="chip" onclick="sc('huPredG','huPred','Baik',this)">Baik</div>
+        <div class="chip" onclick="sc('huPredG','huPred','Sedang',this)">Sedang</div>
+        <div class="chip" onclick="sc('huPredG','huPred','Sulit',this)">⚠ Sulit</div>
+      </div>
+      <input type="hidden" id="huPred">
+    </div>
+  </div>
+
+  <!-- FOTO PRE-OP -->
+  <div class="card">
+    <div class="ct">Foto Pre-op (BNO/KUB, CT Screenshot)</div>
+    <label class="upload-zone" id="uploadZone" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="dropFile(event)">
+      <input type="file" id="imgInput" accept="image/*" multiple onchange="handleFiles(this.files)">
+      <div class="upload-icon">📷</div>
+      <div class="upload-title">Tap untuk pilih foto</div>
+      <div class="upload-sub">BNO/KUB · CT Screenshot · USG · IVP · Maks 5 foto</div>
+    </label>
+    <div class="img-grid" id="imgGrid"></div>
+    <div id="imgActions" style="display:none;margin-top:8px">
+      <button class="btn btn-s" style="width:100%" onclick="clearAllImgs()">🗑 Hapus Semua Foto Pre-op</button>
+    </div>
+    <div style="margin-top:11px">
+      <label>Deskripsi / Temuan Imaging</label>
+      <textarea id="imgNote" placeholder="Temuan CT: lokasi batu, hidronefrosis, anatomi kaliks, vaskular, dll…" style="min-height:70px"></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     8 · SETUP (GOOGLE SHEETS)
+════════════════════════════════════ -->
+<div class="sec" id="t8">
+
+  <!-- KONEKSI -->
+  <div class="card">
+    <div class="ct">☁️ Google Sheets — Koneksi</div>
+    <div class="info-box" style="margin-bottom:13px">
+      Paste <b>URL Web App</b> dari Google Apps Script. Data otomatis terkirim saat simpan. Jika offline, data antri dan dikirim otomatis saat online kembali.
+    </div>
+    <div class="f">
+      <label>URL Web App</label>
+      <input type="text" id="sheetUrl" placeholder="https://script.google.com/macros/s/…/exec"
+        oninput="checkUrl()" style="font-size:11px;font-family:var(--mono)">
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:10px">
+      <div class="hbtn" style="flex:1;text-align:center" onclick="testConn()">🔗 Test</div>
+      <div class="hbtn pri" style="flex:1;text-align:center" onclick="saveUrl()">💾 Simpan URL</div>
+    </div>
+    <div id="connStatus" style="font-size:11px;color:var(--muted);text-align:center;min-height:16px"></div>
+  </div>
+
+  <!-- STATUS REGISTRY -->
+  <div class="card">
+    <div class="ct">📊 Status Lokal</div>
+    <div id="regStats" style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <div style="background:var(--bg);border:1px solid var(--bdr);border-radius:8px;padding:12px;text-align:center">
+        <div id="statTotal" style="font-family:var(--mono);font-size:28px;font-weight:700;color:var(--acc)">0</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:2px">Total Pasien</div>
+      </div>
+      <div style="background:var(--bg);border:1px solid var(--bdr);border-radius:8px;padding:12px;text-align:center">
+        <div id="statQueue" style="font-family:var(--mono);font-size:28px;font-weight:700;color:var(--warn)">0</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:2px">Antri Kirim</div>
+      </div>
+    </div>
+    <div style="margin-top:10px;display:flex;gap:8px">
+      <div class="hbtn" style="flex:1;text-align:center;font-size:11px" onclick="flushQueue()">📤 Kirim Antrian</div>
+      <div class="hbtn" style="flex:1;text-align:center;font-size:11px" onclick="refreshStats()">🔄 Refresh</div>
+    </div>
+  </div>
+
+  <!-- EXPORT / IMPORT -->
+  <div class="card">
+    <div class="ct">📁 Export / Import Data</div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div class="hbtn" style="text-align:center" onclick="exportJSON()">⬇️ Export Backup JSON</div>
+      <div class="hbtn" style="text-align:center" onclick="exportCSV()">⬇️ Export CSV (untuk Excel)</div>
+      <label class="hbtn" style="text-align:center;cursor:pointer;display:block">
+        ⬆️ Import Data Lama (JSON)
+        <input type="file" id="importFile" accept=".json" onchange="importJSON(this)" style="display:none">
+      </label>
+      <div class="hbtn" style="text-align:center;background:rgba(255,79,106,.08);border-color:rgba(255,79,106,.3);color:var(--danger)"
+        onclick="confirmClearAll()">🗑 Hapus Semua Data Lokal</div>
+    </div>
+    <div id="importStatus" style="font-size:11px;color:var(--muted);margin-top:8px;text-align:center"></div>
+  </div>
+
+  <!-- PANDUAN SETUP -->
+  <div class="card">
+    <div class="ct">📋 Panduan Pasang Apps Script</div>
+    <div style="font-size:12px;color:var(--txt);line-height:1.8">
+      <div style="margin-bottom:6px"><span style="background:var(--acc);color:#fff;border-radius:4px;padding:1px 7px;font-size:10px;font-weight:700">1</span>&nbsp; Buka Google Spreadsheet → <b>Extensions → Apps Script</b></div>
+      <div style="margin-bottom:6px"><span style="background:var(--acc);color:#fff;border-radius:4px;padding:1px 7px;font-size:10px;font-weight:700">2</span>&nbsp; Hapus kode default, paste file <b>Code.gs</b></div>
+      <div style="margin-bottom:6px"><span style="background:var(--acc);color:#fff;border-radius:4px;padding:1px 7px;font-size:10px;font-weight:700">3</span>&nbsp; Run fungsi <b>setupRegistry()</b> → Allow permissions</div>
+      <div style="margin-bottom:6px"><span style="background:var(--acc);color:#fff;border-radius:4px;padding:1px 7px;font-size:10px;font-weight:700">4</span>&nbsp; <b>Deploy → New Deployment → Web App</b><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Execute as: <b>Me</b> · Who has access: <b>Anyone</b></div>
+      <div style="margin-bottom:6px"><span style="background:var(--acc);color:#fff;border-radius:4px;padding:1px 7px;font-size:10px;font-weight:700">5</span>&nbsp; Copy URL → paste di field atas → Test → Simpan</div>
+      <div><span style="background:var(--acc2);color:#fff;border-radius:4px;padding:1px 7px;font-size:10px;font-weight:700">✓</span>&nbsp; Selesai! Semua data baru langsung masuk Sheets</div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     9 · TANDA VITAL
+════════════════════════════════════ -->
+<div class="sec" id="t9">
+  <div class="card">
+    <div class="ct">Pre-Operatif</div>
+    <div class="vgrid">
+      <div class="vbox"><div class="vlbl">Sistol</div><div class="vrow"><input type="number" class="vin" id="preS" placeholder="120"><span class="vunit">mmHg</span></div></div>
+      <div class="vbox"><div class="vlbl">Diastol</div><div class="vrow"><input type="number" class="vin" id="preD" placeholder="80"><span class="vunit">mmHg</span></div></div>
+      <div class="vbox"><div class="vlbl">Nadi</div><div class="vrow"><input type="number" class="vin" id="preN" placeholder="80"><span class="vunit">×/mnt</span></div></div>
+      <div class="vbox"><div class="vlbl">Respirasi</div><div class="vrow"><input type="number" class="vin" id="preR" placeholder="18"><span class="vunit">×/mnt</span></div></div>
+      <div class="vbox"><div class="vlbl">SpO₂</div><div class="vrow"><input type="number" class="vin" id="preO" placeholder="98"><span class="vunit">%</span></div></div>
+      <div class="vbox"><div class="vlbl">Suhu</div><div class="vrow"><input type="number" class="vin" id="preT" placeholder="36.5" step="0.1"><span class="vunit">°C</span></div></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ct">Intra-Operatif</div>
+    <div class="vgrid">
+      <div class="vbox"><div class="vlbl">Sistol</div><div class="vrow"><input type="number" class="vin" id="intS" placeholder="120"><span class="vunit">mmHg</span></div></div>
+      <div class="vbox"><div class="vlbl">Diastol</div><div class="vrow"><input type="number" class="vin" id="intD" placeholder="80"><span class="vunit">mmHg</span></div></div>
+      <div class="vbox"><div class="vlbl">Nadi</div><div class="vrow"><input type="number" class="vin" id="intN" placeholder="80"><span class="vunit">×/mnt</span></div></div>
+      <div class="vbox"><div class="vlbl">Respirasi</div><div class="vrow"><input type="number" class="vin" id="intR" placeholder="18"><span class="vunit">×/mnt</span></div></div>
+      <div class="vbox"><div class="vlbl">SpO₂</div><div class="vrow"><input type="number" class="vin" id="intO" placeholder="98"><span class="vunit">%</span></div></div>
+      <div class="vbox"><div class="vlbl">EBL (mL)</div><div class="vrow"><input type="number" class="vin" id="ebl" placeholder="50"><span class="vunit">mL</span></div></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ct">Post-Operatif</div>
+    <div class="vgrid">
+      <div class="vbox"><div class="vlbl">Sistol</div><div class="vrow"><input type="number" class="vin" id="posS" placeholder="120"><span class="vunit">mmHg</span></div></div>
+      <div class="vbox"><div class="vlbl">Diastol</div><div class="vrow"><input type="number" class="vin" id="posD" placeholder="80"><span class="vunit">mmHg</span></div></div>
+      <div class="vbox"><div class="vlbl">Nadi</div><div class="vrow"><input type="number" class="vin" id="posN" placeholder="80"><span class="vunit">×/mnt</span></div></div>
+      <div class="vbox"><div class="vlbl">Respirasi</div><div class="vrow"><input type="number" class="vin" id="posR" placeholder="18"><span class="vunit">×/mnt</span></div></div>
+      <div class="vbox"><div class="vlbl">SpO₂</div><div class="vrow"><input type="number" class="vin" id="posO" placeholder="98"><span class="vunit">%</span></div></div>
+      <div class="vbox"><div class="vlbl">Suhu</div><div class="vrow"><input type="number" class="vin" id="posT" placeholder="36.5" step="0.1"><span class="vunit">°C</span></div></div>
+    </div>
+  </div>
+  <button class="btn btn-ok" style="width:100%;padding:15px;font-size:15px;font-weight:700;border-radius:11px;border:none;cursor:pointer" onclick="saveRec()">💾 Simpan Data Pasien</button>
+</div>
+
+<!-- ════════════════════════════════════
+     10 · DATA LIST
+════════════════════════════════════ -->
+<div class="sec" id="t10">
+  <div class="srch-wrap">
+    <span class="srch-icon">🔍</span>
+    <input type="text" placeholder="Cari nama, diagnosa, RM…" oninput="renderList(this.value)">
+  </div>
+  <div class="fchips">
+    <div class="fc on" onclick="setF('all',this)">Semua</div>
+    <div class="fc" onclick="setF('Stone Free',this)">Stone Free</div>
+    <div class="fc" onclick="setF('Batu Sisa',this)">Batu Sisa</div>
+    <div class="fc" onclick="setF('CIRF',this)">CIRF</div>
+    <div class="fc" onclick="setF('Second Look',this)">Second Look</div>
+  </div>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:11px">
+    <span style="font-size:12px;color:var(--muted)"><b id="totN" style="color:var(--txt)">0</b> pasien</span>
+    <div class="hbtn" onclick="exportCSV()">📊 Export CSV</div>
+  </div>
+  <div id="listEl"></div>
+</div>
+
+<!-- ════════════════════════════════════
+     11 · STATISTIK
+════════════════════════════════════ -->
+<div class="sec" id="t11">
+  <div id="statsEl"><div class="empty"><div class="ei">📊</div><p>Belum ada data.</p></div></div>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bnav" id="bnav">
+  <button class="btn btn-s" id="btnPrev" onclick="prevT()">← Prev</button>
+  <button class="btn btn-p" id="btnNext" onclick="nextT()">Next →</button>
+</div>
+
+<!-- DELETE MODAL -->
+<div class="overlay" id="delM">
+  <div class="modal">
+    <div class="modal-t">🗑 Hapus Data?</div>
+    <div class="modal-s" id="delS">Data ini akan dihapus permanen.</div>
+    <div class="modal-a">
+      <button class="btn btn-s" onclick="closeM('delM')">Batal</button>
+      <button class="btn" style="background:var(--danger);color:#fff" onclick="delConfirm()">Hapus</button>
+    </div>
+  </div>
+</div>
+
+<!-- DETAIL MODAL -->
+<div class="overlay" id="detM">
+  <div class="modal">
+    <div class="modal-t" id="detT"></div>
+    <div class="modal-s" id="detS"></div>
+    <div id="detB" style="max-height:55vh;overflow-y:auto"></div>
+    <div class="modal-a">
+      <button class="btn btn-s" onclick="closeM('detM')">Tutup</button>
+      <button class="btn btn-p" id="detEdit">✏️ Edit</button>
+    </div>
+  </div>
+</div>
+
+<!-- IMAGE VIEWER -->
+<div class="img-viewer" id="imgViewer">
+  <button class="close-v" onclick="closeViewer()">✕</button>
+  <img id="viewerImg" src="" alt="">
+  <div class="img-v-lbl" id="viewerLbl"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══ STATE ════════════════════════════════════════
+let DB = JSON.parse(localStorage.getItem('pcnl_v4')||'[]');
+let SURL = localStorage.getItem('pcnl_url')||'';
+let editId = null, delId = null, filterMode = 'all';
+let ms = { selCalyx:[], selKomp:[], selRiwJenis:[], selCtLok:[] };
+let images = []; // pre-op imaging {dataUrl, type, name}
+let floroImages = []; // intraop fluoroscopy images
+let sampaioCalyx = [];
+
+const FORM_TABS = [0,1,7,2,3,4,5,6,9];
+const ALL_TABS  = [0,1,2,3,4,5,6,7,8,9,10,11];
+let curT = 0;
+
+// SAMPAIO DATA
+const SAMPAIO_INFO = {
+  'I':   { color:'var(--acc2)', risk:'Risiko Rendah',   desc:'Sistem kaliks simpel dengan drainase baik. Akses PCNL relatif mudah, risiko komplikasi minimal.' },
+  'IIA': { color:'var(--acc2)', risk:'Risiko Sedang',   desc:'Dua kelompok kaliks dengan obstruksi ringan. Memerlukan perencanaan akses yang cermat.' },
+  'IIB': { color:'var(--warn)', risk:'Risiko Tinggi',   desc:'Lebih dari dua kelompok kaliks dengan anatomi kompleks. Pertimbangkan multiple tract atau staged procedure.' },
+  'III': { color:'var(--danger)', risk:'Risiko Sangat Tinggi', desc:'Anatomi kaliks sangat kompleks, multiple kelompok dengan drainase buruk. Risiko komplikasi tinggi, perlu perencanaan matang.' },
+};
+
+// ═══ TABS ════════════════════════════════════════
+function goTab(n) {
+  document.querySelectorAll('.sec').forEach((s,i)=>s.classList.toggle('on',i===n));
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('on',i===n));
+  curT=n;
+  const isFrm=FORM_TABS.includes(n);
+  document.getElementById('bnav').style.display=isFrm?'flex':'none';
+  document.getElementById('btnPrev').style.display=n===0?'none':'';
+  document.getElementById('btnNext').style.display=n===9?'none':'';
+  if(n===10) renderList('');
+  if(n===11) renderStats();
+  const eb=document.getElementById('eb');
+  if(eb) eb.classList.toggle('on',!!editId);
+  progUpd();
+}
+
+const FRMI=[0,1,2,3,4,5,6,7,9]; // form tab indices
+function nextT(){const i=FRMI.indexOf(curT);if(i<FRMI.length-1)goTab(FRMI[i+1]);}
+function prevT(){const i=FRMI.indexOf(curT);if(i>0)goTab(FRMI[i-1]);}
+
+// ═══ CHIP HELPERS ════════════════════════════════
+function sc(gid,fid,val,el){
+  document.querySelectorAll('#'+gid+' .chip,#'+gid+' .asa-chip')
+    .forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');
+  const h=document.getElementById(fid); if(h)h.value=val;
+  progUpd();
+}
+function multiSel(gid,el,key){
+  const val=el.textContent.trim();
+  if(val==='Tidak Ada'){
+    ms[key]=['Tidak Ada'];
+    document.querySelectorAll('#'+gid+' .chip').forEach(c=>c.classList.remove('on'));
+    el.classList.add('on'); return;
+  }
+  const ti=ms[key].indexOf('Tidak Ada');
+  if(ti!==-1){ ms[key].splice(ti,1);
+    document.querySelectorAll('#'+gid+' .chip').forEach(c=>{
+      if(c.textContent.trim()==='Tidak Ada')c.classList.remove('on');
+    }); }
+  const i=ms[key].indexOf(val);
+  if(i===-1){ms[key].push(val);el.classList.add('on');}
+  else{ms[key].splice(i,1);el.classList.remove('on');}
+}
+
+// ═══ SAMPAIO ════════════════════════════════════
+function toggleCalyx(name){
+  const i=sampaioCalyx.indexOf(name);
+  if(i===-1)sampaioCalyx.push(name); else sampaioCalyx.splice(i,1);
+  document.getElementById('calyxSelLabel').textContent=
+    sampaioCalyx.length ? 'Kaliks terpilih: '+sampaioCalyx.join(', ')
+                        : 'Tap kaliks pada diagram untuk pilih';
+  // visual highlight pada SVG
+  const map={'Superior Pole':'cz-sup','Upper Group':'cz-upg','Middle Group':'cz-mid','Lower Group':'cz-low','Inferior Pole':'cz-inf'};
+  Object.values(map).forEach(id=>document.getElementById(id)?.classList.remove('sel'));
+  sampaioCalyx.forEach(c=>{ const id=map[c]; if(id)document.getElementById(id)?.classList.add('sel'); });
+  // Auto-suggest sampaio class
+  autoSampaio();
+}
+
+function autoSampaio(){
+  const n=sampaioCalyx.length;
+  let cls='';
+  if(n===0) return;
+  if(n===1&&!sampaioCalyx.includes('Inferior Pole')) cls='I';
+  else if(n<=2) cls='IIA';
+  else if(n===3) cls='IIB';
+  else cls='III';
+  if(cls) setSampaio(cls);
+}
+
+function setSampaio(cls){
+  document.querySelectorAll('.sc-card').forEach(c=>c.classList.remove('on'));
+  const el=document.querySelector('.sc-card.'+cls); if(el)el.classList.add('on',cls);
+  document.getElementById('sampaio').value=cls;
+  const info=SAMPAIO_INFO[cls];
+  const res=document.getElementById('sampaioResult');
+  const disp=document.getElementById('sampaioClassDisplay');
+  const desc=document.getElementById('sampaioDesc');
+  if(info&&res&&disp&&desc){
+    disp.textContent='Kelas '+cls;
+    disp.className='sr-class '+cls;
+    disp.style.color=info.color;
+    desc.innerHTML='<b style="color:'+info.color+'">'+info.risk+'</b> — '+info.desc;
+    res.classList.add('on');
+  }
+}
+
+// ═══ COMPUTED ════════════════════════════════════
+function calcBMI(){
+  const bb=parseFloat(document.getElementById('bb').value);
+  const tb=parseFloat(document.getElementById('tb').value)/100;
+  if(bb>0&&tb>0){
+    const v=(bb/(tb*tb)).toFixed(1);
+    const c=v<18.5?'Underweight':v<25?'Normal':v<30?'Overweight':'Obese';
+    document.getElementById('bmiVal').value=v+' — '+c;
+  } else document.getElementById('bmiVal').value='';
+}
+
+function calcBurden(){
+  const p=parseFloat(document.getElementById('batuP').value);
+  const l=parseFloat(document.getElementById('batuL').value);
+  const bd=document.getElementById('sburden');
+  const val=document.getElementById('sburdenVal');
+  if(p>0&&l>0){
+    const burden=Math.round(p*l);
+    val.innerHTML=p+' <span style="color:var(--muted);font-size:13px">×</span> '+l+' mm <span style="color:var(--muted);font-size:13px">=</span> <b>'+burden+'</b> mm²';
+    bd.classList.add('on');
+  } else if(p>0||l>0){
+    val.innerHTML='<span style="color:var(--muted);font-size:12px">Isi kedua dimensi…</span>';
+    bd.classList.add('on');
+  } else {
+    bd.classList.remove('on');
+  }
+}
+
+function calcDur(){
+  const s=document.getElementById('jMulai').value;
+  const e=document.getElementById('jSelesai').value;
+  if(!s||!e)return;
+  const[sh,sm]=s.split(':').map(Number);
+  const[eh,em]=e.split(':').map(Number);
+  const d=(eh*60+em)-(sh*60+sm);
+  if(d>0)document.getElementById('lamaOp').value=d;
+}
+
+function calcSubDur(){
+  const ids=['tAnestesi','tAkses','tLitho','tFragmen','tDrainase'];
+  const total=ids.reduce((sum,id)=>sum+(parseFloat(document.getElementById(id)?.value)||0),0);
+  const el=document.getElementById('tSubTotal');
+  if(el) el.value=total>0?total:'';
+}
+
+function calcRawat(){
+  const masuk=document.getElementById('tglMasuk')?.value;
+  const keluar=document.getElementById('tglKeluar')?.value;
+  if(!masuk||!keluar)return;
+  const diff=Math.round((new Date(keluar)-new Date(masuk))/(1000*60*60*24));
+  const el=document.getElementById('lamaRawat');
+  if(el&&diff>=0) el.value=diff;
+}
+
+function toggleRiwOp(show){
+  document.getElementById('riwOpDetail').style.display=show?'block':'none';
+}
+
+// ─── FLORO IMAGE HANDLERS ─────────────────────────
+function handleFloro(files){
+  if(floroImages.length+files.length>8){toast('Maksimal 8 foto C-Arm','wn');return;}
+  Array.from(files).forEach(f=>{
+    if(!f.type.startsWith('image/')){toast('Hanya file gambar','er');return;}
+    const r=new FileReader();
+    r.onload=e=>{
+      floroImages.push({dataUrl:e.target.result,type:'',name:f.name});
+      renderFloroGrid();
+    };
+    r.readAsDataURL(f);
+  });
+}
+function dragOver2(e){e.preventDefault();document.getElementById('floroZone')?.classList.add('drag');}
+function dragLeave2(e){document.getElementById('floroZone')?.classList.remove('drag');}
+function dropFile2(e){
+  e.preventDefault();dragLeave2(e);
+  handleFloro(e.dataTransfer.files);
+}
+function renderFloroGrid(){
+  const grid=document.getElementById('floroGrid');
+  if(!grid)return;
+  const types=['Akses Puncture','Posisi Batu','Kontras Pelvis','Lithotripsi','Stone Free Check','Post-op'];
+  grid.innerHTML=floroImages.map((img,i)=>`
+    <div class="img-thumb" onclick="viewFloroImg(${i})">
+      <img src="${img.dataUrl}" alt="">
+      <button class="img-del" onclick="event.stopPropagation();delFloroImg(${i})">✕</button>
+      <div class="img-lbl">${img.type||'C-Arm '+( i+1)}</div>
+    </div>
+    <div style="grid-column:unset">
+      <select class="img-type-btn on" onchange="setFloroType(${i},this.value)" style="width:100%">
+        <option value="">— Fase —</option>
+        ${types.map(t=>`<option ${img.type===t?'selected':''}>${t}</option>`).join('')}
+      </select>
+    </div>
+  `).join('');
+  const act=document.getElementById('floroActions');
+  if(act) act.style.display=floroImages.length?'block':'none';
+}
+function delFloroImg(i){floroImages.splice(i,1);renderFloroGrid();}
+function clearAllFloro(){floroImages=[];renderFloroGrid();}
+function setFloroType(i,v){floroImages[i].type=v;renderFloroGrid();}
+function viewFloroImg(i){
+  document.getElementById('viewerImg').src=floroImages[i].dataUrl;
+  document.getElementById('viewerLbl').textContent='C-Arm: '+(floroImages[i].type||floroImages[i].name);
+  document.getElementById('imgViewer').classList.add('on');
+}
+
+function progUpd(){
+  const req=['nama','umur','jk','diag','entry','sisi','litho','sb'];
+  const f=req.filter(id=>(document.getElementById(id)?.value||'').trim()).length;
+  document.getElementById('prog').style.width=Math.round(f/req.length*100)+'%';
+}
+
+// ═══ LAB ABNORMAL DETECTION ════════════════════
+function checkAbn(id,lo,hi,tagId,liId){
+  const v=parseFloat(document.getElementById(id).value);
+  const tag=document.getElementById(tagId);
+  const li=document.getElementById(liId);
+  if(isNaN(v)){if(tag)tag.classList.remove('show');if(li)li.classList.remove('abn');return;}
+  const isAbn=v<lo||v>hi;
+  if(tag)tag.classList.toggle('show',isAbn);
+  if(li)li.classList.toggle('abn',isAbn);
+}
+function checkAbnSelect(id,normalVal,tagId,liId){
+  const v=document.getElementById(id).value;
+  const isAbn=v&&v!==normalVal;
+  document.getElementById(tagId)?.classList.toggle('show',isAbn);
+  document.getElementById(liId)?.classList.toggle('abn',isAbn);
+}
+
+// ═══ IMAGE HANDLING ══════════════════════════════
+function handleFiles(files){
+  if(images.length+files.length>5){toast('Maksimal 5 foto','wn');return;}
+  Array.from(files).forEach(f=>{
+    if(!f.type.startsWith('image/')){toast('Hanya file gambar','er');return;}
+    const r=new FileReader();
+    r.onload=e=>{
+      images.push({dataUrl:e.target.result,type:'',name:f.name});
+      renderImgGrid();
+    };
+    r.readAsDataURL(f);
+  });
+}
+function dragOver(e){e.preventDefault();document.getElementById('uploadZone').classList.add('drag');}
+function dragLeave(e){document.getElementById('uploadZone').classList.remove('drag');}
+function dropFile(e){
+  e.preventDefault();dragLeave(e);
+  handleFiles(e.dataTransfer.files);
+}
+function renderImgGrid(){
+  const grid=document.getElementById('imgGrid');
+  const types=['BNO/KUB','CT Scan','USG','Post-op','Lain-lain'];
+  grid.innerHTML=images.map((img,i)=>`
+    <div class="img-thumb" onclick="viewImg(${i})">
+      <img src="${img.dataUrl}" alt="">
+      <button class="img-del" onclick="event.stopPropagation();delImg(${i})">✕</button>
+      <div class="img-lbl">${img.type||img.name.substring(0,16)}</div>
+    </div>
+    <div style="grid-column:unset">
+      <select class="img-type-btn on" onchange="setImgType(${i},this.value)" style="width:100%">
+        <option value="">— Jenis Foto —</option>
+        ${types.map(t=>`<option ${img.type===t?'selected':''}>${t}</option>`).join('')}
+      </select>
+    </div>
+  `).join('');
+  document.getElementById('imgActions').style.display=images.length?'block':'none';
+}
+function delImg(i){images.splice(i,1);renderImgGrid();}
+function clearAllImgs(){images=[];renderImgGrid();}
+function setImgType(i,v){images[i].type=v;renderImgGrid();}
+function viewImg(i){
+  document.getElementById('viewerImg').src=images[i].dataUrl;
+  document.getElementById('viewerLbl').textContent=images[i].type||images[i].name;
+  document.getElementById('imgViewer').classList.add('on');
+}
+function closeViewer(){document.getElementById('imgViewer').classList.remove('on');}
+
+// ═══ SAVE ════════════════════════════════════════
+function g(id){return document.getElementById(id)?.value||'';}
+
+async function saveRec(){
+  const nama=g('nama').trim();
+  if(!nama){toast('⚠ Nama wajib diisi','er');return;}
+  const p=parseFloat(g('batuP'))||0,l=parseFloat(g('batuL'))||0;
+  const burden=p&&l?p+'×'+l+'mm ('+Math.round(p*l)+' mm²)':'';
+  const rec={
+    id:editId||Date.now(),
+    ts:new Date().toLocaleString('id-ID'),
+    nama,umur:g('umur'),jk:g('jk'),tglOp:g('tglOp'),noRM:g('noRM'),
+    bb:g('bb'),tb:g('tb'),bmi:g('bmiVal'),
+    // Tim operasi
+    opNama:g('opNama'),anNama:g('anNama'),asisNama:g('asisNama'),rs:g('rs'),
+    // Riwayat operasi
+    riwOp:g('riwOp'),riwJenis:ms.selRiwJenis.join('; '),riwSisi:g('riwSisi'),riwTahun:g('riwTahun'),riwNote:g('riwNote'),
+    diag:g('diag'),diagNote:g('diagNote'),
+    batuP:g('batuP'),batuL:g('batuL'),stoneBurden:burden,btype:g('btype'),
+    ct:g('ct'),asa:g('asa'),komorbid:g('komorbid'),
+    ab:g('ab'),abDosis:g('abDosis'),kult:g('kult'),anestesi:g('anestesi'),
+    sampaio:g('sampaio'),calyxSampaio:sampaioCalyx.join('; '),calyxNote:g('calyxNote'),
+    calyx:ms.selCalyx.join('; '),sisi:g('sisi'),posisi:g('posisi'),
+    entry:g('entry'),tract:g('tract'),sheath:g('sheath'),pcnlType:g('pcnlType'),
+    litho:g('litho'),kontras:g('kontras'),
+    jMulai:g('jMulai'),jSelesai:g('jSelesai'),lamaOp:g('lamaOp'),
+    tAnestesi:g('tAnestesi'),tAkses:g('tAkses'),tLitho:g('tLitho'),tFragmen:g('tFragmen'),tDrainase:g('tDrainase'),
+    ekspMin:g('ekspMin'),ekspDtk:g('ekspDtk'),
+    nefro:g('nefro'),dj:g('dj'),
+    sb:g('sb'),sisaMm:g('sisaMm'),sisaLok:g('sisaLok'),
+    komp:ms.selKomp.join('; '),clav:g('clav'),kompNote:g('kompNote'),opNote:g('opNote'),
+    // Lama perawatan
+    tglMasuk:g('tglMasuk'),tglKeluar:g('tglKeluar'),lamaRawat:g('lamaRawat'),
+    rawat:g('rawat'),kondisi:g('kondisi'),followUp:g('followUp'),
+    // LAB
+    hb:g('hb'),ht:g('ht'),leuko:g('leuko'),plt:g('plt'),
+    ur:g('ur'),cr:g('cr'),egfr:g('egfr'),ua:g('ua'),
+    na:g('na'),k:g('k'),pt:g('pt'),aptt:g('aptt'),
+    uph:g('uph'),uprot:g('uprot'),uleuko:g('uleuko'),uery:g('uery'),
+    labNote:g('labNote'),labNotePost:g('labNotePost'),
+    // Lab Post-op
+    pohb:g('pohb'),poht:g('poht'),poleuko:g('poleuko'),poplt:g('poplt'),
+    pour:g('pour'),pocr:g('pocr'),poegfr:g('poegfr'),pona:g('pona'),
+    pouery:g('pouery'),pouleuko:g('pouleuko'),pouprot:g('pouprot'),pouph:g('pouph'),
+    hu:g('hu'),huMin:g('huMin'),huMax:g('huMax'),huLok:g('huLok'),huPred:g('huPred'),
+    // CT Scan & Imaging
+    ctMod:g('ctMod'),ctSlice:g('ctSlice'),ctTgl:g('ctTgl'),
+    hidro:g('hidro'),korteks:g('korteks'),korteksKel:g('korteksKel'),
+    ctBatuP:g('ctBatuP'),ctBatuL:g('ctBatuL'),ctBatuT:g('ctBatuT'),
+    ctJml:g('ctJml'),ctLok:ms.selCtLok?ms.selCtLok.join('; '):'',
+    ssd:g('ssd'),
+    imgType:g('imgType'),imgNote:g('imgNote'),
+    imgCount:images.length,floroCount:floroImages.length,
+    // VITAL
+    preS:g('preS'),preD:g('preD'),preN:g('preN'),preR:g('preR'),preO:g('preO'),preT:g('preT'),
+    intS:g('intS'),intD:g('intD'),intN:g('intN'),intR:g('intR'),intO:g('intO'),ebl:g('ebl'),
+    posS:g('posS'),posD:g('posD'),posN:g('posN'),posR:g('posR'),posO:g('posO'),posT:g('posT'),
+  };
+  // Store images separately (large data)
+  if(images.length) localStorage.setItem('pcnl_imgs_'+rec.id, JSON.stringify(images));
+  if(floroImages.length) localStorage.setItem('pcnl_floro_'+rec.id, JSON.stringify(floroImages));
+
+  if(editId){const i=DB.findIndex(d=>d.id===editId);if(i>-1)DB[i]=rec;}
+  else DB.push(rec);
+  localStorage.setItem('pcnl_v4',JSON.stringify(DB));
+
+  if(SURL){
+    const ok=await sendToSheets(rec);
+    if(ok){
+      toast('✅ Tersimpan & terkirim ke Google Sheets','ok');
+    } else {
+      sendQueue.push(rec);
+      saveQueue();
+      toast('✅ Lokal tersimpan — antri kirim saat online','wn');
+    }
+  } else {
+    toast(editId?'✅ Data diperbarui':'✅ Data tersimpan!','ok');
+  }
+  refreshStats();
+  editId=null; images=[]; floroImages=[]; reset(); goTab(10);
+}
+
+// ═══ RESET ═══════════════════════════════════════
+function reset(){
+  document.querySelectorAll('input:not(.vin),textarea').forEach(el=>{
+    if(!['button','submit'].includes(el.type))el.value='';
+  });
+  document.querySelectorAll('.vin').forEach(el=>el.value='');
+  document.querySelectorAll('.chip.on,.asa-chip.on').forEach(el=>el.classList.remove('on'));
+  ms={selCalyx:[],selKomp:[],selRiwJenis:[],selCtLok:[]};
+  sampaioCalyx=[];
+  images=[];floroImages=[];
+  renderImgGrid();renderFloroGrid();
+  document.getElementById('sampaioResult')?.classList.remove('on');
+  document.getElementById('sburden')?.classList.remove('on');
+  document.getElementById('ctBurdenResult').style.display='none';
+  document.getElementById('ssdTag').style.display='none';
+  document.getElementById('huMeterWrap').style.display='none';
+  const huTag=document.getElementById('abn-hu');if(huTag)huTag.style.display='none';
+  document.getElementById('calyxSelLabel').textContent='Tap kaliks pada diagram untuk pilih';
+  document.querySelectorAll('.calyx-zone').forEach(c=>c.classList.remove('sel'));
+  document.querySelectorAll('.sc-card').forEach(c=>c.classList.remove('on'));
+  document.querySelectorAll('.lab-item').forEach(c=>c.classList.remove('abn'));
+  document.querySelectorAll('.abn-tag').forEach(c=>c.classList.remove('show'));
+  document.getElementById('riwOpDetail').style.display='none';
+  document.getElementById('abCustomWrap').style.display='none';
+  document.getElementById('pcnlTypeInfo').style.display='none';
+  editId=null; progUpd();
+}
+function newRec(){reset();goTab(0);toast('Form direset — data baru','ok');}
+function cancelEdit(){reset();goTab(0);}
+
+// ═══ EDIT ════════════════════════════════════════
+function editRec(id){
+  closeM('detM');
+  const r=DB.find(d=>d.id===id);if(!r)return;
+  editId=id;reset();
+  // Text
+  ['nama','umur','jk','tglOp','noRM','bb','tb','diagNote','batuP','batuL','ct','komorbid',
+   'opNama','anNama','asisNama','rs',
+   'riwTahun','riwNote','riwSisi',
+   'abDosis','kult','entry','tract','sheath','sisi','posisi','litho','kontras',
+   'jMulai','jSelesai','lamaOp','tAnestesi','tAkses','tLitho','tFragmen','tDrainase',
+   'ekspMin','ekspDtk','nefro','dj',
+   'sisaMm','sisaLok','kompNote','opNote','calyxNote','imgNote','imgType',
+   'ctSlice','ctTgl','korteks','ctBatuP','ctBatuL','ctBatuT','ssd',
+   'tglMasuk','tglKeluar','lamaRawat','followUp',
+   'hb','ht','leuko','plt','ur','cr','egfr','ua','na','k','pt','aptt',
+   'uph','uprot','uleuko','uery','labNote','labNotePost',
+   'pohb','poht','poleuko','poplt','pour','pocr','poegfr','pona',
+   'pouery','pouleuko','pouprot','pouph',
+   'hu','huMin','huMax','huLok',
+   'preS','preD','preN','preR','preO','preT',
+   'intS','intD','intN','intR','intO','ebl',
+   'posS','posD','posN','posR','posO','posT'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.value=r[id]||'';
+  });
+  // Chips
+  const cm={jk:'jkG',diag:'diagG',btype:'btypeG',asa:'asaG',ab:'abG',
+    anestesi:'anG',kult:'kultG',sisi:'sisiG',posisi:'posG',litho:'lithoG',
+    nefro:'nefroG',dj:'djG',sb:'sbG',clav:'clavG',entry:'entryG',
+    tract:'tractG',sheath:'sheathG',imgType:'imgTypeG',pcnlType:'pcnlTypeG',
+    riwOp:'riwOpG',riwSisi:'riwSisiG',rawat:'rawatG',kondisi:'kondisiG',huPred:'huPredG',
+    ctMod:'ctModG',hidro:'hidroG',korteksKel:'korteksKelG',ctJml:'ctJmlG',
+    pouprot:'pouprotG'};
+  Object.entries(cm).forEach(([rk,gid])=>{
+    const val=r[rk]||'';if(!val)return;
+    document.querySelectorAll('#'+gid+' .chip,#'+gid+' .asa-chip,#'+gid+' select option').forEach(c=>{
+      if(c.textContent?.trim()===val||c.value===val)c.classList?.add('on');
+    });
+    const h=document.getElementById(rk);if(h)h.value=val;
+    // restore select
+    const sel=document.getElementById(rk);
+    if(sel&&sel.tagName==='SELECT')sel.value=val;
+  });
+  // Multi
+  if(r.calyx){ms.selCalyx=r.calyx.split('; ').filter(Boolean);
+    ms.selCalyx.forEach(v=>document.querySelectorAll('#calyxPunctG .chip').forEach(c=>{if(c.textContent.trim()===v)c.classList.add('on');}));}
+  if(r.komp){ms.selKomp=r.komp.split('; ').filter(Boolean);
+    ms.selKomp.forEach(v=>document.querySelectorAll('#kompG .chip').forEach(c=>{if(c.textContent.trim()===v)c.classList.add('on');}));}
+  if(r.riwJenis){ms.selRiwJenis=r.riwJenis.split('; ').filter(Boolean);
+    ms.selRiwJenis.forEach(v=>document.querySelectorAll('#riwJenisG .chip').forEach(c=>{if(c.textContent.trim()===v)c.classList.add('on');}));}
+  if(r.ctLok){ms.selCtLok=r.ctLok.split('; ').filter(Boolean);
+    ms.selCtLok.forEach(v=>document.querySelectorAll('#ctLokG .chip').forEach(c=>{if(c.textContent.trim()===v)c.classList.add('on');}));}
+  if(r.riwOp==='Ada') toggleRiwOp(true);
+  // Sampaio
+  if(r.sampaio)setSampaio(r.sampaio);
+  if(r.calyxSampaio){
+    sampaioCalyx=r.calyxSampaio.split('; ').filter(Boolean);
+    sampaioCalyx.forEach(v=>toggleCalyx(v));
+  }
+  // Images
+  const savedImgs=localStorage.getItem('pcnl_imgs_'+id);
+  if(savedImgs){images=JSON.parse(savedImgs);renderImgGrid();}
+  const savedFloro=localStorage.getItem('pcnl_floro_'+id);
+  if(savedFloro){floroImages=JSON.parse(savedFloro);renderFloroGrid();}
+  // Recalc
+  calcBMI();calcBurden();calcDur();calcSubDur();calcRawat();calcHU();calcCTBurden();checkSSD();calcRawat();
+  goTab(0);toast('✏️ Mode edit aktif');
+}
+
+// ═══ DELETE ══════════════════════════════════════
+function delRec(id){
+  delId=id;
+  const r=DB.find(d=>d.id===id);
+  document.getElementById('delS').textContent='Hapus data '+(r?.nama||'')+'? Tidak dapat dibatalkan.';
+  document.getElementById('delM').classList.add('on');
+}
+function delConfirm(){
+  localStorage.removeItem('pcnl_imgs_'+delId);
+  localStorage.removeItem('pcnl_floro_'+delId);
+  DB=DB.filter(d=>d.id!==delId);
+  localStorage.setItem('pcnl_v4',JSON.stringify(DB));
+  closeM('delM');toast('🗑 Data dihapus');renderList('');
+}
+function closeM(id){document.getElementById(id).classList.remove('on');}
+
+// ═══ DETAIL ══════════════════════════════════════
+function showDetail(id){
+  const r=DB.find(d=>d.id===id);if(!r)return;
+  document.getElementById('detT').textContent=r.nama;
+  document.getElementById('detS').textContent=[r.umur?r.umur+' thn':'',r.jk,r.tglOp].filter(Boolean).join(' · ');
+  document.getElementById('detEdit').onclick=()=>editRec(id);
+  const rows=[
+    ['RS / Institusi', r.rs],
+    ['Operator', r.opNama],['Dokter Anestesi', r.anNama],['Asisten', r.asisNama],
+    ['Riwayat Op', r.riwOp==='Ada'?[r.riwJenis,r.riwSisi,r.riwTahun?r.riwTahun+'':'' ].filter(Boolean).join(' · '):r.riwOp],
+    ['Diagnosa',r.diag+(r.diagNote?' — '+r.diagNote:'')],
+    ['Ukuran Batu',r.stoneBurden],['Tipe Batu',r.btype],
+    ['Sampaio',r.sampaio?'Kelas '+r.sampaio:''],['Kaliks',r.calyxSampaio],
+    ['CT Scan',r.ct],['ASA',r.asa],['Komorbid',r.komorbid],
+    ['AB Profilaksis',r.ab+(r.abDosis?' — '+r.abDosis:'')],['Anestesi',r.anestesi],
+    ['Tipe Prosedur',r.pcnlType],
+    ['Akses',r.entry],['Tract',r.tract],['Sheath',r.sheath],
+    ['Kaliks Puncture',r.calyx],['Sisi',r.sisi],['Posisi',r.posisi],
+    ['Lithotripsy',r.litho],['Kontras',r.kontras?r.kontras+' mL':''],
+    ['Jam Op',r.jMulai&&r.jSelesai?r.jMulai+' – '+r.jSelesai:''],
+    ['Lama Op',r.lamaOp?r.lamaOp+' mnt':''],
+    ['Waktu Akses',r.tAkses?r.tAkses+' mnt':''],
+    ['Waktu Lithotripsy',r.tLitho?r.tLitho+' mnt':''],
+    ['Eksposure C-Arm',r.ekspMin||r.ekspDtk?( r.ekspMin||0)+'mnt '+(r.ekspDtk||0)+'dtk':''],
+    ['Foto C-Arm',r.floroCount>0?r.floroCount+' foto intraop':''],
+    ['Nefrostomi',r.nefro],['DJ Stent',r.dj],
+    ['Status Batu',r.sb],['Batu Sisa',r.sisaMm?r.sisaMm+' mm — '+r.sisaLok:''],
+    ['Komplikasi',r.komp],['Clavien-Dindo',r.clav],
+    ['Lama Rawat',r.lamaRawat?r.lamaRawat+' hari':''],
+    ['Rawat Post-op',r.rawat],['Kondisi Pulang',r.kondisi],
+    ['Follow-up',r.followUp],
+    ['CT Scan', r.ctMod+(r.ctTgl?' — '+r.ctTgl:'')],
+    ['Slice Thickness', r.ctSlice?r.ctSlice+' mm':''],
+    ['Hidronefrosis', r.hidro],['Korteks', r.korteks?(r.korteks+' mm'+(r.korteksKel?' — '+r.korteksKel:'')):''],
+    ['Dimensi Batu CT', r.ctBatuP&&r.ctBatuL?(r.ctBatuP+'×'+r.ctBatuL+(r.ctBatuT?'×'+r.ctBatuT:'')+' mm'):''],
+    ['Jml Batu CT', r.ctJml],['Lokasi Batu CT', r.ctLok],
+    ['Skin-to-Stone (SSD)', r.ssd?r.ssd+' mm':''],
+    ['Hounsfield Unit', r.hu?(r.hu+' HU'+(r.huMin&&r.huMax?' ('+r.huMin+'–'+r.huMax+')':'')):'' ],
+    ['Prediksi Lithotripsy', r.huPred],
+    ['Lokasi ROI', r.huLok],
+    ['Hb Pre-op',r.hb?r.hb+' g/dL'+(r.ht?' / Ht '+r.ht+'%':''):''],
+    ['Hb Post-op',r.pohb?r.pohb+' g/dL'+(r.poht?' / Ht '+r.poht+'%':'')+(r.hb?' → Δ'+(r.pohb-r.hb).toFixed(1):''):''],
+    ['Leukosit Pre / Post',[r.leuko,r.poleuko].filter(Boolean).join(' → ')+(r.leuko&&r.poleuko?' ×10³':'')],
+    ['Kreatinin Pre / Post',r.cr&&r.pocr?r.cr+' → '+r.pocr+' mg/dL':(r.cr?r.cr+' mg/dL':'')],
+    ['eGFR Pre / Post',r.egfr&&r.poegfr?r.egfr+' → '+r.poegfr+' mL/min':(r.egfr?r.egfr+' mL/min':'')],
+    ['Asam Urat',r.ua?r.ua+' mg/dL':''],
+    ['PT / APTT',r.pt&&r.aptt?r.pt+' / '+r.aptt+' dtk':''],
+    ['Imaging Pre-op',r.imgType+(r.imgCount>0?' ('+r.imgCount+' foto)':'')],
+    ['TD Pre-op',r.preS&&r.preD?r.preS+'/'+r.preD+' mmHg · N '+r.preN:''],
+    ['TD Post-op',r.posS&&r.posD?r.posS+'/'+r.posD+' mmHg · N '+r.posN:''],
+    ['EBL',r.ebl?r.ebl+' mL':''],
+  ];
+  document.getElementById('detB').innerHTML=rows.filter(([,v])=>v).map(([k,v])=>`
+    <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--bdr);gap:10px">
+      <span style="font-size:11px;color:var(--muted);flex-shrink:0">${k}</span>
+      <span style="font-size:12px;text-align:right">${v}</span>
+    </div>`).join('');
+  document.getElementById('detM').classList.add('on');
+}
+
+// ═══ LIST ════════════════════════════════════════
+function setF(m,el){
+  filterMode=m;
+  document.querySelectorAll('.fc').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');renderList('');
+}
+function renderList(q=''){
+  q=q.toLowerCase();
+  let data=DB.filter(r=>{
+    const mq=!q||r.nama?.toLowerCase().includes(q)||r.diag?.toLowerCase().includes(q)||r.noRM?.toLowerCase().includes(q);
+    const mf=filterMode==='all'||(r.sb||'').includes(filterMode);
+    return mq&&mf;
+  }).reverse();
+  document.getElementById('totN').textContent=DB.length;
+  const el=document.getElementById('listEl');
+  if(!data.length){el.innerHTML='<div class="empty"><div class="ei">📋</div><p>Belum ada data.</p></div>';return;}
+  el.innerHTML=data.map(r=>`
+    <div class="dcard">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div style="cursor:pointer;flex:1" onclick="showDetail(${r.id})">
+          <div class="dname">${r.nama}</div>
+          <div class="dmeta">${[r.umur?r.umur+' th':'',r.jk,r.tglOp].filter(Boolean).join(' · ')}</div>
+          <div class="dmeta">${r.diag||'—'} ${r.rs?'· '+r.rs:''}</div>
+          <div class="dmeta" style="margin-top:2px;font-size:10px">${[r.opNama,r.anNama].filter(Boolean).join(' / ')}</div>
+        </div>
+        <div class="dc-acts">
+          <div class="dc-btn e" onclick="editRec(${r.id})">✏️</div>
+          <div class="dc-btn d" onclick="delRec(${r.id})">🗑</div>
+        </div>
+      </div>
+      <div class="dbadges">
+        ${r.pcnlType?`<span class="badge ${r.pcnlType.includes('Mini')||r.pcnlType.includes('Micro')?'g':'b'}">${r.pcnlType}</span>`:''}
+        ${r.sb?`<span class="badge ${r.sb.includes('Stone Free')?'g':r.sb.includes('Sisa')?'w':'b'}">${r.sb}</span>`:''}
+        ${r.sampaio?`<span class="badge b">Sampaio ${r.sampaio}</span>`:''}
+        ${r.litho?`<span class="badge b">${r.litho}</span>`:''}
+        ${r.asa?`<span class="badge b">ASA ${r.asa}</span>`:''}
+        ${r.lamaOp?`<span class="badge b">${r.lamaOp}mnt</span>`:''}
+        ${r.stoneBurden?`<span class="badge b">${r.stoneBurden.split('(')[0].trim()}</span>`:''}
+        ${r.hb?`<span class="badge b">Hb ${r.hb}</span>`:''}
+        ${r.cr?`<span class="badge b">Cr ${r.cr}</span>`:''}
+        ${r.imgCount>0?`<span class="badge b">📷 ${r.imgCount}</span>`:''}
+        ${r.hu?`<span class="badge ${parseFloat(r.hu)<500?'g':parseFloat(r.hu)<1000?'w':'r'}">${r.hu} HU</span>`:''}
+        ${r.lamaRawat?`<span class="badge b">🏥 ${r.lamaRawat}hr</span>`:''}
+        ${r.floroCount>0?`<span class="badge b">🩻 ${r.floroCount}</span>`:''}
+        ${r.riwOp==='Ada'?`<span class="badge w">Riwayat Op</span>`:''}
+        ${r.komp&&!r.komp.includes('Tidak Ada')?`<span class="badge r">${r.komp.split(';')[0]}</span>`:''}
+      </div>
+    </div>`).join('');
+}
+
+// ═══ STATS ═══════════════════════════════════════
+function renderStats(){
+  const el=document.getElementById('statsEl');
+  if(!DB.length){el.innerHTML='<div class="empty"><div class="ei">📊</div><p>Belum ada data.</p></div>';return;}
+  const n=DB.length;
+  const sf=DB.filter(r=>r.sb?.includes('Stone Free')).length;
+  const avgOp=DB.filter(r=>r.lamaOp).length?
+    Math.round(DB.reduce((a,r)=>a+(parseFloat(r.lamaOp)||0),0)/DB.filter(r=>r.lamaOp).length):0;
+  const komp=DB.filter(r=>r.komp&&!r.komp.includes('Tidak Ada')&&r.komp.trim()).length;
+  const avgBurden=DB.filter(r=>r.batuP&&r.batuL).length?
+    Math.round(DB.reduce((a,r)=>a+((parseFloat(r.batuP)||0)*(parseFloat(r.batuL)||0)),0)/DB.filter(r=>r.batuP&&r.batuL).length):0;
+  const avgHb=DB.filter(r=>r.hb).length?
+    (DB.reduce((a,r)=>a+(parseFloat(r.hb)||0),0)/DB.filter(r=>r.hb).length).toFixed(1):0;
+
+  const dist=key=>{const m={};DB.forEach(r=>{if(r[key]){m[r[key]]=(m[r[key]]||0)+1;}});return m;};
+  const bar=map=>Object.entries(map).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`
+    <div class="bar-row">
+      <div class="bar-top"><span>${k}</span><span style="color:var(--acc2);font-family:var(--mono)">${v} (${Math.round(v/n*100)}%)</span></div>
+      <div class="bar-track"><div class="bar-fill" style="width:${Math.round(v/n*100)}%"></div></div>
+    </div>`).join('');
+
+  const avgRawat=DB.filter(r=>r.lamaRawat).length?
+    (DB.reduce((a,r)=>a+(parseFloat(r.lamaRawat)||0),0)/DB.filter(r=>r.lamaRawat).length).toFixed(1):0;
+  const riwOp=DB.filter(r=>r.riwOp==='Ada').length;
+
+  el.innerHTML=`
+    <div class="sgrid">
+      <div class="sbox"><div class="sval">${n}</div><div class="slbl">Total Pasien</div></div>
+      <div class="sbox"><div class="sval" style="color:var(--acc2)">${Math.round(sf/n*100)}%</div><div class="slbl">Stone Free Rate</div></div>
+      <div class="sbox"><div class="sval">${avgOp}</div><div class="slbl">Rata-rata Op (mnt)</div></div>
+      <div class="sbox"><div class="sval" style="color:${komp>0?'var(--warn)':'var(--acc2)'}">${komp}</div><div class="slbl">Dengan Komplikasi</div></div>
+      <div class="sbox"><div class="sval">${avgBurden}</div><div class="slbl">Avg Stone Burden (mm²)</div></div>
+      <div class="sbox"><div class="sval">${avgHb}</div><div class="slbl">Avg Hb (g/dL)</div></div>
+      <div class="sbox"><div class="sval">${avgRawat}</div><div class="slbl">Avg Lama Rawat (hr)</div></div>
+      <div class="sbox"><div class="sval" style="color:var(--warn)">${riwOp}</div><div class="slbl">Riwayat Op Sebelumnya</div></div>
+    </div>
+    <div class="card"><div class="ct">Tipe Prosedur</div>${bar(dist('pcnlType'))||'<div style="color:var(--muted);font-size:12px">Belum ada data</div>'}</div>
+    <div class="card"><div class="ct">Sampaio Classification</div>${bar(dist('sampaio'))||'<div style="color:var(--muted);font-size:12px">Belum ada data</div>'}</div>
+    <div class="card"><div class="ct">Lithotripsy</div>${bar(dist('litho'))}</div>
+    <div class="card"><div class="ct">Status Batu</div>${bar(dist('sb'))}</div>
+    <div class="card"><div class="ct">Akses Puncture</div>${bar(dist('entry'))}</div>
+    <div class="card"><div class="ct">Kondisi Pulang</div>${bar(dist('kondisi'))||'<div style="color:var(--muted);font-size:12px">Belum ada data</div>'}</div>
+    <div style="margin-top:4px">
+      <button class="btn btn-p" style="width:100%" onclick="exportCSV()">📊 Export Semua ke CSV</button>
+    </div>`;
+}
+
+// ═══ EXPORT CSV ══════════════════════════════════
+function exportCSV(){
+  if(!DB.length){toast('Tidak ada data','er');return;}
+  const headers=Object.keys(DB[0]).filter(k=>k!=='id');
+  const csv='\uFEFF'+[headers.join(','),
+    ...DB.map(r=>headers.map(k=>`"${(r[k]||'').toString().replace(/"/g,'""')}"`).join(','))
+  ].join('\n');
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));
+  a.download='PCNL_Data_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click();
+  toast('📊 CSV diekspor — '+DB.length+' pasien','ok');
+}
+
+// ═══ GOOGLE SHEETS ═══════════════════════════════
+function checkUrl(){
+  const url=document.getElementById('sheetUrl').value.trim();
+  document.getElementById('connStatus').textContent=url?'URL diisi — klik Test untuk verifikasi':'';
+}
+
+async function testConn(){
+  const url=document.getElementById('sheetUrl').value.trim();
+  if(!url){toast('Isi URL dulu','er');return;}
+  const el=document.getElementById('connStatus');
+  el.textContent='⏳ Testing…';el.style.color='var(--muted)';
+  try{
+    const r=await fetch(url+'?action=ping');
+    const j=await r.json();
+    if(j.status==='ok'){
+      el.textContent='✅ Koneksi berhasil! '+j.message;
+      el.style.color='var(--acc2)';
+    } else { throw new Error(j.message); }
+  }catch(e){
+    // no-cors fallback — Apps Script selalu return opaque jika no-cors
+    try{
+      await fetch(url,{mode:'no-cors'});
+      el.textContent='✅ Terhubung (no-cors mode) — klik Simpan';
+      el.style.color='var(--acc2)';
+    }catch{
+      el.textContent='❌ Tidak dapat terkoneksi — cek URL';
+      el.style.color='var(--danger)';
+    }
+  }
+}
+
+function saveUrl(){
+  const url=document.getElementById('sheetUrl').value.trim();
+  if(!url){toast('Isi URL dulu','er');return;}
+  SURL=url;
+  localStorage.setItem('pcnl_url',url);
+  toast('✅ URL disimpan','ok');
+  document.getElementById('connStatus').textContent='✅ URL tersimpan — siap kirim data';
+  document.getElementById('connStatus').style.color='var(--acc2)';
+  refreshStats();
+}
+
+// ═══ OFFLINE QUEUE ════════════════════════════════
+let sendQueue = JSON.parse(localStorage.getItem('pcnl_queue')||'[]');
+
+function saveQueue(){localStorage.setItem('pcnl_queue',JSON.stringify(sendQueue));}
+
+async function sendToSheets(rec){
+  if(!SURL) return;
+  const payload={...rec, tindakan:'pcnl', images:undefined, floroImages:undefined};
+  try{
+    await fetch(SURL,{method:'POST',mode:'no-cors',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(payload)});
+    return true;
+  }catch{ return false; }
+}
+
+async function flushQueue(){
+  if(!SURL){toast('URL belum disimpan','er');return;}
+  if(!sendQueue.length){toast('Tidak ada antrian','ok');return;}
+  toast('📤 Mengirim '+sendQueue.length+' data…','ok');
+  const failed=[];
+  for(const rec of sendQueue){
+    const ok=await sendToSheets(rec);
+    if(!ok) failed.push(rec);
+  }
+  sendQueue=failed;
+  saveQueue();
+  refreshStats();
+  toast(failed.length?'⚠ '+failed.length+' gagal, sisanya terkirim':'✅ Semua antrian terkirim','ok');
+}
+
+// auto-flush saat online
+window.addEventListener('online',()=>{ if(sendQueue.length) flushQueue(); });
+
+// ═══ STATS ════════════════════════════════════════
+function refreshStats(){
+  const DB=JSON.parse(localStorage.getItem('pcnl_v4')||'[]');
+  document.getElementById('statTotal').textContent=DB.length;
+  document.getElementById('statQueue').textContent=sendQueue.length;
+}
+
+// ═══ EXPORT JSON ══════════════════════════════════
+function exportJSON(){
+  const DB=JSON.parse(localStorage.getItem('pcnl_v4')||'[]');
+  if(!DB.length){toast('Tidak ada data','er');return;}
+  const blob=new Blob([JSON.stringify(DB,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='pcnl_backup_'+new Date().toISOString().slice(0,10)+'.json';
+  a.click();
+  toast('✅ Backup JSON didownload','ok');
+}
+
+// ═══ EXPORT CSV ═══════════════════════════════════
+function exportCSV(){
+  const DB=JSON.parse(localStorage.getItem('pcnl_v4')||'[]');
+  if(!DB.length){toast('Tidak ada data','er');return;}
+  const keys=Object.keys(DB[0]).filter(k=>k!=='images'&&k!=='floroImages');
+  const rows=[keys.join(',')];
+  DB.forEach(r=>{
+    rows.push(keys.map(k=>{
+      const v=String(r[k]??'').replace(/"/g,'""');
+      return v.includes(',')||v.includes('"')||v.includes('\n')?`"${v}"`:v;
+    }).join(','));
+  });
+  const blob=new Blob(['\uFEFF'+rows.join('\n')],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='pcnl_data_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click();
+  toast('✅ CSV didownload — buka di Excel','ok');
+}
+
+// ═══ IMPORT JSON ══════════════════════════════════
+function importJSON(input){
+  const file=input.files[0];
+  if(!file) return;
+  const st=document.getElementById('importStatus');
+  st.textContent='⏳ Membaca file…';st.style.color='var(--muted)';
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const imported=JSON.parse(e.target.result);
+      if(!Array.isArray(imported)) throw new Error('Format tidak valid');
+      const DB=JSON.parse(localStorage.getItem('pcnl_v4')||'[]');
+      const existing=new Set(DB.map(r=>r.id));
+      const newRecs=imported.filter(r=>!existing.has(r.id));
+      const merged=[...DB,...newRecs];
+      localStorage.setItem('pcnl_v4',JSON.stringify(merged));
+      st.textContent=`✅ ${newRecs.length} data baru ditambahkan (${imported.length-newRecs.length} duplikat dilewati)`;
+      st.style.color='var(--acc2)';
+      renderList('');
+      refreshStats();
+    }catch(err){
+      st.textContent='❌ Gagal: '+err.message;
+      st.style.color='var(--danger)';
+    }
+    input.value='';
+  };
+  reader.readAsText(file);
+}
+
+// ═══ CLEAR ALL ════════════════════════════════════
+function confirmClearAll(){
+  if(!confirm('⚠️ HAPUS SEMUA DATA LOKAL?\n\nPastikan sudah backup dulu!\nData di Google Sheets tidak terpengaruh.')) return;
+  localStorage.removeItem('pcnl_v4');
+  localStorage.removeItem('pcnl_queue');
+  sendQueue=[];
+  renderList('');
+  refreshStats();
+  toast('🗑 Semua data lokal dihapus','er');
+}
+
+// ═══ TOAST ═══════════════════════════════════════
+function toast(msg,type=''){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className='toast show '+type;
+  clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2600);
+}
+
+// ═══ CT STONE MEASUREMENT ════════════════════════
+function calcCTBurden(){
+  const p=parseFloat(document.getElementById('ctBatuP').value)||0;
+  const l=parseFloat(document.getElementById('ctBatuL').value)||0;
+  const t=parseFloat(document.getElementById('ctBatuT').value)||0;
+  const res=document.getElementById('ctBurdenResult');
+  if(!p&&!l&&!t){res.style.display='none';return;}
+  res.style.display='block';
+  const vol=p&&l&&t?(Math.PI/6*p*l*t).toFixed(0):'—';
+  const b2d=p&&l?(p*l).toFixed(0):'—';
+  const diam=Math.max(p,l,t)||'—';
+  document.getElementById('ctVol').textContent=vol!=='—'?vol+' mm³':'—';
+  document.getElementById('ctBurden2d').textContent=b2d!=='—'?b2d+' mm²':'—';
+  document.getElementById('ctDiam').textContent=diam!=='—'?diam+' mm':'—';
+}
+
+function checkSSD(){
+  const v=parseFloat(document.getElementById('ssd').value);
+  const tag=document.getElementById('ssdTag');
+  if(isNaN(v)){tag.style.display='none';return;}
+  tag.style.display='inline-block';
+  if(v<=80){tag.textContent='Ideal';tag.style.background='rgba(0,217,139,.15)';tag.style.color='var(--acc2)';}
+  else if(v<=100){tag.textContent='Akseptabel';tag.style.background='rgba(245,200,66,.15)';tag.style.color='var(--acc3)';}
+  else if(v<=120){tag.textContent='Perhatian';tag.style.background='rgba(255,170,48,.15)';tag.style.color='var(--warn)';}
+  else{tag.textContent='Risiko Tinggi';tag.style.background='rgba(255,79,106,.15)';tag.style.color='var(--danger)';}
+}
+
+// ═══ LAB PANEL TOGGLE ════════════════════════════
+function showLabPanel(panel){
+  document.getElementById('labPanelPre').style.display = panel==='pre'?'block':'none';
+  document.getElementById('labPanelPost').style.display = panel==='post'?'block':'none';
+  document.getElementById('labTogPre').classList.toggle('on', panel==='pre');
+  document.getElementById('labTogPost').classList.toggle('on', panel==='post');
+  if(panel==='post') calcLabDelta();
+}
+
+function calcLabDelta(){
+  const pairs=[
+    {id:'hb',pid:'pohb',lbl:'Hemoglobin',unit:'g/dL',dId:'pohb-delta'},
+    {id:'ht',pid:'poht',lbl:'Hematokrit',unit:'%',dId:'poht-delta'},
+    {id:'leuko',pid:'poleuko',lbl:'Leukosit',unit:'×10³',dId:'poleuko-delta'},
+    {id:'cr',pid:'pocr',lbl:'Kreatinin',unit:'mg/dL',dId:'pocr-delta'},
+    {id:'egfr',pid:'poegfr',lbl:'eGFR',unit:'mL/min',dId:'poegfr-delta'},
+  ];
+  const body=document.getElementById('labDeltaBody');
+  const card=document.getElementById('labDeltaCard');
+  let hasAny=false;
+  let html='';
+  pairs.forEach(p=>{
+    const pre=parseFloat(document.getElementById(p.id)?.value);
+    const post=parseFloat(document.getElementById(p.pid)?.value);
+    // inline delta under post field
+    const dEl=document.getElementById(p.dId);
+    if(dEl){
+      if(!isNaN(pre)&&!isNaN(post)){
+        const d=(post-pre).toFixed(1);
+        const pct=pre?((post-pre)/pre*100).toFixed(1):'—';
+        const up=post>pre;
+        dEl.textContent=(up?'▲':d<0?'▼':'=')+(d>0?'+':'')+d+' '+p.unit+' ('+pct+'%)';
+        dEl.style.color=up?'var(--danger)':'var(--acc2)';
+      } else { dEl.textContent=''; }
+    }
+    if(!isNaN(pre)&&!isNaN(post)){
+      hasAny=true;
+      const d=(post-pre).toFixed(1);
+      const color=post<pre?'var(--acc2)':'var(--danger)';
+      html+=`<div style="background:var(--surf);border:1px solid var(--bdr);border-radius:9px;padding:10px 12px">
+        <div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;margin-bottom:5px">${p.lbl}</div>
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span style="font-family:var(--mono);font-size:12px">${pre} → ${post}</span>
+          <span style="font-family:var(--mono);font-size:13px;font-weight:700;color:${color}">${d>0?'+':''}${d}</span>
+        </div>
+        <div style="font-size:10px;color:var(--muted);margin-top:2px">${p.unit}</div>
+      </div>`;
+    }
+  });
+  body.innerHTML=html;
+  card.style.display=hasAny?'block':'none';
+}
+
+// ═══ HOUNSFIELD UNIT ═════════════════════════════
+function calcHU(){
+  const hu=parseFloat(document.getElementById('hu').value);
+  const wrap=document.getElementById('huMeterWrap');
+  const tag=document.getElementById('abn-hu');
+  if(isNaN(hu)||hu<0){wrap.style.display='none';if(tag)tag.style.display='none';return;}
+  wrap.style.display='block';
+  const pct=Math.min(hu/2000*100,100);
+  document.getElementById('huNeedle').style.left='calc('+pct+'% - 2px)';
+  const cls=document.getElementById('huClass');
+  let cat,color,bg,pred,tagTxt;
+  if(hu<500){
+    cat='Lunak';color='#00d98b';bg='rgba(0,217,139,.12)';tagTxt='LUNAK';
+    pred='Respons lithotripsy sangat baik — semua modalitas efektif';
+    // Auto-suggest chip
+    document.querySelectorAll('#huPredG .chip').forEach(c=>c.classList.remove('on'));
+    document.querySelectorAll('#huPredG .chip').forEach(c=>{if(c.textContent.includes('Sangat'))c.classList.add('on');});
+    document.getElementById('huPred').value='Sangat Baik';
+  } else if(hu<800){
+    cat='Sedang';color='#f5c842';bg='rgba(245,200,66,.12)';tagTxt='SEDANG';
+    pred='Respons baik — pneumatik, ultrasound, dan laser efektif';
+    document.querySelectorAll('#huPredG .chip').forEach(c=>c.classList.remove('on'));
+    document.querySelectorAll('#huPredG .chip').forEach(c=>{if(c.textContent==='Baik')c.classList.add('on');});
+    document.getElementById('huPred').value='Baik';
+  } else if(hu<1000){
+    cat='Keras';color='#ffaa30';bg='rgba(255,170,48,.12)';tagTxt='KERAS';
+    pred='Pertimbangkan laser Ho:YAG, Thulium, atau shock pulse';
+    document.querySelectorAll('#huPredG .chip').forEach(c=>c.classList.remove('on'));
+    document.querySelectorAll('#huPredG .chip').forEach(c=>{if(c.textContent==='Sedang')c.classList.add('on');});
+    document.getElementById('huPred').value='Sedang';
+  } else {
+    cat='Sangat Keras';color='#ff4f6a';bg='rgba(255,79,106,.12)';tagTxt='SANGAT KERAS';
+    pred='⚠ Laser Thulium / Ho:YAG power tinggi direkomendasikan';
+    document.querySelectorAll('#huPredG .chip').forEach(c=>c.classList.remove('on'));
+    document.querySelectorAll('#huPredG .chip').forEach(c=>{if(c.textContent.includes('Sulit'))c.classList.add('on');});
+    document.getElementById('huPred').value='Sulit';
+  }
+  if(tag){tag.style.display='inline-block';tag.textContent=tagTxt;
+    tag.style.background=bg.replace('rgba','rgba').replace(',.12)',',0.2)');
+    tag.style.color=color;tag.style.border='1px solid '+color+'66';}
+  cls.style.cssText=`background:${bg};color:${color};border:1px solid ${color}44;border-radius:10px;padding:12px 14px;font-size:13px;font-weight:600;text-align:center;margin-bottom:10px`;
+  cls.innerHTML=`<b>${hu} HU — ${cat}</b><br><span style="font-size:11px;font-weight:400;opacity:.85">${pred}</span>`;
+}
+
+// ═══ ANTIBIOTIK LAINNYA ══════════════════════════
+function abLainnya(el) {
+  // Deselect other chips
+  document.querySelectorAll('#abG .chip').forEach(c => c.classList.remove('on'));
+  el.classList.add('on');
+  const wrap = document.getElementById('abCustomWrap');
+  const input = document.getElementById('abCustom');
+  wrap.style.display = 'block';
+  input.focus();
+  document.getElementById('ab').value = input.value;
+}
+
+// ═══ PCNL TYPE & SHEATH HINT ═════════════════════
+const PCNL_INFO = {
+  std:       { label:'Standard PCNL', fr:'24–30 Fr', desc:'Akses besar, efektif untuk batu staghorn dan batu kompleks besar.' },
+  mini:      { label:'Mini PCNL',     fr:'14–22 Fr', desc:'Trauma lebih kecil, perdarahan lebih sedikit. Cocok untuk batu 10–20 mm.' },
+  ultramini: { label:'Ultra-Mini PCNL', fr:'10–12 Fr', desc:'Akses sangat kecil, biasa untuk batu <15 mm atau pasien anak.' },
+  micro:     { label:'Micro PCNL',    fr:'7–8 Fr',   desc:'Akses minimal invasif, irrigasi terbatas. Untuk batu kecil <10 mm.' },
+};
+
+function setPcnlType(type) {
+  const info = PCNL_INFO[type];
+  if (!info) return;
+
+  const infoEl = document.getElementById('pcnlTypeInfo');
+  infoEl.style.display = 'block';
+  infoEl.innerHTML = `<b style="color:var(--acc)">${info.label}</b> · Sheath <b>${info.fr}</b><br>${info.desc}`;
+
+  document.getElementById('sheathHint').textContent = '→ ' + info.fr;
+
+  // Highlight relevan sheath chips
+  const order = ['std', 'mini', 'ultramini', 'micro'];
+  const idx = order.indexOf(type);
+  document.querySelectorAll('#sheathG .chip').forEach(c => {
+    const chipMin = c.getAttribute('data-min');
+    const chipIdx = order.indexOf(chipMin);
+    // Show all but dim chips not typical for this type
+    c.style.opacity = (chipIdx >= idx - 1 && chipIdx <= idx + 1) ? '1' : '0.35';
+  });
+}
+
+// ═══ INIT ════════════════════════════════════════
+if(SURL)document.getElementById('sheetUrl').value=SURL;
+goTab(0);renderList('');refreshStats();
+</script>
+</body>
+</html>
