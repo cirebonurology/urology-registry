@@ -673,23 +673,31 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
       </div>
     </div>
     <div class="f"><label>Lokasi & Ukuran Massa Ginjal</label><input type="text" id="massaGinjalUSGDetail" placeholder="Lokasi, padat/cair, ukuran"></div>
-    <div class="f"><label>USG Prostat</label>
+    <div class="f"><label>USG Buli-buli dan Prostat</label>
       <div class="chips" id="usgProstatG">
-        <div class="chip" onclick="pick(this,'usgProstatG')">Transrektal</div>
-        <div class="chip" onclick="pick(this,'usgProstatG')">Transabdominal</div>
+        <div class="chip" onclick="toggle(this)">Transrektal</div>
+        <div class="chip" onclick="toggle(this)">Transabdominal</div>
       </div>
     </div>
-    <div class="f"><label>Lesi Prostat</label>
+    <div class="f"><label>Lesi Buli-buli</label>
       <div class="chips" id="lesiProstatG">
-        <div class="chip" onclick="pick(this,'lesiProstatG')">Tidak</div>
-        <div class="chip" onclick="pick(this,'lesiProstatG')">Hypoechoic</div>
-        <div class="chip" onclick="pick(this,'lesiProstatG')">Hyperechoic</div>
+        <div class="chip" onclick="toggle(this)">Tidak</div>
+        <div class="chip" onclick="toggle(this)">Hypoechoic</div>
+        <div class="chip" onclick="toggle(this)">Hyperechoic</div>
       </div>
     </div>
     <div class="g2">
-      <div class="f"><label>Lokasi Lesi Prostat</label><input type="text" id="lesiProstatLokasi" placeholder="Lokasi"></div>
-      <div class="f"><label>Volume Prostat (cc)</label><input type="number" id="volProstat" placeholder="cc"></div>
+      <div class="f"><label>Lokasi Lesi Buli-buli</label><input type="text" id="lesiProstatLokasi" placeholder="Lokasi"></div>
+      <div class="f"><label>Volume Buli-buli (cc)</label><input type="number" id="volProstat" placeholder="cc"></div>
     </div>
+    <div class="f"><label>Lesi Prostat</label>
+      <div class="chips" id="lesiProstatBuliG">
+        <div class="chip" onclick="toggle(this)">Tidak</div>
+        <div class="chip" onclick="toggle(this)">Hypoechoic</div>
+        <div class="chip" onclick="toggle(this)">Hyperechoic</div>
+      </div>
+    </div>
+    <div class="f"><label>Lokasi Lesi Prostat</label><input type="text" id="lesiProstatLokasiP" placeholder="Lokasi lesi prostat"></div>
     <div class="f"><label>Massa Testis</label>
       <div class="chips" id="massaTestisG">
         <div class="chip" onclick="pick(this,'massaTestisG')">Tidak</div>
