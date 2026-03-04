@@ -1,0 +1,1403 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#f2f2f7">
+<title>Onkologi Ginjal Registry</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#f2f2f7; --surf:#ffffff; --card:#ffffff; --card2:#f9f9fb;
+  --bdr:#d1d1d6; --acc:#007aff; --acc2:#34c759; --acc3:#ff9500;
+  --txt:#1c1c1e; --muted:#8e8e93; --danger:#ff3b30; --warn:#ff9500;
+  --r:13px; --fn:'DM Sans',sans-serif; --mono:'DM Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:var(--fn);background:var(--bg);color:var(--txt);min-height:100vh;padding-bottom:80px}
+.nav{position:sticky;top:0;z-index:100;background:rgba(242,242,247,.92);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--bdr);padding:0 12px;display:flex;align-items:center;gap:2px;overflow-x:auto;height:52px}
+.nav::-webkit-scrollbar{display:none}
+.ntab{flex-shrink:0;padding:6px 11px;border-radius:8px;font-size:12px;font-weight:600;
+  color:var(--muted);cursor:pointer;white-space:nowrap;transition:all .18s}
+.ntab.on{background:var(--acc);color:#fff}
+.sec{display:none;padding:12px;max-width:600px;margin:0 auto}
+.sec.on{display:block}
+.card{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);
+  padding:16px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.ct{font-size:13px;font-weight:700;color:var(--acc);text-transform:uppercase;
+  letter-spacing:.6px;margin-bottom:12px}
+.f{margin-bottom:12px}
+.f label{display:block;font-size:12px;font-weight:600;color:var(--muted);
+  text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px}
+.req{color:var(--danger)}
+input[type=text],input[type=number],input[type=date],input[type=time],textarea,select{
+  width:100%;background:var(--bg);border:1.5px solid var(--bdr);
+  border-radius:9px;padding:10px 12px;font-size:14px;font-family:var(--fn);
+  color:var(--txt);outline:none;transition:border .15s}
+input:focus,textarea:focus,select:focus{border-color:var(--acc)}
+textarea{resize:vertical;min-height:70px}
+select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238e8e93' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 12px center}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.chip{padding:6px 12px;border-radius:20px;border:1.5px solid var(--bdr);
+  font-size:12px;font-weight:600;cursor:pointer;background:var(--bg);
+  color:var(--muted);transition:all .15s;user-select:none}
+.chip.on{background:var(--acc);border-color:var(--acc);color:#fff}
+.chip.on.g{background:var(--acc2);border-color:var(--acc2);color:#fff}
+.chip.on.r{background:var(--danger);border-color:var(--danger);color:#fff}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.info-box{background:#f0f7ff;border:1px solid #c7e0ff;border-radius:9px;
+  padding:10px 12px;font-size:12px;color:#0055cc;margin-bottom:12px;line-height:1.6}
+.warn-box{background:#fff8f0;border:1px solid #ffe0b2;border-radius:9px;
+  padding:10px 12px;font-size:12px;color:#e65100;margin-bottom:12px;line-height:1.6}
+.btn{width:100%;padding:14px;border-radius:12px;border:none;font-size:15px;
+  font-weight:700;font-family:var(--fn);cursor:pointer;transition:all .15s}
+.btn-ok{background:var(--acc2);color:#fff}
+.btn-danger{background:var(--danger);color:#fff}
+.btn-sec{background:var(--bg);border:1.5px solid var(--bdr);color:var(--txt)}
+.hbtn{padding:9px 14px;border-radius:9px;border:1.5px solid var(--bdr);
+  font-size:12px;font-weight:600;cursor:pointer;background:var(--bg);color:var(--txt);transition:all .15s}
+.hbtn.pri{background:var(--acc);border-color:var(--acc);color:#fff}
+.nav-btns{display:flex;gap:8px;margin-top:8px}
+.prog-wrap{height:4px;background:var(--bdr);border-radius:2px;overflow:hidden;margin-bottom:12px}
+.prog-bar{height:100%;background:var(--acc);border-radius:2px;transition:width .3s}
+.sec-title{font-size:20px;font-weight:700;color:var(--txt);margin-bottom:4px}
+.sec-sub{font-size:13px;color:var(--muted);margin-bottom:16px}
+.divider{height:1px;background:var(--bdr);margin:12px 0}
+.rec-card{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);
+  padding:14px;margin-bottom:10px;cursor:pointer;transition:all .15s}
+.rec-card:hover{border-color:var(--acc);box-shadow:0 2px 12px rgba(0,122,255,.1)}
+.rec-name{font-size:15px;font-weight:700}
+.rec-sub{font-size:12px;color:var(--muted);margin-top:3px}
+.rec-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600;margin-top:5px}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200;overflow-y:auto;padding:20px 12px}
+.modal.on{display:block}
+.modal-box{background:var(--card);border-radius:16px;max-width:560px;margin:0 auto;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+.modal-title{font-size:17px;font-weight:700;margin-bottom:14px}
+.detail-row{display:flex;padding:7px 0;border-bottom:1px solid var(--bdr);font-size:13px}
+.detail-row:last-child{border-bottom:none}
+.detail-key{color:var(--muted);width:45%;flex-shrink:0;font-weight:500}
+.detail-val{color:var(--txt);font-weight:600;word-break:break-word}
+.search-wrap{position:relative;margin-bottom:12px}
+.search-wrap input{padding-left:36px}
+.search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--muted)}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:#1c1c1e;color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;
+  font-weight:600;opacity:0;transition:all .25s;z-index:999;white-space:nowrap;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.ok{background:var(--acc2)}
+.toast.er{background:var(--danger)}
+.toast.wn{background:var(--warn);color:#1c1c1e}
+.empty{text-align:center;padding:40px 20px;color:var(--muted)}
+.empty-icon{font-size:40px;margin-bottom:8px}
+.ecog-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:8px}
+.ecog-table th{background:var(--acc);color:#fff;padding:6px 8px;text-align:center}
+.ecog-table td{padding:6px 8px;border:1px solid var(--bdr);vertical-align:top}
+.ecog-table tr:nth-child(even) td{background:var(--bg)}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="ntab on" onclick="goTab(0)">👤 Identitas</div>
+  <div class="ntab" onclick="goTab(1)">🩺 Keluhan</div>
+  <div class="ntab" onclick="goTab(2)">🔬 Fisik</div>
+  <div class="ntab" onclick="goTab(3)">🧪 Lab</div>
+  <div class="ntab" onclick="goTab(4)">📡 Radiologi</div>
+  <div class="ntab" onclick="goTab(5)">⚕️ Tindakan</div>
+  <div class="ntab" onclick="goTab(6)">🏥 Diagnosa</div>
+  <div class="ntab" onclick="goTab(7)">📋 Pemantauan</div>
+  <div class="ntab" onclick="goTab(8)">📊 Data</div>
+  <div class="ntab" onclick="goTab(9)">⚙️ Setup</div>
+</nav>
+
+<div style="padding:0 12px;max-width:600px;margin:8px auto 0">
+  <div class="prog-wrap"><div class="prog-bar" id="progBar" style="width:10%"></div></div>
+</div>
+
+<!-- ══════════════════════════════════════
+     0 · IDENTITAS
+══════════════════════════════════════ -->
+<div class="sec on" id="t0">
+  <div class="sec-title">Onkologi Ginjal</div>
+  <div class="sec-sub">Identitas Pasien</div>
+
+  <div class="card">
+    <div class="ct">Data Utama</div>
+    <div class="f"><label>Nama Pasien <span class="req">*</span></label>
+      <input type="text" id="nama" placeholder="Nama lengkap pasien"></div>
+    <div class="g2">
+      <div class="f"><label>No. Register</label><input type="text" id="noReg" placeholder="No. RM"></div>
+      <div class="f"><label>Jenis Kelamin</label>
+        <div class="chips" id="jkG">
+          <div class="chip" onclick="pick(this,'jkG')">L</div>
+          <div class="chip" onclick="pick(this,'jkG')">P</div>
+        </div>
+      </div>
+    </div>
+    <div class="g2">
+      <div class="f"><label>Tanggal Lahir</label><input type="date" id="tglLahir" onchange="hitungUmur()"></div>
+      <div class="f"><label>Umur</label><input type="text" id="umur" readonly style="background:#f2f2f7;color:var(--muted)"></div>
+    </div>
+    <div class="g2">
+      <div class="f"><label>Tanggal Masuk</label><input type="date" id="tglMasuk"></div>
+      <div class="f"><label>Tanggal Pulang</label><input type="date" id="tglPulang" onchange="hitungLamaRawat()"></div>
+    </div>
+    <div class="g2">
+      <div class="f"><label>Lama Rawat (hari)</label><input type="text" id="lamaRawat" readonly style="background:#f2f2f7;color:var(--muted)"></div>
+      <div class="f"><label>Tanggal Meninggal</label><input type="date" id="tglMeninggal"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ct">Data Sosial</div>
+    <div class="f"><label>Pekerjaan</label><input type="text" id="pekerjaan" placeholder="Pekerjaan pasien"></div>
+    <div class="f"><label>Status Perkawinan</label>
+      <div class="chips" id="statusKawinG">
+        <div class="chip" onclick="pick(this,'statusKawinG')">Kawin</div>
+        <div class="chip" onclick="pick(this,'statusKawinG')">Belum Kawin</div>
+        <div class="chip" onclick="pick(this,'statusKawinG')">Janda</div>
+        <div class="chip" onclick="pick(this,'statusKawinG')">Duda</div>
+      </div>
+    </div>
+    <div class="f"><label>Alamat Tetap</label><textarea id="alamat" rows="2" placeholder="Alamat lengkap"></textarea></div>
+    <div class="f"><label>No. Telepon</label><input type="text" id="telp" placeholder="No. telepon"></div>
+  </div>
+
+  <div class="card">
+    <div class="ct">Rujukan & Diagnosis Awal</div>
+    <div class="f"><label>Cara Datang</label>
+      <div class="chips" id="caraDatangG">
+        <div class="chip" onclick="pick(this,'caraDatangG')">Tanpa surat pengantar</div>
+        <div class="chip" onclick="pick(this,'caraDatangG')">Rujukan dr. Umum</div>
+        <div class="chip" onclick="pick(this,'caraDatangG')">Rujukan dr. Spesialis</div>
+      </div>
+    </div>
+    <div class="f"><label>Tgl Kunjungan Pertama</label><input type="date" id="tglKunjungan"></div>
+    <div class="f"><label>Diagnosa Akhir</label><textarea id="diagAkhir" rows="2" placeholder="Diagnosa akhir"></textarea></div>
+    <div class="g2">
+      <div class="f"><label>Stadium</label>
+        <div class="chips" id="stadiumG">
+          <div class="chip" onclick="pick(this,'stadiumG')">I</div>
+          <div class="chip" onclick="pick(this,'stadiumG')">II</div>
+          <div class="chip" onclick="pick(this,'stadiumG')">III</div>
+          <div class="chip" onclick="pick(this,'stadiumG')">IV</div>
+        </div>
+      </div>
+      <div class="f"><label>Grade</label>
+        <div class="chips" id="gradeG">
+          <div class="chip" onclick="pick(this,'gradeG')">I</div>
+          <div class="chip" onclick="pick(this,'gradeG')">II</div>
+          <div class="chip" onclick="pick(this,'gradeG')">III</div>
+          <div class="chip" onclick="pick(this,'gradeG')">IV</div>
+        </div>
+      </div>
+    </div>
+    <div class="f"><label>No. ICD</label><input type="text" id="noICD" placeholder="Kode ICD"></div>
+  </div>
+
+  <div class="nav-btns">
+    <div class="hbtn pri" style="flex:1;text-align:center" onclick="goTab(1)">Lanjut →</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     1 · KELUHAN UTAMA
+══════════════════════════════════════ -->
+<div class="sec" id="t1">
+  <div class="sec-title">Keluhan Utama</div>
+  <div class="sec-sub">Dihitung sejak tanggal masuk / kunjungan pertama</div>
+
+  <div class="card">
+    <div class="ct">🩸 Keluhan</div>
+    <div class="f"><label>Kencing Darah (Hematuria)</label>
+      <div class="chips" id="hematuriaG">
+        <div class="chip" onclick="pick(this,'hematuriaG')">Tidak</div>
+        <div class="chip" onclick="pick(this,'hematuriaG')">Ya</div>
+      </div>
+    </div>
+    <div class="g2">
+      <div class="f"><label>Lama (hari)</label><input type="number" id="hematuriaHari" placeholder="hari"></div>
+      <div class="f"><label>Lama (bulan)</label><input type="number" id="hematuria_Bulan" placeholder="bulan"></div>
+    </div>
+    <div class="divider"></div>
+    <div class="f"><label>Tumor</label>
+      <div class="chips" id="tumorKeluhanG">
+        <div class="chip" onclick="pick(this,'tumorKeluhanG')">Tidak</div>
+        <div class="chip" onclick="pick(this,'tumorKeluhanG')">Ya</div>
+      </div>
+    </div>
+    <div class="g2">
+      <div class="f"><label>Lama (hari)</label><input type="number" id="tumorHari" placeholder="hari"></div>
+      <div class="f"><label>Lama (bulan)</label><input type="number" id="tumorBulan" placeholder="bulan"></div>
+    </div>
+    <div class="divider"></div>
+    <div class="f"><label>Disuria</label>
+      <div class="chips" id="disuriaG">
+        <div class="chip" onclick="pick(this,'disuriaG')">Tidak</div>
+        <div class="chip" onclick="pick(this,'disuriaG')">Ya</div>
+      </div>
+    </div>
+    <div class="g2">
+      <div class="f"><label>Lama (hari)</label><input type="number" id="disuriaHari" placeholder="hari"></div>
+      <div class="f"><label>Lama (bulan)</label><input type="number" id="disuria_Bulan" placeholder="bulan"></div>
+    </div>
+    <div class="divider"></div>
+    <div class="f"><label>Retensi Urine</label>
+      <div class="chips" id="retensiG">
+        <div class="chip" onclick="pick(this,'retensiG')">Tidak</div>
+        <div class="chip" onclick="pick(this,'retensiG')">Ya</div>
+      </div>
+    </div>
+    <div class="g2">
+      <div class="f"><label>Lama (hari)</label><input type="number" id="retensiHari" placeholder="hari"></div>
+      <div class="f"><label>Lama (bulan)</label><input type="number" id="retensiBulan" placeholder="bulan"></div>
+    </div>
+    <div class="divider"></div>
+    <div class="f"><label>Keluhan Lain</label><input type="text" id="keluhanLain" placeholder="Keluhan lain"></div>
+    <div class="g2">
+      <div class="f"><label>Lama (hari)</label><input type="number" id="keluhanLainHari" placeholder="hari"></div>
+      <div class="f"><label>Lama (bulan)</label><input type="number" id="keluhanLainBulan" placeholder="bulan"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ct">📋 Riwayat</div>
+    <div class="f"><label>Riwayat Batu</label>
+      <div class="chips" id="riwBatuG">
+        <div class="chip" onclick="pick(this,'riwBatuG')">Tidak</div>
+        <div class="chip" onclick="pick(this,'riwBatuG')">Ya</div>
+      </div>
+    </div>
+    <div class="f"><label>Lokasi Batu</label>
+      <div class="chips" id="lokasibatuG">
+        <div class="chip" onclick="pick(this,'lokasibatuG')">Ginjal</div>
+        <div class="chip" onclick="pick(this,'lokasibatuG')">Ureter</div>
+        <div class="chip" onclick="pick(this,'lokasibatuG')">Buli-buli</div>
+        <div class="chip" onclick="pick(this,'lokasibatuG')">Uretra</div>
+      </div>
+    </div>
+    <div class="f"><label>Tindakan Batu</label><input type="text" id="tindakanBatu" placeholder="Jenis tindakan"></div>
+    <div class="f"><label>Riwayat Operasi Urologi</label><input type="text" id="riwOpUrologi" placeholder="Jenis operasi urologi sebelumnya"></div>
+    <div class="f"><label>Dimana</label><input type="text" id="riwOpDimana" placeholder="RS / tempat operasi"></div>
+    <div class="f"><label>Riwayat Penyakit Keluarga</label><textarea id="riwKeluarga" rows="2" placeholder="Riwayat penyakit keluarga (kakek, nenek, ayah, ibu)"></textarea></div>
+    <div class="f"><label>Riwayat Merokok</label>
+      <div class="chips" id="merokokG">
+        <div class="chip" onclick="pick(this,'merokokG')">Tidak</div>
+        <div class="chip" onclick="pick(this,'merokokG')">Ya — masih</div>
+        <div class="chip" onclick="pick(this,'merokokG')">Ya — sudah berhenti</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-btns">
+    <div class="hbtn" style="flex:1;text-align:center" onclick="goTab(0)">← Kembali</div>
+    <div class="hbtn pri" style="flex:1;text-align:center" onclick="goTab(2)">Lanjut →</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     2 · PEMERIKSAAN FISIK
+══════════════════════════════════════ -->
+<div class="sec" id="t2">
+  <div class="sec-title">Pemeriksaan Fisik</div>
+  <div class="sec-sub">Status lokalis</div>
+
+  <div class="card">
+    <div class="ct">📊 Status Umum</div>
+    <div class="g2">
+      <div class="f"><label>Tekanan Darah</label><input type="text" id="td" placeholder="mmHg"></div>
+      <div class="f"><label>Nadi</label><input type="text" id="nadi" placeholder="x/menit"></div>
+    </div>
+    <div class="g2">
+      <div class="f"><label>BB (kg)</label><input type="number" id="bb" placeholder="kg" oninput="hitungBMI()"></div>
+      <div class="f"><label>TB (cm)</label><input type="number" id="tb" placeholder="cm" oninput="hitungBMI()"></div>
+    </div>
+    <div class="g2">
+      <div class="f"><label>BMI</label><input type="text" id="bmi" readonly style="background:#f2f2f7;color:var(--muted)"></div>
+      <div class="f"><label>ECOG Score</label>
+        <div class="chips" id="ecogG">
+          <div class="chip" onclick="pick(this,'ecogG')">0</div>
+          <div class="chip" onclick="pick(this,'ecogG')">1</div>
+          <div class="chip" onclick="pick(this,'ecogG')">2</div>
+          <div class="chip" onclick="pick(this,'ecogG')">3</div>
+          <div class="chip" onclick="pick(this,'ecogG')">4</div>
+          <div class="chip" onclick="pick(this,'ecogG')">5</div>
+        </div>
+      </div>
+    </div>
+    <div class="f"><label>Keadaan Umum</label>
+      <div class="chips" id="kuG">
+        <div class="chip" onclick="pick(this,'kuG')">Baik</div>
+        <div class="chip" onclick="pick(this,'kuG')">Sedang</div>
+        <div class="chip" onclick="pick(this,'kuG')">Jelek</div>
+        <div class="chip" onclick="pick(this,'kuG')">Jelek Sekali</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ct">🫁 Abdomen</div>
+    <div class="f"><label>Massa Abdomen</label>
+      <div class="chips" id="massaAbdomenG">
+        <div class="chip" onclick="pick(this,'massaAbdomenG')">Tidak ada</div>
+        <div class="chip" onclick="pick(this,'massaAbdomenG')">Ada</div>
+      </div>
+    </div>
+    <div class="f"><label>Keterangan Abdomen</label><textarea id="abdomenNote" rows="2" placeholder="Jelaskan temuan abdomen"></textarea></div>
+  </div>
+
+  <div class="card">
+    <div class="ct">🫘 Ginjal</div>
+    <div class="g2">
+      <div style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:8px;text-transform:uppercase">Kanan</div>
+      <div style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:8px;text-transform:uppercase">Kiri</div>
+    </div>
+    <div class="g2">
+      <div class="f"><label>Massa Kanan</label>
+        <div class="chips" id="massaGinjalKananG">
+          <div class="chip" onclick="pick(this,'massaGinjalKananG')">Tidak</div>
+          <div class="chip" onclick="pick(this,'massaGinjalKananG')">Ya</div>
+        </div>
+      </div>
+      <div class="f"><label>Massa Kiri</label>
+        <div class="chips" id="massaGinjalKiriG">
+          <div class="chip" onclick="pick(this,'massaGinjalKiriG')">Tidak</div>
+          <div class="chip" onclick="pick(this,'massaGinjalKiriG')">Ya</div>
+        </div>
+      </div>
+    </div>
+    <div class="g2">
+      <div class="f"><label>Ukuran Kanan (cm)</label><input type="text" id="ukuranGinjalKanan" placeholder="x cm"></div>
+      <div class="f"><label>Ukuran Kiri (cm)</label><input type="text" id="ukuranGinjalKiri" placeholder="x cm"></div>
+    </div>
+    <div class="g2">
+      <div class="f"><label>Sifat Kanan</label>
+        <div class="chips" id="sifatGinjalKananG">
+          <div class="chip" onclick="pick(this,'sifatGinjalKananG')">Padat</div>
+          <div class="chip" onclick="pick(this,'sifatGinjalKananG')">Kistik</div>
+        </div>
+      </div>
+      <div class="f"><label>Sifat Kiri</label>
+        <div class="chips" id="sifatGinjalKiriG">
+          <div class="chip" onclick="pick(this,'sifatGinjalKiriG')">Padat</div>
+          <div class="chip" onclick="pick(this,'sifatGinjalKiriG')">Kistik</div>
+        </div>
+      </div>
+    </div>
+    <div class="g2">
+      <div class="f"><label>Mobilitas Kanan</label>
+        <div class="chips" id="mobilGinjalKananG">
+          <div class="chip" onclick="pick(this,'mobilGinjalKananG')">Mobil</div>
+          <div class="chip" onclick="pick(this,'mobilGinjalKananG')">Fixed</div>
+        </div>
+      </div>
+      <div class="f"><label>Mobilitas Kiri</label>
+        <div class="chips" id="mobilGinjalKiriG">
+          <div class="chip" onclick="pick(this,'mobilGinjalKiriG')">Mobil</div>
+          <div class="chip" onclick="pick(this,'mobilGinjalKiriG')">Fixed</div>
+        </div>
+      </div>
+    </div>
+    <div class="g2">
+      <div class="f"><label>Nyeri Tekan Kanan</label>
+        <div class="chips" id="nyeriGinjalKananG">
+          <div class="chip" onclick="pick(this,'nyeriGinjalKananG')">Tidak</div>
+          <div class="chip" onclick="pick(this,'nyeriGinjalKananG')">Ya</div>
+        </div>
+      </div>
+      <div class="f"><label>Nyeri Tekan Kiri</label>
+        <div class="chips" id="nyeriGinjalKiriG">
+          <div class="chip" onclick="pick(this,'nyeriGinjalKiriG')">Tidak</div>
+          <div class="chip" onclick="pick(this,'nyeriGinjalKiriG')">Ya</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ct">🫧 Buli-buli & Penis</div>
+    <div class="f"><label>Buli-buli</label>
+      <div class="chips" id="buliBuliG">
+        <div class="chip" onclick="pick(this,'buliBuliG')">Penuh</div>
+        <div class="chip" onclick="pick(this,'buliBuliG')">Kosong</div>
+        <div class="chip" onclick="pick(this,'buliBuliG')">Massa</div>
+      </div>
+    </div>
+    <div class="f"><label>Sirkumsisi</label>
+      <div class="chips" id="sirkumsisiG">
+        <div class="chip" onclick="pick(this,'sirkumsisiG')">Ya</div>
+        <div class="chip" onclick="pick(this,'sirkumsisiG')">Tidak</div>
+      </div>
+    </div>
+    <div class="f"><label>Penis</label>
+      <div class="chips" id="penisG">
+        <div class="chip" onclick="pick(this,'penisG')">Normal</div>
+        <div class="chip" onclick="pick(this,'penisG')">Tumor</div>
+      </div>
+    </div>
+    <div class="f"><label>Ukuran Tumor Penis</label><input type="text" id="ukuranTumorPenis" placeholder="x cm, lokasi"></div>
+    <div class="f"><label>Kelainan Lain</label><input type="text" id="kelainanPenis" placeholder="Kelainan lain pada penis"></div>
+  </div>
+
+  <div class="card">
+    <div class="ct">🔵 Testis & Kelenjar</div>
+    <div class="g2">
+      <div class="f"><label>Testis Kanan</label><input type="text" id="testisKanan" placeholder="ukuran, konsistensi"></div>
+      <div class="f"><label>Testis Kiri</label><input type="text" id="testisKiri" placeholder="ukuran, konsistensi"></div>
+    </div>
+    <div class="g2">
+      <div class="f"><label>Hidrokel Kanan</label>
+        <div class="chips" id="hidrokelKananG">
+          <div class="chip" onclick="pick(this,'hidrokelKananG')">Tidak</div>
+          <div class="chip" onclick="pick(this,'hidrokelKananG')">Ya</div>
+        </div>
+      </div>
+      <div class="f"><label>Hidrokel Kiri</label>
+        <div class="chips" id="hidrokelKiriG">
+          <div class="chip" onclick="pick(this,'hidrokelKiriG')">Tidak</div>
+          <div class="chip" onclick="pick(this,'hidrokelKiriG')">Ya</div>
+        </div>
+      </div>
+    </div>
+    <div class="f"><label>KGB Inguinal Kanan</label><input type="text" id="kgbInguinalKanan" placeholder="ukuran, terfiksir"></div>
+    <div class="f"><label>KGB Inguinal Kiri</label><input type="text" id="kgbInguinalKiri" placeholder="ukuran, terfiksir"></div>
+    <div class="f"><label>KGB Supraklavikula</label><input type="text" id="kgbSupra" placeholder="ukuran, terfiksir"></div>
+  </div>
+
+  <div class="card">
+    <div class="ct">🩺 Colok Dubur</div>
+    <div class="f"><label>Berat Prostat (gr)</label><input type="number" id="beratProstat" placeholder="gram"></div>
+    <div class="f"><label>Permukaan Prostat</label>
+      <div class="chips" id="permukaanProstatG">
+        <div class="chip" onclick="pick(this,'permukaanProstatG')">Rata</div>
+        <div class="chip" onclick="pick(this,'permukaanProstatG')">Berbenjol Kanan</div>
+        <div class="chip" onclick="pick(this,'permukaanProstatG')">Berbenjol Kiri</div>
+        <div class="chip" onclick="pick(this,'permukaanProstatG')">Berbenjol Keduanya</div>
+      </div>
+    </div>
+    <div class="f"><label>Konsistensi Prostat</label>
+      <div class="chips" id="konsistensiProstatG">
+        <div class="chip" onclick="pick(this,'konsistensiProstatG')">Lunak</div>
+        <div class="chip" onclick="pick(this,'konsistensiProstatG')">Kenyal</div>
+        <div class="chip" onclick="pick(this,'konsistensiProstatG')">Keras Kanan</div>
+        <div class="chip" onclick="pick(this,'konsistensiProstatG')">Keras Kiri</div>
+        <div class="chip" onclick="pick(this,'konsistensiProstatG')">Keras Keduanya</div>
+      </div>
+    </div>
+    <div class="f"><label>Nyeri Tekan Prostat</label>
+      <div class="chips" id="nyeriProstatG">
+        <div class="chip" onclick="pick(this,'nyeriProstatG')">Tidak</div>
+        <div class="chip" onclick="pick(this,'nyeriProstatG')">Ya</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-btns">
+    <div class="hbtn" style="flex:1;text-align:center" onclick="goTab(1)">← Kembali</div>
+    <div class="hbtn pri" style="flex:1;text-align:center" onclick="goTab(3)">Lanjut →</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     3 · LABORATORIUM
+══════════════════════════════════════ -->
+<div class="sec" id="t3">
+  <div class="sec-title">Pemeriksaan Laboratorium</div>
+  <div class="sec-sub">Hasil lab pre-operasi</div>
+
+  <div class="card">
+    <div class="ct">🩸 Darah Lengkap</div>
+    <div class="f"><label>Tanggal Lab</label><input type="date" id="tglLab"></div>
+    <div class="g2">
+      <div class="f"><label>Hb (gr%)</label><input type="number" id="hb" placeholder="gr%"></div>
+      <div class="f"><label>Leukosit</label><input type="number" id="leko" placeholder="/mm³"></div>
+    </div>
+    <div class="g2">
+      <div class="f"><label>Trombosit</label><input type="number" id="trombo" placeholder="/mm³"></div>
+      <div class="f"><label>LED</label><input type="number" id="led" placeholder="mm/jam"></div>
+    </div>
+    <div class="f"><label>Diff Count</label><input type="text" id="diff" placeholder="Bas/Eos/Neu/Lym/Mon"></div>
+  </div>
+
+  <div class="card">
+    <div class="ct">🫘 Fungsi Ginjal & Gula Darah</div>
+    <div class="g2">
+      <div class="f"><label>Ureum</label><input type="number" id="ureum" placeholder="mg/dL"></div>
+      <div class="f"><label>Kreatinin</label><input type="number" id="kreatinin" placeholder="mg/dL"></div>
+    </div>
+    <div class="g2">
+      <div class="f"><label>Gula Darah Sewaktu</label><input type="number" id="gdNormal" placeholder="mg/dL"></div>
+      <div class="f"><label>Gula Darah Post Prandial</label><input type="number" id="gdPP" placeholder="mg/dL"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ct">🧪 Urin</div>
+    <div class="g2">
+      <div class="f"><label>Eritrosit Urin</label><input type="text" id="eritrositUrin" placeholder="/LPB"></div>
+      <div class="f"><label>Leukosit Urin</label><input type="text" id="leukoUrin" placeholder="/LPB"></div>
+    </div>
+    <div class="f"><label>Kultur Urin</label>
+      <div class="chips" id="kulturG">
+        <div class="chip" onclick="pick(this,'kulturG')">Negatif</div>
+        <div class="chip" onclick="pick(this,'kulturG')">Positif</div>
+      </div>
+    </div>
+    <div class="f"><label>Bakteri</label><input type="text" id="bakteri" placeholder="Jenis bakteri jika positif"></div>
+    <div class="f"><label>Sitologi Urin</label>
+      <div class="chips" id="sitologiG">
+        <div class="chip" onclick="pick(this,'sitologiG')">Klas I</div>
+        <div class="chip" onclick="pick(this,'sitologiG')">Klas II</div>
+        <div class="chip" onclick="pick(this,'sitologiG')">Klas III</div>
+        <div class="chip" onclick="pick(this,'sitologiG')">Klas IV</div>
+        <div class="chip" onclick="pick(this,'sitologiG')">Klas V</div>
+      </div>
+    </div>
+    <div class="f"><label>Grade Sitologi</label>
+      <div class="chips" id="gradeSitologiG">
+        <div class="chip" onclick="pick(this,'gradeSitologiG')">I</div>
+        <div class="chip" onclick="pick(this,'gradeSitologiG')">II</div>
+        <div class="chip" onclick="pick(this,'gradeSitologiG')">III</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ct">🔬 Tumor Marker</div>
+    <div class="g2">
+      <div class="f"><label>PSA (ng/mL)</label><input type="number" id="psa" placeholder="ng/mL"></div>
+      <div class="f"><label>Tgl PSA</label><input type="date" id="tglPSA"></div>
+    </div>
+    <div class="f"><label>Dengan Kateter Sejak</label><input type="date" id="tglKateter"></div>
+    <div class="g2">
+      <div class="f"><label>AFP (ng/mL)</label><input type="number" id="afp" placeholder="ng/mL"></div>
+      <div class="f"><label>β-hCG</label><input type="number" id="bhcg" placeholder="mIU/mL"></div>
+    </div>
+    <div class="g2">
+      <div class="f"><label>LDH</label><input type="number" id="ldh" placeholder="U/L"></div>
+      <div class="f"><label>Alkali Fosfatase</label><input type="number" id="alkFos" placeholder="U/L"></div>
+    </div>
+    <div class="f"><label>Kalsium Serum</label><input type="number" id="kalsium" placeholder="mg/dL"></div>
+    <div class="f"><label>Tumor Marker Lain</label><input type="text" id="tumorMarkerLain" placeholder="Tumor marker lain"></div>
+  </div>
+
+  <div class="nav-btns">
+    <div class="hbtn" style="flex:1;text-align:center" onclick="goTab(2)">← Kembali</div>
+    <div class="hbtn pri" style="flex:1;text-align:center" onclick="goTab(4)">Lanjut →</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     4 · PEMERIKSAAN RONTGEN / IMAGING
+══════════════════════════════════════ -->
+<div class="sec" id="t4">
+  <div class="sec-title">Pencitraan Radiologis</div>
+  <div class="sec-sub">Hasil pencitraan radiologis</div>
+
+  <div class="card">
+    <div class="ct">🫁 X-Thorax</div>
+    <div class="f"><label>Hasil X-Thorax</label><textarea id="xThorax" rows="2" placeholder="Hasil pemeriksaan X-Thorax"></textarea></div>
+  </div>
+
+  <div class="card">
+    <div class="ct">📷 BNO / IVP</div>
+    <div class="g2">
+      <div class="f"><label>Fungsi Ginjal Kanan</label>
+        <div class="chips" id="fungsiGinjalKananG">
+          <div class="chip" onclick="pick(this,'fungsiGinjalKananG')">Baik</div>
+          <div class="chip" onclick="pick(this,'fungsiGinjalKananG')">Lambat</div>
+          <div class="chip" onclick="pick(this,'fungsiGinjalKananG')">Afungsi</div>
+        </div>
+      </div>
+      <div class="f"><label>Fungsi Ginjal Kiri</label>
+        <div class="chips" id="fungsiGinjalKiriG">
+          <div class="chip" onclick="pick(this,'fungsiGinjalKiriG')">Baik</div>
+          <div class="chip" onclick="pick(this,'fungsiGinjalKiriG')">Lambat</div>
+          <div class="chip" onclick="pick(this,'fungsiGinjalKiriG')">Afungsi</div>
+        </div>
+      </div>
+    </div>
+    <div class="g2">
+      <div class="f"><label>Hidronefrosis Kanan</label>
+        <div class="chips" id="hidroKananG">
+          <div class="chip" onclick="pick(this,'hidroKananG')">Tidak</div>
+          <div class="chip" onclick="pick(this,'hidroKananG')">Grade I</div>
+          <div class="chip" onclick="pick(this,'hidroKananG')">Grade II</div>
+          <div class="chip" onclick="pick(this,'hidroKananG')">Grade III</div>
+          <div class="chip" onclick="pick(this,'hidroKananG')">Grade IV</div>
+        </div>
+      </div>
+      <div class="f"><label>Hidronefrosis Kiri</label>
+        <div class="chips" id="hidroKiriG">
+          <div class="chip" onclick="pick(this,'hidroKiriG')">Tidak</div>
+          <div class="chip" onclick="pick(this,'hidroKiriG')">Grade I</div>
+          <div class="chip" onclick="pick(this,'hidroKiriG')">Grade II</div>
+          <div class="chip" onclick="pick(this,'hidroKiriG')">Grade III</div>
+          <div class="chip" onclick="pick(this,'hidroKiriG')">Grade IV</div>
+        </div>
+      </div>
+    </div>
+    <div class="f"><label>Batu</label>
+      <div class="chips" id="batuIVPG">
+        <div class="chip" onclick="pick(this,'batuIVPG')">Tidak</div>
+        <div class="chip" onclick="pick(this,'batuIVPG')">Ya</div>
+      </div>
+    </div>
+    <div class="f"><label>Lokasi & Ukuran Batu</label><input type="text" id="batuIVPDetail" placeholder="Lokasi dan ukuran batu"></div>
+    <div class="g2">
+      <div class="f"><label>SOL</label>
+        <div class="chips" id="solG">
+          <div class="chip" onclick="pick(this,'solG')">Tidak</div>
+          <div class="chip" onclick="pick(this,'solG')">Ya</div>
+        </div>
+      </div>
+      <div class="f"><label>Divertikel</label>
+        <div class="chips" id="divertikelG">
+          <div class="chip" onclick="pick(this,'divertikelG')">Tidak</div>
+          <div class="chip" onclick="pick(this,'divertikelG')">Ya</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ct">🔊 USG</div>
+    <div class="f"><label>Massa Ginjal</label>
+      <div class="chips" id="massaGinjalUSGG">
+        <div class="chip" onclick="pick(this,'massaGinjalUSGG')">Tidak</div>
+        <div class="chip" onclick="pick(this,'massaGinjalUSGG')">Ya</div>
+      </div>
+    </div>
+    <div class="f"><label>Lokasi & Ukuran Massa Ginjal</label><input type="text" id="massaGinjalUSGDetail" placeholder="Lokasi, padat/cair, ukuran"></div>
+    <div class="f"><label>USG Ginjal Kanan</label>
+      <div class="chips" id="usgGinjalKananG">
+        <div class="chip" onclick="toggle(this)">Normal</div>
+        <div class="chip" onclick="toggle(this)">Massa</div>
+        <div class="chip" onclick="toggle(this)">Kista</div>
+        <div class="chip" onclick="toggle(this)">Hidronefrosis</div>
+      </div>
+    </div>
+    <div class="g2">
+      <div class="f"><label>Ukuran Massa Kanan</label><input type="text" id="massaGinjalKananUSG" placeholder="cm x cm"></div>
+      <div class="f"><label>Sifat Massa Kanan</label>
+        <div class="chips" id="sifatMassaKananG">
+          <div class="chip" onclick="pick(this,'sifatMassaKananG')">Padat</div>
+          <div class="chip" onclick="pick(this,'sifatMassaKananG')">Cair</div>
+          <div class="chip" onclick="pick(this,'sifatMassaKananG')">Campuran</div>
+        </div>
+      </div>
+    </div>
+    <div class="f"><label>USG Ginjal Kiri</label>
+      <div class="chips" id="usgGinjalKiriG">
+        <div class="chip" onclick="toggle(this)">Normal</div>
+        <div class="chip" onclick="toggle(this)">Massa</div>
+        <div class="chip" onclick="toggle(this)">Kista</div>
+        <div class="chip" onclick="toggle(this)">Hidronefrosis</div>
+      </div>
+    </div>
+    <div class="g2">
+      <div class="f"><label>Ukuran Massa Kiri</label><input type="text" id="massaGinjalKiriUSG" placeholder="cm x cm"></div>
+      <div class="f"><label>Sifat Massa Kiri</label>
+        <div class="chips" id="sifatMassaKiriG">
+          <div class="chip" onclick="pick(this,'sifatMassaKiriG')">Padat</div>
+          <div class="chip" onclick="pick(this,'sifatMassaKiriG')">Cair</div>
+          <div class="chip" onclick="pick(this,'sifatMassaKiriG')">Campuran</div>
+        </div>
+      </div>
+    </div>
+    <div class="f"><label>Massa Testis</label>
+      <div class="chips" id="massaTestisG">
+        <div class="chip" onclick="pick(this,'massaTestisG')">Tidak</div>
+        <div class="chip" onclick="pick(this,'massaTestisG')">Ya</div>
+      </div>
+    </div>
+    <div class="f"><label>Detail Massa Testis</label><input type="text" id="massaTestisDetail" placeholder="Padat/cair, ukuran"></div>
+  </div>
+
+  <div class="card">
+    <div class="ct">🖥️ CT Scan / MRI / Bone Scan</div>
+    <div class="f"><label>CT Scan</label>
+      <div class="chips" id="ctG">
+        <div class="chip" onclick="pick(this,'ctG')">Tidak dilakukan</div>
+        <div class="chip" onclick="pick(this,'ctG')">Dilakukan</div>
+      </div>
+    </div>
+    <div class="f"><label>Hasil CT Scan</label><textarea id="ctHasil" rows="2" placeholder="Hasil CT Scan"></textarea></div>
+    <div class="f"><label>MRI</label>
+      <div class="chips" id="mriG">
+        <div class="chip" onclick="pick(this,'mriG')">Tidak dilakukan</div>
+        <div class="chip" onclick="pick(this,'mriG')">Dilakukan</div>
+      </div>
+    </div>
+    <div class="f"><label>Hasil MRI</label><textarea id="mriHasil" rows="2" placeholder="Hasil MRI"></textarea></div>
+    <div class="f"><label>Bone Scan</label>
+      <div class="chips" id="boneScanG">
+        <div class="chip" onclick="pick(this,'boneScanG')">Tidak dilakukan</div>
+        <div class="chip" onclick="pick(this,'boneScanG')">Dilakukan</div>
+      </div>
+    </div>
+    <div class="f"><label>Hasil Bone Scan</label><textarea id="boneScanHasil" rows="2" placeholder="Hasil Bone Scan"></textarea></div>
+  </div>
+
+  <div class="nav-btns">
+    <div class="hbtn" style="flex:1;text-align:center" onclick="goTab(3)">← Kembali</div>
+    <div class="hbtn pri" style="flex:1;text-align:center" onclick="goTab(5)">Lanjut →</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     5 · TINDAKAN
+══════════════════════════════════════ -->
+<div class="sec" id="t5">
+  <div class="sec-title">Tindakan</div>
+  <div class="sec-sub">Biopsi, TUR, Operasi, Terapi</div>
+
+  <div class="card">
+    <div class="ct">🔬 Biopsi</div>
+    <div class="f"><label>Tanggal Biopsi</label><input type="date" id="tglBiopsi"></div>
+    <div class="f"><label>Hasil PA Biopsi</label><textarea id="paBiopsi" rows="2" placeholder="Hasil patologi anatomi biopsi"></textarea></div>
+  </div>
+
+  <div class="card">
+    <div class="ct">🔭 TUR (Transurethral Resection)</div>
+    <div class="f"><label>Tanggal TUR</label><input type="date" id="tglTUR"></div>
+    <div class="f"><label>Hasil PA TUR</label><textarea id="paTUR" rows="2" placeholder="Hasil patologi anatomi TUR"></textarea></div>
+  </div>
+
+  <div class="card">
+    <div class="ct">⚕️ Operasi Terbuka</div>
+    <div class="f"><label>Tanggal Operasi</label><input type="date" id="tglOp"></div>
+    <div class="f"><label>Jenis Operasi</label><input type="text" id="jenisOp" placeholder="Jenis operasi"></div>
+    <div class="f"><label>Operator</label><input type="text" id="operator" placeholder="Nama operator"></div>
+    <div class="f"><label>Dokter Anestesi</label><input type="text" id="dokterAnestesi" placeholder="Nama dokter anestesi"></div>
+    <div class="g2">
+      <div class="f"><label>Lama Operasi (menit)</label><input type="number" id="lamaOp" placeholder="menit"></div>
+      <div class="f"><label>Jumlah Perdarahan (cc)</label><input type="number" id="perdarahan" placeholder="cc"></div>
+    </div>
+    <div class="f"><label>Jumlah Transfusi (cc)</label><input type="number" id="transfusi" placeholder="cc"></div>
+    <div class="f"><label>Temuan Intraoperasi</label><textarea id="temuanIntraop" rows="2" placeholder="Temuan saat operasi"></textarea></div>
+    <div class="f"><label>Penyulit Operasi</label><textarea id="penyulit" rows="2" placeholder="Penyulit yang terjadi"></textarea></div>
+    <div class="f"><label>Hasil PA Operasi</label><textarea id="paOp" rows="2" placeholder="Hasil patologi anatomi operasi"></textarea></div>
+  </div>
+
+  <div class="card">
+    <div class="ct">☢️ Radioterapi</div>
+    <div class="f"><label>Jenis Radioterapi</label>
+      <div class="chips" id="radioterapiG">
+        <div class="chip" onclick="pick(this,'radioterapiG')">Tidak</div>
+        <div class="chip" onclick="pick(this,'radioterapiG')">Eksternal</div>
+        <div class="chip" onclick="pick(this,'radioterapiG')">Internal</div>
+        <div class="chip" onclick="pick(this,'radioterapiG')">Brachyterapi</div>
+      </div>
+    </div>
+    <div class="g2">
+      <div class="f"><label>Dosis (cGy/Rad)</label><input type="text" id="dosisRadio" placeholder="cGy/Rad"></div>
+      <div class="f"><label>Tanggal</label><input type="date" id="tglRadio"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ct">💊 Sitostatika (Kemoterapi)</div>
+    <div class="f"><label>Nama Obat</label><input type="text" id="namaKemo" placeholder="Nama sitostatika"></div>
+    <div class="f"><label>Siklus Ke</label>
+      <div class="chips" id="siklusG">
+        <div class="chip" onclick="pick(this,'siklusG')">I</div>
+        <div class="chip" onclick="pick(this,'siklusG')">II</div>
+        <div class="chip" onclick="pick(this,'siklusG')">III</div>
+        <div class="chip" onclick="pick(this,'siklusG')">IV</div>
+        <div class="chip" onclick="pick(this,'siklusG')">V</div>
+        <div class="chip" onclick="pick(this,'siklusG')">VI</div>
+      </div>
+    </div>
+    <div class="f"><label>Efek Samping</label>
+      <div class="chips" id="efekSampingG">
+        <div class="chip" onclick="toggle(this)">Mual</div>
+        <div class="chip" onclick="toggle(this)">Muntah</div>
+        <div class="chip" onclick="toggle(this)">Diare</div>
+        <div class="chip" onclick="toggle(this)">Leukopenia</div>
+        <div class="chip" onclick="toggle(this)">Trombositopenia</div>
+        <div class="chip" onclick="toggle(this)">Alopesia</div>
+        <div class="chip" onclick="toggle(this)">Perdarahan</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ct">🧬 Terapi Hormonal & Lain</div>
+    <div class="f"><label>Terapi Hormonal</label>
+      <div class="chips" id="hormonalG">
+        <div class="chip" onclick="pick(this,'hormonalG')">Tidak</div>
+        <div class="chip" onclick="pick(this,'hormonalG')">Operatif</div>
+        <div class="chip" onclick="pick(this,'hormonalG')">Medikamentosa</div>
+      </div>
+    </div>
+    <div class="f"><label>Nama / Dosis Hormonal</label><input type="text" id="hormonalDetail" placeholder="Nama obat dan dosis"></div>
+    <div class="f"><label>Terapi Lain</label><textarea id="terapiLain" rows="2" placeholder="Terapi lain yang diberikan"></textarea></div>
+  </div>
+
+  <div class="nav-btns">
+    <div class="hbtn" style="flex:1;text-align:center" onclick="goTab(4)">← Kembali</div>
+    <div class="hbtn pri" style="flex:1;text-align:center" onclick="goTab(6)">Lanjut →</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     6 · DIAGNOSA AKHIR
+══════════════════════════════════════ -->
+<div class="sec" id="t6">
+  <div class="sec-title">Diagnosa Akhir</div>
+  <div class="sec-sub">Staging TNM final</div>
+
+  <div class="card">
+    <div class="ct">🏥 Diagnosa Akhir</div>
+    <div class="f">
+      <textarea id="diagFinal" rows="2" placeholder="contoh: Transitional Cell Carcinoma, Squamous Cell Carcinoma, dll"></textarea>
+    </div>
+    <div class="f"><label>Stadium Akhir</label>
+      <div class="chips" id="stadiumAkhirG">
+        <div class="chip" onclick="pick(this,'stadiumAkhirG')">I</div>
+        <div class="chip" onclick="pick(this,'stadiumAkhirG')">II</div>
+        <div class="chip" onclick="pick(this,'stadiumAkhirG')">III</div>
+        <div class="chip" onclick="pick(this,'stadiumAkhirG')">IV</div>
+      </div>
+    </div>
+    <div class="g3">
+      <div class="f"><label>T</label><input type="text" id="tStage" placeholder="T0-T4"></div>
+      <div class="f"><label>N</label><input type="text" id="nStage" placeholder="N0-N3"></div>
+      <div class="f"><label>M</label><input type="text" id="mStage" placeholder="M0-M1"></div>
+    </div>
+    <div class="f"><label>No. ICD Final</label><input type="text" id="noICDFinal" placeholder="Kode ICD"></div>
+  </div>
+
+  <div class="card">
+    <div class="ct">📊 Keadaan Umum Waktu KSR</div>
+    <div class="f"><label>Skor Karnofsky</label>
+      <div class="chips" id="karnofskyG">
+        <div class="chip" onclick="pick(this,'karnofskyG')">100</div>
+        <div class="chip" onclick="pick(this,'karnofskyG')">90</div>
+        <div class="chip" onclick="pick(this,'karnofskyG')">80</div>
+        <div class="chip" onclick="pick(this,'karnofskyG')">70</div>
+        <div class="chip" onclick="pick(this,'karnofskyG')">60</div>
+        <div class="chip" onclick="pick(this,'karnofskyG')">50</div>
+        <div class="chip" onclick="pick(this,'karnofskyG')">40</div>
+        <div class="chip" onclick="pick(this,'karnofskyG')">30</div>
+        <div class="chip" onclick="pick(this,'karnofskyG')">20</div>
+        <div class="chip" onclick="pick(this,'karnofskyG')">10</div>
+      </div>
+    </div>
+    <div class="f"><label>ECOG Score KSR</label>
+      <div class="chips" id="ecogKSRG">
+        <div class="chip" onclick="pick(this,'ecogKSRG')">0</div>
+        <div class="chip" onclick="pick(this,'ecogKSRG')">1</div>
+        <div class="chip" onclick="pick(this,'ecogKSRG')">2</div>
+        <div class="chip" onclick="pick(this,'ecogKSRG')">3</div>
+        <div class="chip" onclick="pick(this,'ecogKSRG')">4</div>
+        <div class="chip" onclick="pick(this,'ecogKSRG')">5</div>
+      </div>
+    </div>
+    <div class="f"><label>Catatan KSR</label><textarea id="catatanKSR" rows="2" placeholder="Catatan keadaan umum waktu KSR"></textarea></div>
+  </div>
+
+  <div class="nav-btns">
+    <div class="hbtn" style="flex:1;text-align:center" onclick="goTab(5)">← Kembali</div>
+    <div class="hbtn pri" style="flex:1;text-align:center" onclick="goTab(7)">Lanjut →</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     7 · PEMANTAUAN
+══════════════════════════════════════ -->
+<div class="sec" id="t7">
+  <div class="sec-title">Rencana Pemantauan</div>
+  <div class="sec-sub">Sesuai protokol onkologi urologi</div>
+
+  <div class="info-box">
+    <b>Pedoman Pemantauan:</b><br>
+    Tahun I: Setiap 3 bulan<br>
+    Tahun II: Setiap 4 bulan<br>
+    Tahun III: Setiap 6 bulan
+  </div>
+
+  <div class="card">
+    <div class="ct">📅 Tahun I — Setiap 3 Bulan</div>
+    <div class="f"><label>Bulan 3</label>
+      <div class="chips" id="fu3bG"><div class="chip" onclick="pick(this,'fu3bG')">Hadir</div><div class="chip" onclick="pick(this,'fu3bG')">Tidak Hadir</div></div>
+    </div>
+    <div class="f"><label>Catatan Bulan 3</label><textarea id="fuBulan3" rows="2" placeholder="Performance status, TNM, response"></textarea></div>
+    <div class="f"><label>Bulan 6</label>
+      <div class="chips" id="fu6bG"><div class="chip" onclick="pick(this,'fu6bG')">Hadir</div><div class="chip" onclick="pick(this,'fu6bG')">Tidak Hadir</div></div>
+    </div>
+    <div class="f"><label>Catatan Bulan 6</label><textarea id="fuBulan6" rows="2" placeholder="Performance status, TNM, response"></textarea></div>
+    <div class="f"><label>Bulan 9</label>
+      <div class="chips" id="fu9bG"><div class="chip" onclick="pick(this,'fu9bG')">Hadir</div><div class="chip" onclick="pick(this,'fu9bG')">Tidak Hadir</div></div>
+    </div>
+    <div class="f"><label>Catatan Bulan 9</label><textarea id="fuBulan9" rows="2" placeholder="Performance status, TNM, response"></textarea></div>
+    <div class="f"><label>Bulan 12</label>
+      <div class="chips" id="fu12bG"><div class="chip" onclick="pick(this,'fu12bG')">Hadir</div><div class="chip" onclick="pick(this,'fu12bG')">Tidak Hadir</div></div>
+    </div>
+    <div class="f"><label>Catatan Bulan 12</label><textarea id="fuBulan12" rows="2" placeholder="Performance status, TNM, response"></textarea></div>
+  </div>
+
+  <div class="card">
+    <div class="ct">📅 Tahun II — Setiap 4 Bulan</div>
+    <div class="f"><label>Bulan 16</label>
+      <div class="chips" id="fu16bG"><div class="chip" onclick="pick(this,'fu16bG')">Hadir</div><div class="chip" onclick="pick(this,'fu16bG')">Tidak Hadir</div></div>
+    </div>
+    <div class="f"><label>Catatan Bulan 16</label><textarea id="fuBulan16" rows="2" placeholder="Performance status, TNM, response"></textarea></div>
+    <div class="f"><label>Bulan 20</label>
+      <div class="chips" id="fu20bG"><div class="chip" onclick="pick(this,'fu20bG')">Hadir</div><div class="chip" onclick="pick(this,'fu20bG')">Tidak Hadir</div></div>
+    </div>
+    <div class="f"><label>Catatan Bulan 20</label><textarea id="fuBulan20" rows="2" placeholder="Performance status, TNM, response"></textarea></div>
+    <div class="f"><label>Bulan 24</label>
+      <div class="chips" id="fu24bG"><div class="chip" onclick="pick(this,'fu24bG')">Hadir</div><div class="chip" onclick="pick(this,'fu24bG')">Tidak Hadir</div></div>
+    </div>
+    <div class="f"><label>Catatan Bulan 24</label><textarea id="fuBulan24" rows="2" placeholder="Performance status, TNM, response"></textarea></div>
+  </div>
+
+  <div class="card">
+    <div class="ct">📅 Tahun III — Setiap 6 Bulan</div>
+    <div class="f"><label>Bulan 30</label>
+      <div class="chips" id="fu30bG"><div class="chip" onclick="pick(this,'fu30bG')">Hadir</div><div class="chip" onclick="pick(this,'fu30bG')">Tidak Hadir</div></div>
+    </div>
+    <div class="f"><label>Catatan Bulan 30</label><textarea id="fuBulan30" rows="2" placeholder="Performance status, TNM, response"></textarea></div>
+    <div class="f"><label>Bulan 36</label>
+      <div class="chips" id="fu36bG"><div class="chip" onclick="pick(this,'fu36bG')">Hadir</div><div class="chip" onclick="pick(this,'fu36bG')">Tidak Hadir</div></div>
+    </div>
+    <div class="f"><label>Catatan Bulan 36</label><textarea id="fuBulan36" rows="2" placeholder="Performance status, TNM, response"></textarea></div>
+  </div>
+
+  <div class="card">
+    <div class="ct">🔁 Status Rekurensi</div>
+    <div class="f"><label>Rekurensi</label>
+      <div class="chips" id="rekurensiG">
+        <div class="chip" onclick="pick(this,'rekurensiG')">Tidak</div>
+        <div class="chip" onclick="pick(this,'rekurensiG')">Klinis</div>
+        <div class="chip" onclick="pick(this,'rekurensiG')">Imaging</div>
+        <div class="chip" onclick="pick(this,'rekurensiG')">Lab</div>
+        <div class="chip" onclick="pick(this,'rekurensiG')">Tumor Marker</div>
+      </div>
+    </div>
+    <div class="f"><label>Catatan Rekurensi</label><textarea id="rekurensiNote" rows="2" placeholder="Jelaskan rekurensi"></textarea></div>
+  </div>
+
+  <div style="margin-top:16px">
+    <button class="btn btn-ok" onclick="saveRec()">💾 Simpan Data Pasien</button>
+  </div>
+  <div class="nav-btns" style="margin-top:8px">
+    <div class="hbtn" style="flex:1;text-align:center" onclick="goTab(6)">← Kembali</div>
+    <div class="hbtn" style="flex:1;text-align:center" onclick="goTab(8)">📊 Lihat Data</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     8 · DATA
+══════════════════════════════════════ -->
+<div class="sec" id="t8">
+  <div class="sec-title">Data Pasien</div>
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input type="text" placeholder="Cari nama / No. register…" oninput="renderList(this.value)">
+  </div>
+  <div id="dataList"></div>
+</div>
+
+<!-- ══════════════════════════════════════
+     9 · SETUP
+══════════════════════════════════════ -->
+<div class="sec" id="t9">
+  <div class="card">
+    <div class="ct">☁️ Google Sheets — Koneksi</div>
+    <div class="f"><label>URL Web App</label>
+      <input type="text" id="sheetUrl" placeholder="https://script.google.com/macros/s/…/exec"
+        style="font-size:11px;font-family:var(--mono)">
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:10px">
+      <div class="hbtn" style="flex:1;text-align:center" onclick="testConn()">🔗 Test</div>
+      <div class="hbtn pri" style="flex:1;text-align:center" onclick="saveUrl()">💾 Simpan URL</div>
+    </div>
+    <div id="connStatus" style="font-size:11px;color:var(--muted);text-align:center;min-height:16px"></div>
+  </div>
+  <div class="card">
+    <div class="ct">📊 Status Lokal</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <div style="background:var(--bg);border:1px solid var(--bdr);border-radius:8px;padding:12px;text-align:center">
+        <div id="statTotal" style="font-family:var(--mono);font-size:28px;font-weight:700;color:var(--acc)">0</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:2px">Total Pasien</div>
+      </div>
+      <div style="background:var(--bg);border:1px solid var(--bdr);border-radius:8px;padding:12px;text-align:center">
+        <div id="statQueue" style="font-family:var(--mono);font-size:28px;font-weight:700;color:var(--warn)">0</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:2px">Antri Kirim</div>
+      </div>
+    </div>
+    <div style="margin-top:10px;display:flex;gap:8px">
+      <div class="hbtn" style="flex:1;text-align:center;font-size:11px" onclick="flushQueue()">📤 Kirim Antrian</div>
+      <div class="hbtn" style="flex:1;text-align:center;font-size:11px" onclick="refreshStats()">🔄 Refresh</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ct">📁 Export / Import</div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div class="hbtn" style="text-align:center" onclick="exportJSON()">⬇️ Export Backup JSON</div>
+      <div class="hbtn" style="text-align:center" onclick="exportCSV()">⬇️ Export CSV (Excel)</div>
+      <label class="hbtn" style="text-align:center;cursor:pointer;display:block">
+        ⬆️ Import JSON
+        <input type="file" id="importFile" accept=".json" onchange="importJSON(this)" style="display:none">
+      </label>
+    </div>
+    <div id="importStatus" style="font-size:11px;color:var(--muted);margin-top:8px;text-align:center"></div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal" id="detailModal">
+  <div class="modal-box">
+    <div class="modal-title" id="modalTitle">Detail Pasien</div>
+    <div id="modalBody"></div>
+    <div style="display:flex;gap:8px;margin-top:16px">
+      <button class="btn btn-pri" style="background:var(--acc);color:#fff" onclick="editRec()">✏️ Edit</button>
+      <button class="btn btn-danger" onclick="deleteRec()">🗑 Hapus</button>
+      <button class="btn btn-sec" onclick="closeModal()">Tutup</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let DB = JSON.parse(localStorage.getItem('onkoginjal_v1')||'[]');
+let SURL = localStorage.getItem('onkoginjal_url')||'';
+let sendQueue = JSON.parse(localStorage.getItem('onkoginjal_queue')||'[]');
+let editId = null;
+let currentRec = null;
+
+function goTab(i){
+  document.querySelectorAll('.sec').forEach((s,idx)=>s.classList.toggle('on',idx===i));
+  document.querySelectorAll('.ntab').forEach((t,idx)=>t.classList.toggle('on',idx===i));
+  document.getElementById('progBar').style.width=Math.round((i+1)/10*100)+'%';
+  window.scrollTo(0,0);
+  if(i===8) renderList('');
+  if(i===9) refreshStats();
+}
+
+function pick(el,g){
+  document.querySelectorAll('#'+g+' .chip').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');
+}
+
+function toggle(el){ el.classList.toggle('on'); }
+
+function getChip(g){
+  const on=document.querySelector('#'+g+' .chip.on');
+  return on?on.textContent.trim():'';
+}
+
+function getMultiChip(g){
+  return [...document.querySelectorAll('#'+g+' .chip.on')].map(c=>c.textContent.trim()).join(', ');
+}
+
+function v(id){ return (document.getElementById(id)||{}).value||''; }
+
+function hitungUmur(){
+  const tgl=document.getElementById('tglLahir').value;
+  if(!tgl) return;
+  const lahir=new Date(tgl), now=new Date();
+  let th=now.getFullYear()-lahir.getFullYear(), bln=now.getMonth()-lahir.getMonth();
+  if(bln<0){th--;bln+=12;}
+  document.getElementById('umur').value=th>0?`${th} tahun ${bln} bulan`:`${bln} bulan`;
+}
+
+function hitungLamaRawat(){
+  const masuk=document.getElementById('tglMasuk').value;
+  const pulang=document.getElementById('tglPulang').value;
+  if(!masuk||!pulang) return;
+  const diff=Math.round((new Date(pulang)-new Date(masuk))/(1000*60*60*24));
+  document.getElementById('lamaRawat').value=diff>=0?diff+' hari':'';
+}
+
+function hitungBMI(){
+  const bb=parseFloat(v('bb')), tb=parseFloat(v('tb'));
+  if(bb&&tb){ document.getElementById('bmi').value=(bb/((tb/100)**2)).toFixed(1); }
+}
+
+async function saveRec(){
+  const nama=v('nama');
+  if(!nama){toast('Nama pasien wajib diisi','er');goTab(0);return;}
+
+  const id=editId||Date.now();
+  const rec={
+    id, tindakan:'oncology', _form:'onkologi_ginjal',
+    timestamp:new Date().toISOString(),
+    // Identitas
+    nama, noReg:v('noReg'), jk:getChip('jkG'),
+    tglLahir:v('tglLahir'), umur:v('umur'),
+    tglMasuk:v('tglMasuk'), tglPulang:v('tglPulang'),
+    lamaRawat:v('lamaRawat'), tglMeninggal:v('tglMeninggal'),
+    pekerjaan:v('pekerjaan'), statusKawin:getChip('statusKawinG'),
+    alamat:v('alamat'), telp:v('telp'),
+    caraDatang:getChip('caraDatangG'), tglKunjungan:v('tglKunjungan'),
+    diagAkhir:v('diagAkhir'), stadium:getChip('stadiumG'),
+    grade:getChip('gradeG'), noICD:v('noICD'),
+    // Keluhan
+    hematuria:getChip('hematuriaG'), hematuriaHari:v('hematuriaHari'), hematuria_Bulan:v('hematuria_Bulan'),
+    tumorKeluhan:getChip('tumorKeluhanG'), tumorHari:v('tumorHari'), tumorBulan:v('tumorBulan'),
+    disuria:getChip('disuriaG'), disuriaHari:v('disuriaHari'), disuria_Bulan:v('disuria_Bulan'),
+    retensi:getChip('retensiG'), retensiHari:v('retensiHari'), retensiBulan:v('retensiBulan'),
+    keluhanLain:v('keluhanLain'), keluhanLainHari:v('keluhanLainHari'), keluhanLainBulan:v('keluhanLainBulan'),
+    riwBatu:getChip('riwBatuG'), lokasiBatu:getChip('lokasibatuG'),
+    tindakanBatu:v('tindakanBatu'), riwOpUrologi:v('riwOpUrologi'),
+    riwOpDimana:v('riwOpDimana'), riwKeluarga:v('riwKeluarga'), merokok:getChip('merokokG'),
+    // Fisik
+    td:v('td'), nadi:v('nadi'), bb:v('bb'), tb:v('tb'), bmi:v('bmi'),
+    ecog:getChip('ecogG'), ku:getChip('kuG'),
+    massaAbdomen:getChip('massaAbdomenG'), abdomenNote:v('abdomenNote'),
+    massaGinjalKanan:getChip('massaGinjalKananG'), massaGinjalKiri:getChip('massaGinjalKiriG'),
+    ukuranGinjalKanan:v('ukuranGinjalKanan'), ukuranGinjalKiri:v('ukuranGinjalKiri'),
+    sifatGinjalKanan:getChip('sifatGinjalKananG'), sifatGinjalKiri:getChip('sifatGinjalKiriG'),
+    mobilGinjalKanan:getChip('mobilGinjalKananG'), mobilGinjalKiri:getChip('mobilGinjalKiriG'),
+    nyeriGinjalKanan:getChip('nyeriGinjalKananG'), nyeriGinjalKiri:getChip('nyeriGinjalKiriG'),
+    buliBuli:getChip('buliBuliG'), sirkumsisi:getChip('sirkumsisiG'),
+    penis:getChip('penisG'), ukuranTumorPenis:v('ukuranTumorPenis'), kelainanPenis:v('kelainanPenis'),
+    testisKanan:v('testisKanan'), testisKiri:v('testisKiri'),
+    hidrokelKanan:getChip('hidrokelKananG'), hidrokelKiri:getChip('hidrokelKiriG'),
+    kgbInguinalKanan:v('kgbInguinalKanan'), kgbInguinalKiri:v('kgbInguinalKiri'), kgbSupra:v('kgbSupra'),
+    beratProstat:v('beratProstat'), permukaanProstat:getChip('permukaanProstatG'),
+    konsistensiProstat:getChip('konsistensiProstatG'), nyeriProstat:getChip('nyeriProstatG'),
+    // Lab
+    tglLab:v('tglLab'), hb:v('hb'), leko:v('leko'), trombo:v('trombo'), led:v('led'), diff:v('diff'),
+    ureum:v('ureum'), kreatinin:v('kreatinin'), gdNormal:v('gdNormal'), gdPP:v('gdPP'),
+    eritrositUrin:v('eritrositUrin'), leukoUrin:v('leukoUrin'),
+    kultur:getChip('kulturG'), bakteri:v('bakteri'),
+    sitologi:getChip('sitologiG'), gradeSitologi:getChip('gradeSitologiG'),
+    psa:v('psa'), tglPSA:v('tglPSA'), tglKateter:v('tglKateter'),
+    afp:v('afp'), bhcg:v('bhcg'), ldh:v('ldh'), alkFos:v('alkFos'),
+    kalsium:v('kalsium'), tumorMarkerLain:v('tumorMarkerLain'),
+    // Imaging
+    xThorax:v('xThorax'),
+    fungsiGinjalKanan:getChip('fungsiGinjalKananG'), fungsiGinjalKiri:getChip('fungsiGinjalKiriG'),
+    hidroKanan:getChip('hidroKananG'), hidroKiri:getChip('hidroKiriG'),
+    batuIVP:getChip('batuIVPG'), batuIVPDetail:v('batuIVPDetail'),
+    sol:getChip('solG'), divertikel:getChip('divertikelG'),
+    massaGinjalUSG:getChip('massaGinjalUSGG'), massaGinjalUSGDetail:v('massaGinjalUSGDetail'),
+    usgProstat:getChip('usgProstatG'), lesiProstat:getChip('lesiProstatG'),
+    lesiProstatLokasi:v('lesiProstatLokasi'), volProstat:v('volProstat'),
+    massaTestis:getChip('massaTestisG'), massaTestisDetail:v('massaTestisDetail'),
+    ct:getChip('ctG'), ctHasil:v('ctHasil'),
+    mri:getChip('mriG'), mriHasil:v('mriHasil'),
+    boneScan:getChip('boneScanG'), boneScanHasil:v('boneScanHasil'),
+    // Tindakan
+    tglBiopsi:v('tglBiopsi'), paBiopsi:v('paBiopsi'),
+    tglTUR:v('tglTUR'), paTUR:v('paTUR'),
+    tglOp:v('tglOp'), jenisOp:v('jenisOp'), operator:v('operator'),
+    dokterAnestesi:v('dokterAnestesi'), lamaOp:v('lamaOp'),
+    perdarahan:v('perdarahan'), transfusi:v('transfusi'),
+    temuanIntraop:v('temuanIntraop'), penyulit:v('penyulit'), paOp:v('paOp'),
+    radioterapi:getChip('radioterapiG'), dosisRadio:v('dosisRadio'), tglRadio:v('tglRadio'),
+    namaKemo:v('namaKemo'), siklus:getChip('siklusG'), efekSamping:getMultiChip('efekSampingG'),
+    hormonal:getChip('hormonalG'), hormonalDetail:v('hormonalDetail'), terapiLain:v('terapiLain'),
+    // Diagnosa
+    diagFinal:v('diagFinal'), stadiumAkhir:getChip('stadiumAkhirG'),
+    tStage:v('tStage'), nStage:v('nStage'), mStage:v('mStage'), noICDFinal:v('noICDFinal'),
+    karnofsky:getChip('karnofskyG'), ecogKSR:getChip('ecogKSRG'), catatanKSR:v('catatanKSR'),
+    // Pemantauan
+    fu3bStatus:getChip('fu3bG'), fuBulan3:v('fuBulan3'),
+    fu6bStatus:getChip('fu6bG'), fuBulan6:v('fuBulan6'),
+    fu9bStatus:getChip('fu9bG'), fuBulan9:v('fuBulan9'),
+    fu12bStatus:getChip('fu12bG'), fuBulan12:v('fuBulan12'),
+    fu16bStatus:getChip('fu16bG'), fuBulan16:v('fuBulan16'),
+    fu20bStatus:getChip('fu20bG'), fuBulan20:v('fuBulan20'),
+    fu24bStatus:getChip('fu24bG'), fuBulan24:v('fuBulan24'),
+    fu30bStatus:getChip('fu30bG'), fuBulan30:v('fuBulan30'),
+    fu36bStatus:getChip('fu36bG'), fuBulan36:v('fuBulan36'),
+    rekurensi:getChip('rekurensiG'), rekurensiNote:v('rekurensiNote'),
+  };
+
+  if(editId){const i=DB.findIndex(r=>r.id===editId);if(i>=0)DB[i]=rec;else DB.push(rec);}
+  else DB.push(rec);
+  localStorage.setItem('onkoginjal_v1',JSON.stringify(DB));
+
+  if(SURL){
+    const ok=await sendToSheets(rec);
+    if(ok) toast('✅ Tersimpan & terkirim ke Sheets','ok');
+    else{sendQueue.push(rec);saveQueue();toast('✅ Lokal tersimpan — antri kirim','wn');}
+  } else {
+    toast(editId?'✅ Data diperbarui':'✅ Data tersimpan!','ok');
+  }
+  refreshStats(); editId=null; reset(); goTab(8);
+}
+
+function reset(){
+  document.querySelectorAll('input:not([type=file]),textarea').forEach(el=>{if(!['button','submit'].includes(el.type))el.value='';});
+  document.querySelectorAll('.chip.on').forEach(el=>el.classList.remove('on'));
+}
+
+function renderList(q=''){
+  const el=document.getElementById('dataList');
+  const filtered=DB.filter(r=>(r.nama||'').toLowerCase().includes(q.toLowerCase())||(r.noReg||'').toLowerCase().includes(q.toLowerCase())).reverse();
+  if(!filtered.length){el.innerHTML='<div class="empty"><div class="empty-icon">📋</div><div>Belum ada data</div></div>';return;}
+  el.innerHTML=filtered.map(r=>`<div class="rec-card" onclick="showDetail('${r.id}')">
+    <div class="rec-name">${r.nama||'—'}</div>
+    <div class="rec-sub">No. Reg: ${r.noReg||'—'} · ${r.jk||'—'} · ${r.umur||'—'}</div>
+    <div class="rec-sub">Diagnosa: ${r.diagAkhir||'—'}</div>
+    <div class="rec-sub">Stadium: ${r.stadiumAkhir||r.stadium||'—'} · T${r.tStage||'?'} N${r.nStage||'?'} M${r.mStage||'?'}</div>
+    ${r.rekurensi&&r.rekurensi!=='Tidak'?'<div class="rec-sub" style="color:var(--danger)">⚠️ Rekurensi: '+r.rekurensi+'</div>':''}
+  </div>`).join('');
+}
+
+function showDetail(id){
+  currentRec=DB.find(r=>String(r.id)===String(id));
+  if(!currentRec)return;
+  const r=currentRec;
+  document.getElementById('modalTitle').textContent=r.nama||'Detail Pasien';
+  const rows=[
+    ['No. Register',r.noReg],['JK',r.jk],['Umur',r.umur],
+    ['Tgl Masuk',r.tglMasuk],['Tgl Pulang',r.tglPulang],['Lama Rawat',r.lamaRawat],
+    ['Diagnosa',r.diagAkhir],['Stadium',r.stadiumAkhir||r.stadium],
+    ['TNM','T'+r.tStage+' N'+r.nStage+' M'+r.mStage],
+    ['ECOG',r.ecog],['Karnofsky',r.karnofsky],
+    ['Tgl Operasi',r.tglOp],['Jenis Operasi',r.jenisOp],
+    ['Operator',r.operator],['Lama Op',r.lamaOp+' mnt'],
+    ['Radioterapi',r.radioterapi],['Kemoterapi',r.namaKemo],
+    ['Rekurensi',r.rekurensi],
+  ];
+  document.getElementById('modalBody').innerHTML=rows.map(([k,v])=>`<div class="detail-row"><span class="detail-key">${k}</span><span class="detail-val">${v||'—'}</span></div>`).join('');
+  document.getElementById('detailModal').classList.add('on');
+}
+
+function closeModal(){document.getElementById('detailModal').classList.remove('on');}
+
+function editRec(){
+  if(!currentRec){closeModal();return;}
+  editId=currentRec.id;
+  const r=currentRec;
+  closeModal();
+  const fields=['nama','noReg','tglLahir','umur','tglMasuk','tglPulang','lamaRawat','tglMeninggal',
+    'pekerjaan','alamat','telp','tglKunjungan','diagAkhir','noICD',
+    'hematuriaHari','tumorHari','tumorBulan','disuriaHari','retensiBulan','keluhanLain',
+    'tindakanBatu','riwOpUrologi','riwOpDimana','riwKeluarga',
+    'td','nadi','bb','tb','bmi','abdomenNote',
+    'ukuranGinjalKanan','ukuranGinjalKiri','ukuranTumorPenis','kelainanPenis',
+    'testisKanan','testisKiri','kgbInguinalKanan','kgbInguinalKiri','kgbSupra',
+    'beratProstat','tglLab','hb','leko','trombo','led','diff',
+    'ureum','kreatinin','gdNormal','gdPP','eritrositUrin','leukoUrin','bakteri',
+    'psa','afp','bhcg','ldh','alkFos','kalsium','tumorMarkerLain',
+    'xThorax','batuIVPDetail','massaGinjalUSGDetail','lesiProstatLokasi','volProstat','massaTestisDetail',
+    'ctHasil','mriHasil','boneScanHasil',
+    'tglBiopsi','paBiopsi','tglTUR','paTUR',
+    'tglOp','jenisOp','operator','dokterAnestesi','lamaOp','perdarahan','transfusi',
+    'temuanIntraop','penyulit','paOp','dosisRadio','namaKemo','hormonalDetail','terapiLain',
+    'diagFinal','tStage','nStage','mStage','noICDFinal','catatanKSR',
+    'fuBulan3','fuBulan6','fuBulan9','fuBulan12','fuBulan16','fuBulan20',
+    'fuBulan24','fuBulan30','fuBulan36','rekurensiNote'];
+  fields.forEach(id=>{const el=document.getElementById(id);if(el&&r[id])el.value=r[id];});
+  goTab(0);
+  toast('Mode edit — lengkapi dan simpan','wn');
+}
+
+function deleteRec(){
+  if(!currentRec)return;
+  if(!confirm('Hapus data '+currentRec.nama+'?'))return;
+  DB=DB.filter(r=>r.id!==currentRec.id);
+  localStorage.setItem('onkoginjal_v1',JSON.stringify(DB));
+  closeModal();renderList('');refreshStats();
+  toast('🗑 Data dihapus','er');
+}
+
+async function sendToSheets(rec){
+  if(!SURL)return false;
+  try{await fetch(SURL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(rec)});return true;}
+  catch{return false;}
+}
+
+function saveQueue(){localStorage.setItem('onkoginjal_queue',JSON.stringify(sendQueue));}
+
+async function flushQueue(){
+  if(!SURL){toast('URL belum disimpan','er');return;}
+  if(!sendQueue.length){toast('Tidak ada antrian','ok');return;}
+  const failed=[];
+  for(const rec of sendQueue){const ok=await sendToSheets(rec);if(!ok)failed.push(rec);}
+  sendQueue=failed;saveQueue();refreshStats();
+  toast(failed.length?'⚠ '+failed.length+' gagal':'✅ Semua terkirim','ok');
+}
+
+window.addEventListener('online',()=>{if(sendQueue.length)flushQueue();});
+
+function refreshStats(){
+  document.getElementById('statTotal').textContent=DB.length;
+  document.getElementById('statQueue').textContent=sendQueue.length;
+}
+
+async function testConn(){
+  const url=document.getElementById('sheetUrl').value.trim();
+  if(!url){toast('Isi URL dulu','er');return;}
+  const el=document.getElementById('connStatus');
+  el.textContent='⏳ Testing…';
+  try{await fetch(url,{mode:'no-cors'});el.textContent='✅ Terhubung — klik Simpan';el.style.color='var(--acc2)';}
+  catch{el.textContent='❌ Tidak dapat terkoneksi';el.style.color='var(--danger)';}
+}
+
+function saveUrl(){
+  const url=document.getElementById('sheetUrl').value.trim();
+  if(!url){toast('Isi URL dulu','er');return;}
+  SURL=url;localStorage.setItem('onkoginjal_url',url);
+  toast('✅ URL disimpan','ok');
+  document.getElementById('connStatus').textContent='✅ URL tersimpan';
+  document.getElementById('connStatus').style.color='var(--acc2)';
+  refreshStats();
+}
+
+function exportJSON(){
+  if(!DB.length){toast('Tidak ada data','er');return;}
+  const blob=new Blob([JSON.stringify(DB,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='onkobuli_backup_'+new Date().toISOString().slice(0,10)+'.json';a.click();
+  toast('✅ Backup didownload','ok');
+}
+
+function exportCSV(){
+  if(!DB.length){toast('Tidak ada data','er');return;}
+  const keys=Object.keys(DB[0]);
+  const rows=[keys.join(',')];
+  DB.forEach(r=>rows.push(keys.map(k=>{const val=String(r[k]??'').replace(/"/g,'""');return val.includes(',')||val.includes('"')?`"${val}"`:val;}).join(',')));
+  const blob=new Blob(['\uFEFF'+rows.join('\n')],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='onkobuli_'+new Date().toISOString().slice(0,10)+'.csv';a.click();
+  toast('✅ CSV didownload','ok');
+}
+
+function importJSON(input){
+  const file=input.files[0];if(!file)return;
+  const st=document.getElementById('importStatus');
+  st.textContent='⏳ Membaca…';
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const imported=JSON.parse(e.target.result);
+      if(!Array.isArray(imported))throw new Error('Format tidak valid');
+      const existing=new Set(DB.map(r=>r.id));
+      const newRecs=imported.filter(r=>!existing.has(r.id));
+      DB=[...DB,...newRecs];
+      localStorage.setItem('onkoginjal_v1',JSON.stringify(DB));
+      st.textContent=`✅ ${newRecs.length} data baru ditambahkan`;
+      st.style.color='var(--acc2)';
+      renderList('');refreshStats();
+    }catch(err){st.textContent='❌ Gagal: '+err.message;st.style.color='var(--danger)';}
+    input.value='';
+  };
+  reader.readAsText(file);
+}
+
+function toast(msg,type=''){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className='toast show '+type;
+  clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2600);
+}
+
+if(SURL)document.getElementById('sheetUrl').value=SURL;
+goTab(0);renderList('');refreshStats();
+</script>
+</body>
+</html>
