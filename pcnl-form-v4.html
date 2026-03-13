@@ -2280,7 +2280,7 @@ function saveQueue(){localStorage.setItem('pcnl_queue',JSON.stringify(sendQueue)
 
 async function sendToSheets(rec){
   if(!SURL) return;
-  const payload={...rec, tindakan:'pcnl', images:undefined, floroImages:undefined};
+  const payload={...rec, _form:'pcnl', images:undefined, floroImages:undefined};
   try{
     await fetch(SURL,{method:'POST',mode:'no-cors',
       headers:{'Content-Type':'application/json'},
