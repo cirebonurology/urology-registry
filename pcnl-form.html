@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#f2f2f7">
+<title>PCNL Registry</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f2f2f7;--surf:#fff;--card:#fff;--bdr:#d1d1d6;--acc:#007aff;--acc2:#34c759;--acc3:#ff9500;--txt:#1c1c1e;--muted:#8e8e93;--danger:#ff3b30;--warn:#ff9500;--r:13px;--fn:'DM Sans',sans-serif;--mono:'DM Mono',monospace}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:var(--fn);background:var(--bg);color:var(--txt);min-height:100vh;padding-bottom:80px}
+.nav{position:sticky;top:0;z-index:100;background:rgba(242,242,247,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--bdr);padding:0 12px;display:flex;align-items:center;gap:2px;overflow-x:auto;height:52px}
+.nav::-webkit-scrollbar{display:none}
+.ntab{flex-shrink:0;padding:6px 11px;border-radius:8px;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;white-space:nowrap;transition:all .18s}
+.ntab.on{background:var(--acc);color:#fff}
+.sec{display:none;padding:12px;max-width:600px;margin:0 auto}
+.sec.on{display:block}
+.card{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:16px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.ct{font-size:13px;font-weight:700;color:var(--acc);text-transform:uppercase;letter-spacing:.6px;margin-bottom:12px}
+.f{margin-bottom:12px}
+.f label{display:block;font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px}
+.req{color:var(--danger)}
+input[type=text],input[type=number],input[type=date],input[type=time],textarea,select{width:100%;background:var(--bg);border:1.5px solid var(--bdr);border-radius:9px;padding:10px 12px;font-size:14px;font-family:var(--fn);color:var(--txt);outline:none;transition:border .15s}
+input:focus,textarea:focus,select:focus{border-color:var(--acc)}
+textarea{resize:vertical;min-height:70px}
+select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238e8e93' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.chip{padding:6px 12px;border-radius:20px;border:1.5px solid var(--bdr);font-size:12px;font-weight:600;cursor:pointer;background:var(--bg);color:var(--muted);transition:all .15s;user-select:none}
+.chip.on{background:var(--acc);border-color:var(--acc);color:#fff}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.info-box{background:#f0f7ff;border:1px solid #c7e0ff;border-radius:9px;padding:10px 12px;font-size:12px;color:#0055cc;margin-bottom:12px;line-height:1.6}
+.btn{width:100%;padding:14px;border-radius:12px;border:none;font-size:15px;font-weight:700;font-family:var(--fn);cursor:pointer;transition:all .15s}
+.btn-ok{background:var(--acc2);color:#fff}
+.btn-danger{background:var(--danger);color:#fff}
+.btn-sec{background:var(--bg);border:1.5px solid var(--bdr);color:var(--txt)}
+.hbtn{padding:9px 14px;border-radius:9px;border:1.5px solid var(--bdr);font-size:12px;font-weight:600;cursor:pointer;background:var(--bg);color:var(--txt);transition:all .15s}
+.hbtn.pri{background:var(--acc);border-color:var(--acc);color:#fff}
+.hbtn.grn{background:var(--acc2);border-color:var(--acc2);color:#fff}
+.hbtn.red{background:var(--danger);border-color:var(--danger);color:#fff}
+.badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700;background:var(--acc);color:#fff;margin-left:6px}
+.badge.grn{background:var(--acc2)}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(80px);background:#1c1c1e;color:#fff;padding:10px 18px;border-radius:20px;font-size:13px;font-weight:600;opacity:0;transition:all .3s;z-index:999;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;align-items:flex-end}
+.modal-bg.show{display:flex}
+.modal{background:var(--surf);border-radius:20px 20px 0 0;padding:20px;width:100%;max-height:85vh;overflow-y:auto}
+.modal-title{font-size:16px;font-weight:700;margin-bottom:14px}
+.rec-row{background:var(--bg);border:1px solid var(--bdr);border-radius:10px;padding:12px 14px;margin-bottom:8px;cursor:pointer;transition:background .15s}
+.rec-row:hover{background:#e5e5ea}
+.rec-name{font-size:14px;font-weight:700}
+.rec-meta{font-size:12px;color:var(--muted);margin-top:3px}
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.stat-card{background:var(--bg);border:1px solid var(--bdr);border-radius:10px;padding:10px;text-align:center}
+.stat-val{font-size:22px;font-weight:800;color:var(--acc)}
+.stat-label{font-size:11px;color:var(--muted);margin-top:2px}
+.sep{height:1px;background:var(--bdr);margin:12px 0}
+.detail-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--bg);font-size:13px}
+.detail-row:last-child{border-bottom:none}
+.detail-key{color:var(--muted);flex:1}
+.detail-val{font-weight:600;flex:1;text-align:right}
+</style>
+</head>
+<body>
+
+<div class="nav" id="nav">
+  <div class="ntab on" onclick="goTab(0)">👤 Identitas</div>
+  <div class="ntab" onclick="goTab(1)">🔬 Diagnostik</div>
+  <div class="ntab" onclick="goTab(2)">🏥 Pre-Op</div>
+  <div class="ntab" onclick="goTab(3)">⚔️ Operasi</div>
+  <div class="ntab" onclick="goTab(4)">🧫 Batu</div>
+  <div class="ntab" onclick="goTab(5)">⚕️ Komplikasi</div>
+  <div class="ntab" onclick="goTab(6)">📈 Follow-up</div>
+  <div class="ntab" onclick="goTab(7)">📊 Data</div>
+  <div class="ntab" onclick="goTab(8)">⚙️ Setup</div>
+</div>
+
+<!-- TAB 0: IDENTITAS -->
+<div class="sec on" id="tab0">
+  <div class="card">
+    <div class="ct">🏥 PCNL Registry <span class="badge">PCNL</span></div>
+    <div class="info-box">Percutaneous Nephrolithotomy — RS Urologi Cirebon</div>
+    <div class="f">
+      <label>Nama Pasien <span class="req">*</span></label>
+      <input type="text" id="nama" placeholder="Nama lengkap pasien">
+    </div>
+    <div class="g2">
+      <div class="f">
+        <label>No. RM <span class="req">*</span></label>
+        <input type="text" id="no_rm" placeholder="No. Rekam Medis">
+      </div>
+      <div class="f">
+        <label>Tanggal Lahir</label>
+        <input type="date" id="tgl_lahir" onchange="hitungUmur()">
+      </div>
+    </div>
+    <div class="g2">
+      <div class="f">
+        <label>Umur (auto)</label>
+        <input type="text" id="umur" placeholder="Otomatis" readonly>
+      </div>
+      <div class="f">
+        <label>Jenis Kelamin</label>
+        <div class="chips">
+          <div class="chip" onclick="pick(this,'jk','L')">Laki-laki</div>
+          <div class="chip" onclick="pick(this,'jk','P')">Perempuan</div>
+        </div>
+        <input type="hidden" id="jk">
+      </div>
+    </div>
+    <div class="g2">
+      <div class="f">
+        <label>Tanggal Masuk</label>
+        <input type="date" id="tgl_masuk">
+      </div>
+      <div class="f">
+        <label>Tanggal Operasi</label>
+        <input type="date" id="tgl_operasi">
+      </div>
+    </div>
+    <div class="f">
+      <label>Alamat</label>
+      <input type="text" id="alamat" placeholder="Kota / Kabupaten">
+    </div>
+    <div class="g2">
+      <div class="f">
+        <label>No. HP</label>
+        <input type="text" id="no_hp" placeholder="08xx">
+      </div>
+      <div class="f">
+        <label>DPJP</label>
+        <input type="text" id="dpjp" placeholder="Nama dokter">
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ct">Faktor Risiko</div>
+    <div class="f">
+      <label>BMI (kg/m²)</label>
+      <input type="number" id="bmi" placeholder="Contoh: 25.5" step="0.1">
+    </div>
+    <div class="f">
+      <label>Riwayat Batu Sebelumnya</label>
+      <div class="chips">
+        <div class="chip" onclick="pick(this,'riwayat_batu','Tidak ada')">Tidak ada</div>
+        <div class="chip" onclick="pick(this,'riwayat_batu','Ada')">Ada</div>
+        <div class="chip" onclick="pick(this,'riwayat_batu','Rekuren')">Rekuren</div>
+      </div>
+      <input type="hidden" id="riwayat_batu">
+    </div>
+    <div class="f">
+      <label>Komorbid</label>
+      <div class="chips" id="chips_komorbid">
+        <div class="chip" onclick="toggleMulti(this,'komorbid','DM')">DM</div>
+        <div class="chip" onclick="toggleMulti(this,'komorbid','HT')">HT</div>
+        <div class="chip" onclick="toggleMulti(this,'komorbid','CKD')">CKD</div>
+        <div class="chip" onclick="toggleMulti(this,'komorbid','Obesitas')">Obesitas</div>
+        <div class="chip" onclick="toggleMulti(this,'komorbid','Tidak ada')">Tidak ada</div>
+      </div>
+      <input type="hidden" id="komorbid">
+    </div>
+  </div>
+</div>
+
+<!-- TAB 1: DIAGNOSTIK -->
+<div class="sec" id="tab1">
+  <div class="card">
+    <div class="ct">Gambaran Batu</div>
+    <div class="f">
+      <label>Lokasi Batu</label>
+      <div class="chips" id="chips_lokasi">
+        <div class="chip" onclick="toggleMulti(this,'lokasi_batu','Pelvis renal')">Pelvis renal</div>
+        <div class="chip" onclick="toggleMulti(this,'lokasi_batu','Kaliks atas')">Kaliks atas</div>
+        <div class="chip" onclick="toggleMulti(this,'lokasi_batu','Kaliks tengah')">Kaliks tengah</div>
+        <div class="chip" onclick="toggleMulti(this,'lokasi_batu','Kaliks bawah')">Kaliks bawah</div>
+        <div class="chip" onclick="toggleMulti(this,'lokasi_batu','Staghorn')">Staghorn</div>
+        <div class="chip" onclick="toggleMulti(this,'lokasi_batu','Ureter proksimal')">Ureter proksimal</div>
+      </div>
+      <input type="hidden" id="lokasi_batu">
+    </div>
+    <div class="f">
+      <label>Lateralitas</label>
+      <div class="chips">
+        <div class="chip" onclick="pick(this,'lateralitas','Kanan')">Kanan</div>
+        <div class="chip" onclick="pick(this,'lateralitas','Kiri')">Kiri</div>
+        <div class="chip" onclick="pick(this,'lateralitas','Bilateral')">Bilateral</div>
+      </div>
+      <input type="hidden" id="lateralitas">
+    </div>
+    <div class="g2">
+      <div class="f">
+        <label>Ukuran Batu (mm)</label>
+        <input type="number" id="ukuran_batu" placeholder="mm" step="0.1">
+      </div>
+      <div class="f">
+        <label>Densitas HU</label>
+        <input type="number" id="densitas_hu" placeholder="HU">
+      </div>
+    </div>
+    <div class="f">
+      <label>Guy's Stone Score</label>
+      <div class="chips">
+        <div class="chip" onclick="pick(this,'guys_score','Grade 1')">Grade 1</div>
+        <div class="chip" onclick="pick(this,'guys_score','Grade 2')">Grade 2</div>
+        <div class="chip" onclick="pick(this,'guys_score','Grade 3')">Grade 3</div>
+        <div class="chip" onclick="pick(this,'guys_score','Grade 4')">Grade 4</div>
+      </div>
+      <input type="hidden" id="guys_score">
+    </div>
+    <div class="f">
+      <label>S.T.O.N.E. Score</label>
+      <input type="number" id="stone_score" placeholder="Total score (5-13)">
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ct">Pemeriksaan Penunjang</div>
+    <div class="g2">
+      <div class="f">
+        <label>Kreatinin (mg/dL)</label>
+        <input type="number" id="kreatinin" placeholder="mg/dL" step="0.01">
+      </div>
+      <div class="f">
+        <label>eGFR (mL/min)</label>
+        <input type="number" id="egfr" placeholder="mL/min">
+      </div>
+    </div>
+    <div class="g2">
+      <div class="f">
+        <label>Hb (g/dL)</label>
+        <input type="number" id="hb" placeholder="g/dL" step="0.1">
+      </div>
+      <div class="f">
+        <label>Leukosit (/µL)</label>
+        <input type="number" id="leukosit" placeholder="/µL">
+      </div>
+    </div>
+    <div class="f">
+      <label>Urin Kultur</label>
+      <div class="chips">
+        <div class="chip" onclick="pick(this,'urin_kultur','Steril')">Steril</div>
+        <div class="chip" onclick="pick(this,'urin_kultur','Positif')">Positif</div>
+        <div class="chip" onclick="pick(this,'urin_kultur','Tidak diperiksa')">Tidak diperiksa</div>
+      </div>
+      <input type="hidden" id="urin_kultur">
+    </div>
+    <div class="f">
+      <label>Hidronefrosis</label>
+      <div class="chips">
+        <div class="chip" onclick="pick(this,'hidronefrosis','Tidak ada')">Tidak ada</div>
+        <div class="chip" onclick="pick(this,'hidronefrosis','Ringan')">Ringan</div>
+        <div class="chip" onclick="pick(this,'hidronefrosis','Sedang')">Sedang</div>
+        <div class="chip" onclick="pick(this,'hidronefrosis','Berat')">Berat</div>
+      </div>
+      <input type="hidden" id="hidronefrosis">
+    </div>
+  </div>
+</div>
+
+<!-- TAB 2: PRE-OP -->
+<div class="sec" id="tab2">
+  <div class="card">
+    <div class="ct">Persiapan Operasi</div>
+    <div class="f">
+      <label>ASA Score</label>
+      <div class="chips">
+        <div class="chip" onclick="pick(this,'asa_score','I')">ASA I</div>
+        <div class="chip" onclick="pick(this,'asa_score','II')">ASA II</div>
+        <div class="chip" onclick="pick(this,'asa_score','III')">ASA III</div>
+        <div class="chip" onclick="pick(this,'asa_score','IV')">ASA IV</div>
+      </div>
+      <input type="hidden" id="asa_score">
+    </div>
+    <div class="f">
+      <label>Antibiotik Profilaksis</label>
+      <div class="chips">
+        <div class="chip" onclick="pick(this,'antibiotik_profilaksis','Ceftriaxone')">Ceftriaxone</div>
+        <div class="chip" onclick="pick(this,'antibiotik_profilaksis','Ciprofloxacin')">Ciprofloxacin</div>
+        <div class="chip" onclick="pick(this,'antibiotik_profilaksis','Gentamisin')">Gentamisin</div>
+        <div class="chip" onclick="pick(this,'antibiotik_profilaksis','Lainnya')">Lainnya</div>
+      </div>
+      <input type="hidden" id="antibiotik_profilaksis">
+    </div>
+    <div class="f">
+      <label>Drainage Pre-op</label>
+      <div class="chips">
+        <div class="chip" onclick="pick(this,'drainage_preop','Tidak ada')">Tidak ada</div>
+        <div class="chip" onclick="pick(this,'drainage_preop','DJ Stent')">DJ Stent</div>
+        <div class="chip" onclick="pick(this,'drainage_preop','Nefrostomi')">Nefrostomi</div>
+      </div>
+      <input type="hidden" id="drainage_preop">
+    </div>
+    <div class="f">
+      <label>Anestesi</label>
+      <div class="chips">
+        <div class="chip" onclick="pick(this,'anestesi','General')">General</div>
+        <div class="chip" onclick="pick(this,'anestesi','Spinal')">Spinal</div>
+        <div class="chip" onclick="pick(this,'anestesi','Epidural')">Epidural</div>
+      </div>
+      <input type="hidden" id="anestesi">
+    </div>
+    <div class="f">
+      <label>Posisi Operasi</label>
+      <div class="chips">
+        <div class="chip" onclick="pick(this,'posisi','Prone')">Prone</div>
+        <div class="chip" onclick="pick(this,'posisi','Supine')">Supine</div>
+        <div class="chip" onclick="pick(this,'posisi','Flank')">Flank</div>
+      </div>
+      <input type="hidden" id="posisi">
+    </div>
+  </div>
+</div>
+
+<!-- TAB 3: OPERASI -->
+<div class="sec" id="tab3">
+  <div class="card">
+    <div class="ct">Detail Tindakan</div>
+    <div class="f">
+      <label>Panduan Akses</label>
+      <div class="chips">
+        <div class="chip" onclick="pick(this,'panduan_akses','Fluoroskopi')">Fluoroskopi</div>
+        <div class="chip" onclick="pick(this,'panduan_akses','USG')">USG</div>
+        <div class="chip" onclick="pick(this,'panduan_akses','Kombinasi')">Kombinasi</div>
+      </div>
+      <input type="hidden" id="panduan_akses">
+    </div>
+    <div class="f">
+      <label>Kaliks Akses</label>
+      <div class="chips">
+        <div class="chip" onclick="pick(this,'kaliks_akses','Atas')">Atas</div>
+        <div class="chip" onclick="pick(this,'kaliks_akses','Tengah')">Tengah</div>
+        <div class="chip" onclick="pick(this,'kaliks_akses','Bawah')">Bawah</div>
+      </div>
+      <input type="hidden" id="kaliks_akses">
+    </div>
+    <div class="f">
+      <label>Jumlah Akses</label>
+      <div class="chips">
+        <div class="chip" onclick="pick(this,'jumlah_akses','Single')">Single</div>
+        <div class="chip" onclick="pick(this,'jumlah_akses','Multiple')">Multiple</div>
+      </div>
+      <input type="hidden" id="jumlah_akses">
+    </div>
+    <div class="g2">
+      <div class="f">
+        <label>Ukuran Sheath (Fr)</label>
+        <input type="number" id="ukuran_sheath" placeholder="Fr">
+      </div>
+      <div class="f">
+        <label>Lama Operasi (menit)</label>
+        <input type="number" id="lama_operasi" placeholder="menit">
+      </div>
+    </div>
+    <div class="f">
+      <label>Modalitas Litotripsi</label>
+      <div class="chips">
+        <div class="chip" onclick="pick(this,'litotripsi','Pneumatik')">Pneumatik</div>
+        <div class="chip" onclick="pick(this,'litotripsi','Laser Ho:YAG')">Laser Ho:YAG</div>
+        <div class="chip" onclick="pick(this,'litotripsi','Ultrasound')">Ultrasound</div>
+        <div class="chip" onclick="pick(this,'litotripsi','Kombinasi')">Kombinasi</div>
+      </div>
+      <input type="hidden" id="litotripsi">
+    </div>
+    <div class="f">
+      <label>Drainage Post-op</label>
+      <div class="chips" id="chips_drainage">
+        <div class="chip" onclick="toggleMulti(this,'drainage_postop','Nefrostomi')">Nefrostomi</div>
+        <div class="chip" onclick="toggleMulti(this,'drainage_postop','DJ Stent')">DJ Stent</div>
+        <div class="chip" onclick="toggleMulti(this,'drainage_postop','Tubeless')">Tubeless</div>
+        <div class="chip" onclick="toggleMulti(this,'drainage_postop','Totally tubeless')">Totally tubeless</div>
+      </div>
+      <input type="hidden" id="drainage_postop">
+    </div>
+    <div class="g2">
+      <div class="f">
+        <label>Perdarahan (mL)</label>
+        <input type="number" id="perdarahan" placeholder="mL">
+      </div>
+      <div class="f">
+        <label>Transfusi</label>
+        <div class="chips">
+          <div class="chip" onclick="pick(this,'transfusi','Tidak')">Tidak</div>
+          <div class="chip" onclick="pick(this,'transfusi','Ya')">Ya</div>
+        </div>
+        <input type="hidden" id="transfusi">
+      </div>
+    </div>
+    <div class="f">
+      <label>Catatan Operasi</label>
+      <textarea id="catatan_operasi" placeholder="Temuan intraoperatif, kesulitan, dll"></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 4: BATU -->
+<div class="sec" id="tab4">
+  <div class="card">
+    <div class="ct">Analisis Batu</div>
+    <div class="f">
+      <label>Stone-Free Rate</label>
+      <div class="chips">
+        <div class="chip" onclick="pick(this,'stone_free','Komplit (SFR 100%)')">Komplit (SFR 100%)</div>
+        <div class="chip" onclick="pick(this,'stone_free','Residual &lt;4mm')">Residual &lt;4mm</div>
+        <div class="chip" onclick="pick(this,'stone_free','Residual ≥4mm')">Residual ≥4mm</div>
+      </div>
+      <input type="hidden" id="stone_free">
+    </div>
+    <div class="f">
+      <label>Ukuran Residual (mm)</label>
+      <input type="number" id="ukuran_residual" placeholder="mm, isi 0 jika stone-free" step="0.1">
+    </div>
+    <div class="f">
+      <label>Komposisi Batu (analisis)</label>
+      <div class="chips">
+        <div class="chip" onclick="pick(this,'komposisi_batu','Kalsium oksalat')">Kalsium oksalat</div>
+        <div class="chip" onclick="pick(this,'komposisi_batu','Kalsium fosfat')">Kalsium fosfat</div>
+        <div class="chip" onclick="pick(this,'komposisi_batu','Asam urat')">Asam urat</div>
+        <div class="chip" onclick="pick(this,'komposisi_batu','Struvit')">Struvit</div>
+        <div class="chip" onclick="pick(this,'komposisi_batu','Sistin')">Sistin</div>
+        <div class="chip" onclick="pick(this,'komposisi_batu','Mixed')">Mixed</div>
+        <div class="chip" onclick="pick(this,'komposisi_batu','Tidak diperiksa')">Tidak diperiksa</div>
+      </div>
+      <input type="hidden" id="komposisi_batu">
+    </div>
+    <div class="f">
+      <label>Auxiliary Procedure</label>
+      <div class="chips">
+        <div class="chip" onclick="pick(this,'auxiliary','Tidak ada')">Tidak ada</div>
+        <div class="chip" onclick="pick(this,'auxiliary','SWL')">SWL</div>
+        <div class="chip" onclick="pick(this,'auxiliary','URS')">URS</div>
+        <div class="chip" onclick="pick(this,'auxiliary','Re-PCNL')">Re-PCNL</div>
+      </div>
+      <input type="hidden" id="auxiliary">
+    </div>
+  </div>
+</div>
+
+<!-- TAB 5: KOMPLIKASI -->
+<div class="sec" id="tab5">
+  <div class="card">
+    <div class="ct">Komplikasi</div>
+    <div class="f">
+      <label>Komplikasi Intraoperatif</label>
+      <div class="chips" id="chips_komplikasi_intra">
+        <div class="chip" onclick="toggleMulti(this,'komplikasi_intra','Tidak ada')">Tidak ada</div>
+        <div class="chip" onclick="toggleMulti(this,'komplikasi_intra','Perdarahan masif')">Perdarahan masif</div>
+        <div class="chip" onclick="toggleMulti(this,'komplikasi_intra','Konversi')">Konversi</div>
+        <div class="chip" onclick="toggleMulti(this,'komplikasi_intra','Cedera pleura')">Cedera pleura</div>
+        <div class="chip" onclick="toggleMulti(this,'komplikasi_intra','Cedera organ')">Cedera organ</div>
+      </div>
+      <input type="hidden" id="komplikasi_intra">
+    </div>
+    <div class="f">
+      <label>Komplikasi Post-op</label>
+      <div class="chips" id="chips_komplikasi_post">
+        <div class="chip" onclick="toggleMulti(this,'komplikasi_post','Tidak ada')">Tidak ada</div>
+        <div class="chip" onclick="toggleMulti(this,'komplikasi_post','Sepsis')">Sepsis</div>
+        <div class="chip" onclick="toggleMulti(this,'komplikasi_post','Pneumothorax')">Pneumothorax</div>
+        <div class="chip" onclick="toggleMulti(this,'komplikasi_post','Perdarahan')">Perdarahan</div>
+        <div class="chip" onclick="toggleMulti(this,'komplikasi_post','Demam')">Demam</div>
+        <div class="chip" onclick="toggleMulti(this,'komplikasi_post','Urosepsis')">Urosepsis</div>
+        <div class="chip" onclick="toggleMulti(this,'komplikasi_post','AKI')">AKI</div>
+      </div>
+      <input type="hidden" id="komplikasi_post">
+    </div>
+    <div class="f">
+      <label>Clavien-Dindo Grade</label>
+      <div class="chips">
+        <div class="chip" onclick="pick(this,'clavien_dindo','0 - Tidak ada')">0</div>
+        <div class="chip" onclick="pick(this,'clavien_dindo','I')">I</div>
+        <div class="chip" onclick="pick(this,'clavien_dindo','II')">II</div>
+        <div class="chip" onclick="pick(this,'clavien_dindo','IIIa')">IIIa</div>
+        <div class="chip" onclick="pick(this,'clavien_dindo','IIIb')">IIIb</div>
+        <div class="chip" onclick="pick(this,'clavien_dindo','IVa')">IVa</div>
+        <div class="chip" onclick="pick(this,'clavien_dindo','V')">V</div>
+      </div>
+      <input type="hidden" id="clavien_dindo">
+    </div>
+    <div class="g2">
+      <div class="f">
+        <label>Lama Rawat (hari)</label>
+        <input type="number" id="lama_rawat" placeholder="hari">
+      </div>
+      <div class="f">
+        <label>Tanggal Pulang</label>
+        <input type="date" id="tgl_pulang">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 6: FOLLOW-UP -->
+<div class="sec" id="tab6">
+  <div class="card">
+    <div class="ct">Follow-up</div>
+    <div class="g2">
+      <div class="f">
+        <label>Tgl Follow-up 1</label>
+        <input type="date" id="fu1_tgl">
+      </div>
+      <div class="f">
+        <label>Status Batu FU1</label>
+        <div class="chips">
+          <div class="chip" onclick="pick(this,'fu1_status','Stone-free')">Stone-free</div>
+          <div class="chip" onclick="pick(this,'fu1_status','Residual')">Residual</div>
+          <div class="chip" onclick="pick(this,'fu1_status','Rekuren')">Rekuren</div>
+        </div>
+        <input type="hidden" id="fu1_status">
+      </div>
+    </div>
+    <div class="f">
+      <label>Imaging FU1</label>
+      <div class="chips">
+        <div class="chip" onclick="pick(this,'fu1_imaging','Foto polos')">Foto polos</div>
+        <div class="chip" onclick="pick(this,'fu1_imaging','USG')">USG</div>
+        <div class="chip" onclick="pick(this,'fu1_imaging','CT-scan')">CT-scan</div>
+      </div>
+      <input type="hidden" id="fu1_imaging">
+    </div>
+    <div class="g2">
+      <div class="f">
+        <label>Kreatinin FU (mg/dL)</label>
+        <input type="number" id="fu_kreatinin" placeholder="mg/dL" step="0.01">
+      </div>
+      <div class="f">
+        <label>eGFR FU (mL/min)</label>
+        <input type="number" id="fu_egfr" placeholder="mL/min">
+      </div>
+    </div>
+    <div class="f">
+      <label>Tgl Follow-up 2</label>
+      <input type="date" id="fu2_tgl">
+    </div>
+    <div class="f">
+      <label>Catatan Follow-up</label>
+      <textarea id="fu_catatan" placeholder="Keluhan, temuan, rencana"></textarea>
+    </div>
+    <div class="f">
+      <label>Outcome Akhir</label>
+      <div class="chips">
+        <div class="chip" onclick="pick(this,'outcome','Sembuh total')">Sembuh total</div>
+        <div class="chip" onclick="pick(this,'outcome','Perlu tindakan lanjut')">Perlu tindakan lanjut</div>
+        <div class="chip" onclick="pick(this,'outcome','Lost to follow-up')">Lost to follow-up</div>
+      </div>
+      <input type="hidden" id="outcome">
+    </div>
+    <div class="f">
+      <label>Catatan Tambahan</label>
+      <textarea id="catatan_tambahan" placeholder="Catatan klinis lainnya"></textarea>
+    </div>
+  </div>
+  <button class="btn btn-ok" onclick="simpan()">💾 Simpan Pasien</button>
+</div>
+
+<!-- TAB 7: DATA -->
+<div class="sec" id="tab7">
+  <div class="stat-grid">
+    <div class="stat-card"><div class="stat-val" id="st-total">0</div><div class="stat-label">Total</div></div>
+    <div class="stat-card"><div class="stat-val" id="st-sfr">-</div><div class="stat-label">SFR</div></div>
+    <div class="stat-card"><div class="stat-val" id="st-antri">0</div><div class="stat-label">Antrian</div></div>
+  </div>
+  <div class="card">
+    <input type="text" id="searchInput" placeholder="🔍 Cari nama / No.RM..." oninput="renderList(this.value)" style="margin-bottom:10px">
+    <div id="listPasien"></div>
+  </div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap">
+    <button class="hbtn" onclick="exportJSON()">📥 Export JSON</button>
+    <button class="hbtn" onclick="exportCSV()">📊 Export CSV</button>
+    <label class="hbtn" style="cursor:pointer">📤 Import JSON<input type="file" accept=".json" style="display:none" onchange="importJSON(this)"></label>
+  </div>
+</div>
+
+<!-- TAB 8: SETUP -->
+<div class="sec" id="tab8">
+  <div class="card">
+    <div class="ct">⚙️ Konfigurasi Apps Script</div>
+    <div class="info-box">
+      Form ini mengirim data ke sheet <strong>PCNL</strong> di Google Sheets.<br>
+      Paste URL Web App dari Google Apps Script di bawah.
+    </div>
+    <div class="f">
+      <label>URL Google Apps Script Web App</label>
+      <input type="text" id="sheetUrl" placeholder="https://script.google.com/macros/s/.../exec">
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:12px">
+      <button class="hbtn pri" onclick="testConn()">🔍 Test Koneksi</button>
+      <button class="hbtn grn" onclick="saveUrl()">💾 Simpan URL</button>
+    </div>
+    <div id="connStatus" style="font-size:13px;color:var(--muted)">Belum dikonfigurasi</div>
+  </div>
+  <div class="card">
+    <div class="ct">📤 Kirim Antrian</div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:10px">Data yang gagal terkirim akan otomatis dimasukkan antrian. Klik tombol di bawah untuk mengirim ulang.</p>
+    <button class="hbtn pri" onclick="flushQueue()">📤 Kirim Antrian (<span id="qCount">0</span>)</button>
+  </div>
+  <div class="card">
+    <div class="ct">🗑 Reset Data Lokal</div>
+    <button class="hbtn red" onclick="resetData()">Hapus Semua Data Lokal</button>
+  </div>
+</div>
+
+<!-- Modal detail -->
+<div class="modal-bg" id="modalBg" onclick="closeModal()">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-title" id="modalTitle">Detail Pasien</div>
+    <div id="modalContent"></div>
+    <div style="display:flex;gap:8px;margin-top:14px">
+      <button class="hbtn pri" onclick="editRec()">✏️ Edit</button>
+      <button class="hbtn red" onclick="deleteRec()">🗑 Hapus</button>
+      <button class="hbtn" onclick="closeModal()">Tutup</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const FORM_KEY  = 'pcnl_v2';
+const FORM_NAME = 'pcnl';
+const TINDAKAN  = 'pcnl';
+
+let DB        = JSON.parse(localStorage.getItem(FORM_KEY) || '[]');
+let SURL      = localStorage.getItem(FORM_KEY + '_url') || '';
+let sendQueue = JSON.parse(localStorage.getItem(FORM_KEY + '_queue') || '[]');
+let currentRec = null;
+let multiState = {};
+
+// Init
+window.onload = () => {
+  if (SURL) {
+    document.getElementById('sheetUrl').value = SURL;
+    document.getElementById('connStatus').textContent = '✅ URL tersimpan';
+    document.getElementById('connStatus').style.color = 'var(--acc2)';
+  }
+  renderList('');
+  refreshStats();
+};
+
+function goTab(i) {
+  document.querySelectorAll('.sec').forEach((s,j) => s.classList.toggle('on', i===j));
+  document.querySelectorAll('.ntab').forEach((t,j) => t.classList.toggle('on', i===j));
+  if (i===7) { renderList(''); refreshStats(); }
+  if (i===8) { document.getElementById('qCount').textContent = sendQueue.length; }
+}
+
+function pick(el, id, val) {
+  const group = el.closest('.chips');
+  group.querySelectorAll('.chip').forEach(c => c.classList.remove('on'));
+  el.classList.add('on');
+  document.getElementById(id).value = val;
+}
+
+function toggleMulti(el, id, val) {
+  if (!multiState[id]) multiState[id] = new Set();
+  if (multiState[id].has(val)) { multiState[id].delete(val); el.classList.remove('on'); }
+  else { multiState[id].add(val); el.classList.add('on'); }
+  document.getElementById(id).value = [...multiState[id]].join(', ');
+}
+
+function hitungUmur() {
+  const tgl = document.getElementById('tgl_lahir').value;
+  if (!tgl) return;
+  const diff = new Date() - new Date(tgl);
+  const umur = Math.floor(diff / (1000 * 60 * 60 * 24 * 365.25));
+  document.getElementById('umur').value = umur + ' tahun';
+}
+
+function getVal(id) { const el = document.getElementById(id); return el ? el.value : ''; }
+
+function toast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = type==='er' ? '#ff3b30' : type==='wn' ? '#ff9500' : '#1c1c1e';
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+async function simpan() {
+  const nama = getVal('nama'); const no_rm = getVal('no_rm');
+  if (!nama || !no_rm) { toast('Nama & No.RM wajib diisi', 'er'); return; }
+
+  const id = currentRec ? currentRec.id : 'pcnl_' + Date.now();
+  const rec = {
+    id, _form: FORM_NAME, tindakan: TINDAKAN, timestamp: new Date().toISOString(),
+    nama, no_rm,
+    tgl_lahir: getVal('tgl_lahir'), umur: getVal('umur'), jk: getVal('jk'),
+    tgl_masuk: getVal('tgl_masuk'), tgl_operasi: getVal('tgl_operasi'),
+    alamat: getVal('alamat'), no_hp: getVal('no_hp'), dpjp: getVal('dpjp'),
+    bmi: getVal('bmi'), riwayat_batu: getVal('riwayat_batu'), komorbid: getVal('komorbid'),
+    lokasi_batu: getVal('lokasi_batu'), lateralitas: getVal('lateralitas'),
+    ukuran_batu: getVal('ukuran_batu'), densitas_hu: getVal('densitas_hu'),
+    guys_score: getVal('guys_score'), stone_score: getVal('stone_score'),
+    kreatinin: getVal('kreatinin'), egfr: getVal('egfr'),
+    hb: getVal('hb'), leukosit: getVal('leukosit'),
+    urin_kultur: getVal('urin_kultur'), hidronefrosis: getVal('hidronefrosis'),
+    asa_score: getVal('asa_score'), antibiotik_profilaksis: getVal('antibiotik_profilaksis'),
+    drainage_preop: getVal('drainage_preop'), anestesi: getVal('anestesi'),
+    posisi: getVal('posisi'),
+    panduan_akses: getVal('panduan_akses'), kaliks_akses: getVal('kaliks_akses'),
+    jumlah_akses: getVal('jumlah_akses'), ukuran_sheath: getVal('ukuran_sheath'),
+    lama_operasi: getVal('lama_operasi'), litotripsi: getVal('litotripsi'),
+    drainage_postop: getVal('drainage_postop'), perdarahan: getVal('perdarahan'),
+    transfusi: getVal('transfusi'), catatan_operasi: getVal('catatan_operasi'),
+    stone_free: getVal('stone_free'), ukuran_residual: getVal('ukuran_residual'),
+    komposisi_batu: getVal('komposisi_batu'), auxiliary: getVal('auxiliary'),
+    komplikasi_intra: getVal('komplikasi_intra'), komplikasi_post: getVal('komplikasi_post'),
+    clavien_dindo: getVal('clavien_dindo'), lama_rawat: getVal('lama_rawat'),
+    tgl_pulang: getVal('tgl_pulang'),
+    fu1_tgl: getVal('fu1_tgl'), fu1_status: getVal('fu1_status'),
+    fu1_imaging: getVal('fu1_imaging'), fu_kreatinin: getVal('fu_kreatinin'),
+    fu_egfr: getVal('fu_egfr'), fu2_tgl: getVal('fu2_tgl'),
+    fu_catatan: getVal('fu_catatan'), outcome: getVal('outcome'),
+    catatan_tambahan: getVal('catatan_tambahan')
+  };
+
+  if (currentRec) { DB = DB.map(r => r.id === currentRec.id ? rec : r); }
+  else { DB.push(rec); }
+  localStorage.setItem(FORM_KEY, JSON.stringify(DB));
+  currentRec = null;
+
+  if (SURL) {
+    const ok = await sendToSheets(rec);
+    if (ok) toast('✅ Tersimpan & terkirim', 'ok');
+    else { sendQueue.push(rec); saveQueue(); toast('✅ Lokal — antri kirim', 'wn'); }
+  } else {
+    toast('✅ Tersimpan lokal (URL belum diset)', 'wn');
+  }
+  resetForm(); goTab(7);
+}
+
+async function sendToSheets(rec) {
+  if (!SURL) return false;
+  try {
+    await fetch(SURL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ ...rec, _form: FORM_NAME, tindakan: TINDAKAN })
+    });
+    return true;
+  } catch { return false; }
+}
+
+function saveQueue() { localStorage.setItem(FORM_KEY + '_queue', JSON.stringify(sendQueue)); }
+
+async function flushQueue() {
+  if (!SURL) { toast('URL belum disimpan', 'er'); return; }
+  if (!sendQueue.length) { toast('Tidak ada antrian', 'ok'); return; }
+  toast('📤 Mengirim ' + sendQueue.length + ' data…');
+  const failed = [];
+  for (const rec of sendQueue) { const ok = await sendToSheets(rec); if (!ok) failed.push(rec); }
+  sendQueue = failed; saveQueue(); refreshStats();
+  toast(failed.length ? '⚠ ' + failed.length + ' gagal' : '✅ Semua terkirim', 'ok');
+  document.getElementById('qCount').textContent = sendQueue.length;
+}
+
+function refreshStats() {
+  document.getElementById('st-total').textContent = DB.length;
+  document.getElementById('st-antri').textContent = sendQueue.length;
+  const sfr = DB.filter(r => r.stone_free && r.stone_free.includes('100%')).length;
+  document.getElementById('st-sfr').textContent = DB.length ? Math.round(sfr/DB.length*100)+'%' : '-';
+}
+
+function renderList(q) {
+  const container = document.getElementById('listPasien');
+  const filtered = DB.filter(r => !q || r.nama?.toLowerCase().includes(q.toLowerCase()) || r.no_rm?.includes(q));
+  if (!filtered.length) { container.innerHTML = '<div style="text-align:center;color:var(--muted);padding:20px;font-size:13px">Belum ada data</div>'; return; }
+  container.innerHTML = filtered.slice().reverse().map(r => `
+    <div class="rec-row" onclick="showDetail('${r.id}')">
+      <div class="rec-name">${r.nama} <span style="font-size:11px;color:var(--muted)">${r.no_rm}</span></div>
+      <div class="rec-meta">${r.tgl_operasi||'-'} · ${r.lateralitas||'-'} · ${r.ukuran_batu||'-'}mm · ${r.stone_free||'-'}</div>
+    </div>`).join('');
+}
+
+function showDetail(id) {
+  currentRec = DB.find(r => r.id === id);
+  if (!currentRec) return;
+  document.getElementById('modalTitle').textContent = currentRec.nama;
+  const skip = ['id','_form','tindakan','timestamp'];
+  const html = Object.entries(currentRec).filter(([k,v]) => !skip.includes(k) && v).map(([k,v]) =>
+    `<div class="detail-row"><span class="detail-key">${k.replace(/_/g,' ')}</span><span class="detail-val">${v}</span></div>`
+  ).join('');
+  document.getElementById('modalContent').innerHTML = html || '<p style="color:var(--muted);font-size:13px">Tidak ada data</p>';
+  document.getElementById('modalBg').classList.add('show');
+}
+
+function closeModal() { document.getElementById('modalBg').classList.remove('show'); }
+
+function editRec() {
+  if (!currentRec) return;
+  closeModal();
+  Object.keys(currentRec).forEach(k => {
+    const el = document.getElementById(k);
+    if (el) el.value = currentRec[k] || '';
+  });
+  goTab(0);
+  toast('Mode edit — simpan untuk update', 'wn');
+}
+
+function deleteRec() {
+  if (!currentRec) return;
+  if (!confirm('Hapus data ' + currentRec.nama + '?')) return;
+  DB = DB.filter(r => r.id !== currentRec.id);
+  localStorage.setItem(FORM_KEY, JSON.stringify(DB));
+  closeModal(); renderList(''); refreshStats();
+  toast('🗑 Data dihapus', 'er');
+}
+
+function resetForm() {
+  document.querySelectorAll('input[type=text],input[type=number],input[type=date],textarea').forEach(el => el.value = '');
+  document.querySelectorAll('.chip.on').forEach(c => c.classList.remove('on'));
+  document.querySelectorAll('input[type=hidden]').forEach(el => el.value = '');
+  multiState = {};
+}
+
+function saveUrl() {
+  const url = document.getElementById('sheetUrl').value.trim();
+  if (!url) { toast('Isi URL dulu', 'er'); return; }
+  SURL = url; localStorage.setItem(FORM_KEY + '_url', url);
+  toast('✅ URL disimpan', 'ok');
+  document.getElementById('connStatus').textContent = '✅ URL tersimpan';
+  document.getElementById('connStatus').style.color = 'var(--acc2)';
+}
+
+async function testConn() {
+  const url = document.getElementById('sheetUrl').value.trim();
+  if (!url) { toast('Isi URL dulu', 'er'); return; }
+  const el = document.getElementById('connStatus');
+  el.textContent = '⏳ Testing...'; el.style.color = 'var(--muted)';
+  try {
+    await fetch(url, { mode: 'no-cors' });
+    el.textContent = '✅ Terhubung — klik Simpan'; el.style.color = 'var(--acc2)';
+  } catch {
+    el.textContent = '❌ Gagal terhubung'; el.style.color = 'var(--danger)';
+  }
+}
+
+function exportJSON() {
+  if (!DB.length) { toast('Tidak ada data', 'er'); return; }
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(DB, null, 2)], { type: 'application/json' }));
+  a.download = 'pcnl_' + new Date().toISOString().slice(0,10) + '.json';
+  a.click(); toast('✅ Downloaded', 'ok');
+}
+
+function exportCSV() {
+  if (!DB.length) { toast('Tidak ada data', 'er'); return; }
+  const keys = Object.keys(DB[0]);
+  const csv = [keys.join(','), ...DB.map(r => keys.map(k => '"'+(r[k]||'').toString().replace(/"/g,'""')+'"').join(','))].join('\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+  a.download = 'pcnl_' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click(); toast('✅ CSV Downloaded', 'ok');
+}
+
+function importJSON(input) {
+  const file = input.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const imported = JSON.parse(e.target.result);
+      if (!Array.isArray(imported)) throw new Error();
+      const existing = new Set(DB.map(r => r.id));
+      const newRecs = imported.filter(r => !existing.has(r.id));
+      DB = [...DB, ...newRecs];
+      localStorage.setItem(FORM_KEY, JSON.stringify(DB));
+      renderList(''); refreshStats();
+      toast('✅ ' + newRecs.length + ' data baru', 'ok');
+    } catch { toast('❌ Gagal import', 'er'); }
+    input.value = '';
+  };
+  reader.readAsText(file);
+}
+
+function resetData() {
+  if (!confirm('Hapus SEMUA data lokal PCNL? Tidak bisa dikembalikan!')) return;
+  DB = []; sendQueue = [];
+  localStorage.removeItem(FORM_KEY);
+  localStorage.removeItem(FORM_KEY + '_queue');
+  renderList(''); refreshStats();
+  toast('🗑 Data lokal dihapus', 'er');
+}
+</script>
+</body>
+</html>
