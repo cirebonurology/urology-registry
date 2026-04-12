@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Onkologi Prostat Registry</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f2f2f7;--card:#fff;--bdr:#d1d1d6;--acc:#5856d6;--acc2:#34c759;--txt:#1c1c1e;--muted:#8e8e93;--danger:#ff3b30;--warn:#ff9500;--r:13px;--fn:'DM Sans',sans-serif;--mono:'DM Mono',monospace}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:var(--fn);background:var(--bg);color:var(--txt);min-height:100vh;padding-bottom:80px}
+.nav{position:sticky;top:0;z-index:100;background:rgba(242,242,247,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--bdr);padding:0 12px;display:flex;align-items:center;gap:2px;overflow-x:auto;height:52px}
+.nav::-webkit-scrollbar{display:none}
+.ntab{flex-shrink:0;padding:6px 11px;border-radius:8px;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;white-space:nowrap}
+.ntab.on{background:var(--acc);color:#fff}
+.sec{display:none;padding:12px;max-width:600px;margin:0 auto}
+.sec.on{display:block}
+.card{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:16px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.ct{font-size:13px;font-weight:700;color:var(--acc);text-transform:uppercase;letter-spacing:.6px;margin-bottom:12px}
+.f{margin-bottom:12px}
+.f label{display:block;font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px}
+.req{color:var(--danger)}
+input[type=text],input[type=number],input[type=date],textarea,select{width:100%;background:var(--bg);border:1.5px solid var(--bdr);border-radius:9px;padding:10px 12px;font-size:14px;font-family:var(--fn);color:var(--txt);outline:none}
+input:focus,textarea:focus,select:focus{border-color:var(--acc)}
+textarea{resize:vertical;min-height:70px}
+select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238e8e93' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.chip{padding:6px 12px;border-radius:20px;border:1.5px solid var(--bdr);font-size:12px;font-weight:600;cursor:pointer;background:var(--bg);color:var(--muted);user-select:none}
+.chip.on{background:var(--acc);border-color:var(--acc);color:#fff}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn{width:100%;padding:14px;border-radius:12px;border:none;font-size:15px;font-weight:700;font-family:var(--fn);cursor:pointer}
+.btn-ok{background:var(--acc2);color:#fff}
+.btn-danger{background:var(--danger);color:#fff}
+.btn-sec{background:var(--bg);border:1.5px solid var(--bdr);color:var(--txt)}
+.hbtn{padding:9px 14px;border-radius:9px;border:1.5px solid var(--bdr);font-size:12px;font-weight:600;cursor:pointer;background:var(--bg);color:var(--txt)}
+.rec-card{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:14px;margin-bottom:10px;cursor:pointer}
+.rec-name{font-size:15px;font-weight:700}
+.rec-sub{font-size:12px;color:var(--muted);margin-top:3px}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200;overflow-y:auto;padding:20px 12px}
+.modal.on{display:block}
+.modal-box{background:var(--card);border-radius:16px;max-width:560px;margin:0 auto;padding:20px}
+.modal-title{font-size:17px;font-weight:700;margin-bottom:14px}
+.detail-row{display:flex;padding:7px 0;border-bottom:1px solid var(--bdr);font-size:13px}
+.detail-key{color:var(--muted);width:45%;flex-shrink:0;font-weight:500}
+.detail-val{color:var(--txt);font-weight:600;word-break:break-word}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:#1c1c1e;color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:600;opacity:0;transition:all .25s;z-index:999;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.ok{background:var(--acc2)}.toast.er{background:var(--danger)}.toast.wn{background:var(--warn);color:#1c1c1e}
+.prog-wrap{height:4px;background:var(--bdr);overflow:hidden;margin-bottom:12px}
+.prog-bar{height:100%;background:var(--acc);transition:width .3s}
+.sec-title{font-size:20px;font-weight:700;margin-bottom:4px}
+.sec-sub{font-size:13px;color:var(--muted);margin-bottom:16px}
+.empty{text-align:center;padding:40px 20px;color:var(--muted)}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <div class="ntab on" onclick="goTab(0)">👤 Identitas</div>
+  <div class="ntab" onclick="goTab(1)">🔬 Biopsi PSA</div>
+  <div class="ntab" onclick="goTab(2)">🏥 Staging</div>
+  <div class="ntab" onclick="goTab(3)">⚕️ Tindakan</div>
+  <div class="ntab" onclick="goTab(4)">🧫 Patologi</div>
+  <div class="ntab" onclick="goTab(5)">💊 Adjuvan</div>
+  <div class="ntab" onclick="goTab(6)">⚠️ Komplikasi</div>
+  <div class="ntab" onclick="goTab(7)">📋 Follow-up</div>
+  <div class="ntab" onclick="goTab(8)">📊 Data</div>
+  <div class="ntab" onclick="goTab(9)">⚙️ Setup</div>
+</nav>
+<div class="prog-wrap"><div class="prog-bar" id="progBar" style="width:10%"></div></div>
+
+<!-- TAB 0 -->
+<div class="sec on" id="tab0">
+  <div class="sec-title">Onkologi Prostat</div>
+  <div class="sec-sub">Identitas & Faktor Risiko</div>
+  <div class="card">
+    <div class="ct">Data Pasien</div>
+    <div class="f"><label>Nama Lengkap <span class="req">*</span></label><input type="text" id="nama" placeholder="Nama pasien"></div>
+    <div class="g2"><div class="f"><label>No. Register</label><input type="text" id="noReg"></div><div class="f"><label>Tgl. Masuk</label><input type="date" id="tglMasuk"></div></div>
+    <div class="g2"><div class="f"><label>Tgl. Lahir</label><input type="date" id="tglLahir" onchange="hitungUmur()"></div><div class="f"><label>Umur</label><input type="text" id="umur" readonly></div></div>
+    <div class="f"><label>Tgl. Pulang</label><input type="date" id="tglPulang"></div>
+  </div>
+  <div class="card">
+    <div class="ct">Faktor Risiko</div>
+    <div class="f"><label>Merokok</label><div class="chips" id="merokokG"><span class="chip" onclick="pick(this,'merokokG')">Tidak</span><span class="chip" onclick="pick(this,'merokokG')">Ex-smoker</span><span class="chip" onclick="pick(this,'merokokG')">Aktif</span></div></div>
+    <div class="f"><label>Riwayat Keluarga Ca Prostat</label><div class="chips" id="riwKelG"><span class="chip" onclick="pick(this,'riwKelG')">Tidak</span><span class="chip" onclick="pick(this,'riwKelG')">1st degree</span><span class="chip" onclick="pick(this,'riwKelG')">2nd degree</span></div></div>
+    <div class="f"><label>DM</label><div class="chips" id="dmG"><span class="chip" onclick="pick(this,'dmG')">Tidak</span><span class="chip" onclick="pick(this,'dmG')">Ya</span></div></div>
+    <div class="f"><label>Hipertensi</label><div class="chips" id="htG"><span class="chip" onclick="pick(this,'htG')">Tidak</span><span class="chip" onclick="pick(this,'htG')">Ya</span></div></div>
+    <div class="f"><label>Keluhan Utama</label><div class="chips" id="keluhanG"><span class="chip" onclick="pick(this,'keluhanG')">LUTS</span><span class="chip" onclick="pick(this,'keluhanG')">Nyeri punggung</span><span class="chip" onclick="pick(this,'keluhanG')">Hematuria</span><span class="chip" onclick="pick(this,'keluhanG')">Retensi urin</span><span class="chip" onclick="pick(this,'keluhanG')">Skrining</span></div></div>
+  </div>
+  <button class="btn btn-ok" onclick="goTab(1)">Lanjut →</button>
+</div>
+
+<!-- TAB 1 -->
+<div class="sec" id="tab1">
+  <div class="sec-title">Biopsi & PSA</div>
+  <div class="card">
+    <div class="ct">PSA</div>
+    <div class="g2"><div class="f"><label>PSA Total (ng/mL)</label><input type="number" id="psaTotal" step="0.01"></div><div class="f"><label>PSA Free (ng/mL)</label><input type="number" id="psaFree" step="0.01"></div></div>
+    <div class="g2"><div class="f"><label>Free/Total PSA (%)</label><input type="number" id="psaRatio" step="0.1"></div><div class="f"><label>PSA Density</label><input type="number" id="psaDensity" step="0.01"></div></div>
+  </div>
+  <div class="card">
+    <div class="ct">DRE & Biopsi</div>
+    <div class="f"><label>Hasil DRE</label><div class="chips" id="dreG"><span class="chip" onclick="pick(this,'dreG')">Normal</span><span class="chip" onclick="pick(this,'dreG')">Asimetris</span><span class="chip" onclick="pick(this,'dreG')">Nodul keras</span><span class="chip" onclick="pick(this,'dreG')">Terfiksasi</span></div></div>
+    <div class="f"><label>Metode Biopsi</label><div class="chips" id="metodeBiopsG"><span class="chip" onclick="pick(this,'metodeBiopsG')">TRUS 12 core</span><span class="chip" onclick="pick(this,'metodeBiopsG')">MRI-targeted fusion</span><span class="chip" onclick="pick(this,'metodeBiopsG')">Transperineal</span></div></div>
+    <div class="g2"><div class="f"><label>Core Diambil</label><input type="number" id="coreAmbil"></div><div class="f"><label>Core Positif</label><input type="number" id="corePositif"></div></div>
+    <div class="f"><label>Volume Prostat (mL)</label><input type="number" id="volProstat" step="0.1"></div>
+  </div>
+  <div class="card">
+    <div class="ct">mpMRI Prostat</div>
+    <div class="f"><label>PI-RADS Score</label><div class="chips" id="piradsG"><span class="chip" onclick="pick(this,'piradsG')">1</span><span class="chip" onclick="pick(this,'piradsG')">2</span><span class="chip" onclick="pick(this,'piradsG')">3</span><span class="chip" onclick="pick(this,'piradsG')">4</span><span class="chip" onclick="pick(this,'piradsG')">5</span><span class="chip" onclick="pick(this,'piradsG')">Tidak dilakukan</span></div></div>
+    <div class="f"><label>Invasi Kapsul / SVI (MRI)</label><div class="chips" id="invasiG"><span class="chip" onclick="pick(this,'invasiG')">Tidak</span><span class="chip" onclick="pick(this,'invasiG')">ECE</span><span class="chip" onclick="pick(this,'invasiG')">SVI</span><span class="chip" onclick="pick(this,'invasiG')">ECE+SVI</span></div></div>
+  </div>
+  <div style="display:flex;gap:8px"><button class="btn btn-sec" onclick="goTab(0)">← Kembali</button><button class="btn btn-ok" onclick="goTab(2)">Lanjut →</button></div>
+</div>
+
+<!-- TAB 2 -->
+<div class="sec" id="tab2">
+  <div class="sec-title">Staging</div>
+  <div class="card">
+    <div class="ct">TNM (AJCC 8th)</div>
+    <div class="f"><label>T</label><div class="chips" id="stagingTG"><span class="chip" onclick="pick(this,'stagingTG')">T1a</span><span class="chip" onclick="pick(this,'stagingTG')">T1b</span><span class="chip" onclick="pick(this,'stagingTG')">T1c</span><span class="chip" onclick="pick(this,'stagingTG')">T2a</span><span class="chip" onclick="pick(this,'stagingTG')">T2b</span><span class="chip" onclick="pick(this,'stagingTG')">T2c</span><span class="chip" onclick="pick(this,'stagingTG')">T3a</span><span class="chip" onclick="pick(this,'stagingTG')">T3b</span><span class="chip" onclick="pick(this,'stagingTG')">T4</span></div></div>
+    <div class="f"><label>N</label><div class="chips" id="stagingNG"><span class="chip" onclick="pick(this,'stagingNG')">N0</span><span class="chip" onclick="pick(this,'stagingNG')">N1</span><span class="chip" onclick="pick(this,'stagingNG')">Nx</span></div></div>
+    <div class="f"><label>M</label><div class="chips" id="stagingMG"><span class="chip" onclick="pick(this,'stagingMG')">M0</span><span class="chip" onclick="pick(this,'stagingMG')">M1a</span><span class="chip" onclick="pick(this,'stagingMG')">M1b</span><span class="chip" onclick="pick(this,'stagingMG')">M1c</span></div></div>
+    <div class="f"><label>Stadium</label><div class="chips" id="stadiumG"><span class="chip" onclick="pick(this,'stadiumG')">I</span><span class="chip" onclick="pick(this,'stadiumG')">IIA</span><span class="chip" onclick="pick(this,'stadiumG')">IIB</span><span class="chip" onclick="pick(this,'stadiumG')">IIC</span><span class="chip" onclick="pick(this,'stadiumG')">IIIA</span><span class="chip" onclick="pick(this,'stadiumG')">IIIB</span><span class="chip" onclick="pick(this,'stadiumG')">IVA</span><span class="chip" onclick="pick(this,'stadiumG')">IVB</span></div></div>
+  </div>
+  <div class="card">
+    <div class="ct">Grup Risiko</div>
+    <div class="f"><label>Klasifikasi EAU/NCCN</label><div class="chips" id="risikoG"><span class="chip" onclick="pick(this,'risikoG')">Very Low</span><span class="chip" onclick="pick(this,'risikoG')">Low</span><span class="chip" onclick="pick(this,'risikoG')">Int. Favorable</span><span class="chip" onclick="pick(this,'risikoG')">Int. Unfavorable</span><span class="chip" onclick="pick(this,'risikoG')">High</span><span class="chip" onclick="pick(this,'risikoG')">Very High</span><span class="chip" onclick="pick(this,'risikoG')">mHSPC</span><span class="chip" onclick="pick(this,'risikoG')">CRPC</span></div></div>
+    <div class="f"><label>Bone Scan</label><div class="chips" id="boneScanG"><span class="chip" onclick="pick(this,'boneScanG')">Tidak dilakukan</span><span class="chip" onclick="pick(this,'boneScanG')">Negatif</span><span class="chip" onclick="pick(this,'boneScanG')">Positif</span></div></div>
+    <div class="f"><label>PSMA PET-CT</label><div class="chips" id="psmaPetG"><span class="chip" onclick="pick(this,'psmaPetG')">Tidak dilakukan</span><span class="chip" onclick="pick(this,'psmaPetG')">Negatif</span><span class="chip" onclick="pick(this,'psmaPetG')">KGB positif</span><span class="chip" onclick="pick(this,'psmaPetG')">Met. jauh</span></div></div>
+  </div>
+  <div style="display:flex;gap:8px"><button class="btn btn-sec" onclick="goTab(1)">← Kembali</button><button class="btn btn-ok" onclick="goTab(3)">Lanjut →</button></div>
+</div>
+
+<!-- TAB 3 -->
+<div class="sec" id="tab3">
+  <div class="sec-title">Tindakan</div>
+  <div class="card">
+    <div class="ct">Modalitas Terapi</div>
+    <div class="f"><div class="chips" id="tindakanG"><span class="chip" onclick="pick(this,'tindakanG')">Prostatektomi Radikal</span><span class="chip" onclick="pick(this,'tindakanG')">EBRT</span><span class="chip" onclick="pick(this,'tindakanG')">Brachytherapy</span><span class="chip" onclick="pick(this,'tindakanG')">EBRT+Brachy</span><span class="chip" onclick="pick(this,'tindakanG')">Active Surveillance</span><span class="chip" onclick="pick(this,'tindakanG')">ADT saja</span><span class="chip" onclick="pick(this,'tindakanG')">TURP paliatif</span><span class="chip" onclick="pick(this,'tindakanG')">Watchful Waiting</span></div></div>
+  </div>
+  <div class="card">
+    <div class="ct">Prostatektomi Radikal</div>
+    <div class="f"><label>Pendekatan</label><div class="chips" id="pendekatanG"><span class="chip" onclick="pick(this,'pendekatanG')">Open retropubik</span><span class="chip" onclick="pick(this,'pendekatanG')">Laparoskopi</span><span class="chip" onclick="pick(this,'pendekatanG')">RARP</span><span class="chip" onclick="pick(this,'pendekatanG')">Perineal</span></div></div>
+    <div class="g2"><div class="f"><label>Tgl. Operasi</label><input type="date" id="tglOp"></div><div class="f"><label>Lama Op (menit)</label><input type="number" id="lamaOp"></div></div>
+    <div class="f"><label>Operator</label><input type="text" id="operator"></div>
+    <div class="g2"><div class="f"><label>Perdarahan (mL)</label><input type="number" id="perdarahanMl"></div><div class="f"><label>Transfusi</label><div class="chips" id="transfusiG"><span class="chip" onclick="pick(this,'transfusiG')">Tidak</span><span class="chip" onclick="pick(this,'transfusiG')">Ya</span></div></div></div>
+    <div class="f"><label>Nerve Sparing</label><div class="chips" id="nerveG"><span class="chip" onclick="pick(this,'nerveG')">Non-nerve sparing</span><span class="chip" onclick="pick(this,'nerveG')">Unilateral</span><span class="chip" onclick="pick(this,'nerveG')">Bilateral</span></div></div>
+    <div class="f"><label>PLND</label><div class="chips" id="plndG"><span class="chip" onclick="pick(this,'plndG')">Tidak</span><span class="chip" onclick="pick(this,'plndG')">Limited</span><span class="chip" onclick="pick(this,'plndG')">Extended</span></div></div>
+    <div class="f"><label>Lama Rawat (hari)</label><input type="number" id="lamaRawat"></div>
+  </div>
+  <div style="display:flex;gap:8px"><button class="btn btn-sec" onclick="goTab(2)">← Kembali</button><button class="btn btn-ok" onclick="goTab(4)">Lanjut →</button></div>
+</div>
+
+<!-- TAB 4 -->
+<div class="sec" id="tab4">
+  <div class="sec-title">Patologi</div>
+  <div class="card">
+    <div class="ct">Gleason Score</div>
+    <div class="f"><label>Gleason Biopsi</label><div class="chips" id="gleasonBiopsG"><span class="chip" onclick="pick(this,'gleasonBiopsG')">3+3=6 (Grade 1)</span><span class="chip" onclick="pick(this,'gleasonBiopsG')">3+4=7 (Grade 2)</span><span class="chip" onclick="pick(this,'gleasonBiopsG')">4+3=7 (Grade 3)</span><span class="chip" onclick="pick(this,'gleasonBiopsG')">4+4=8 (Grade 4)</span><span class="chip" onclick="pick(this,'gleasonBiopsG')">9-10 (Grade 5)</span></div></div>
+    <div class="f"><label>Gleason Prostatektomi</label><div class="chips" id="gleasonOpG"><span class="chip" onclick="pick(this,'gleasonOpG')">3+3=6 (Grade 1)</span><span class="chip" onclick="pick(this,'gleasonOpG')">3+4=7 (Grade 2)</span><span class="chip" onclick="pick(this,'gleasonOpG')">4+3=7 (Grade 3)</span><span class="chip" onclick="pick(this,'gleasonOpG')">4+4=8 (Grade 4)</span><span class="chip" onclick="pick(this,'gleasonOpG')">9-10 (Grade 5)</span></div></div>
+  </div>
+  <div class="card">
+    <div class="ct">Margin & Ekstensi</div>
+    <div class="f"><label>Surgical Margin</label><div class="chips" id="marginG"><span class="chip" onclick="pick(this,'marginG')">R0</span><span class="chip" onclick="pick(this,'marginG')">R1 fokal</span><span class="chip" onclick="pick(this,'marginG')">R1 ekstensif</span><span class="chip" onclick="pick(this,'marginG')">R2</span></div></div>
+    <div class="f"><label>ECE</label><div class="chips" id="eceG"><span class="chip" onclick="pick(this,'eceG')">Tidak</span><span class="chip" onclick="pick(this,'eceG')">Fokal</span><span class="chip" onclick="pick(this,'eceG')">Ekstensif</span></div></div>
+    <div class="f"><label>SVI</label><div class="chips" id="sviG"><span class="chip" onclick="pick(this,'sviG')">Tidak</span><span class="chip" onclick="pick(this,'sviG')">Ya</span></div></div>
+    <div class="f"><label>LVI</label><div class="chips" id="lviG"><span class="chip" onclick="pick(this,'lviG')">Tidak</span><span class="chip" onclick="pick(this,'lviG')">Ya</span></div></div>
+    <div class="f"><label>KGB PLND</label><div class="chips" id="plndHasilG"><span class="chip" onclick="pick(this,'plndHasilG')">Tidak dilakukan</span><span class="chip" onclick="pick(this,'plndHasilG')">Negatif</span><span class="chip" onclick="pick(this,'plndHasilG')">Positif 1-2</span><span class="chip" onclick="pick(this,'plndHasilG')">Positif ≥3</span></div></div>
+    <div class="f"><label>Catatan PA</label><textarea id="catatanPato"></textarea></div>
+  </div>
+  <div style="display:flex;gap:8px"><button class="btn btn-sec" onclick="goTab(3)">← Kembali</button><button class="btn btn-ok" onclick="goTab(5)">Lanjut →</button></div>
+</div>
+
+<!-- TAB 5 -->
+<div class="sec" id="tab5">
+  <div class="sec-title">Terapi Adjuvan / Sistemik</div>
+  <div class="card">
+    <div class="ct">ADT</div>
+    <div class="f"><label>ADT diberikan?</label><div class="chips" id="adtG"><span class="chip" onclick="pick(this,'adtG')">Tidak</span><span class="chip" onclick="pick(this,'adtG')">Ya</span></div></div>
+    <div class="f"><label>Jenis ADT</label><div class="chips" id="jenisAdtG"><span class="chip" onclick="pick(this,'jenisAdtG')">LHRH agonist</span><span class="chip" onclick="pick(this,'jenisAdtG')">LHRH antagonist</span><span class="chip" onclick="pick(this,'jenisAdtG')">Orchiektomi bilateral</span><span class="chip" onclick="pick(this,'jenisAdtG')">Anti-androgen</span><span class="chip" onclick="pick(this,'jenisAdtG')">ARSI</span></div></div>
+    <div class="f"><label>Durasi ADT</label><div class="chips" id="durasiAdtG"><span class="chip" onclick="pick(this,'durasiAdtG')">6 bulan</span><span class="chip" onclick="pick(this,'durasiAdtG')">18 bulan</span><span class="chip" onclick="pick(this,'durasiAdtG')">24 bulan</span><span class="chip" onclick="pick(this,'durasiAdtG')">36 bulan</span><span class="chip" onclick="pick(this,'durasiAdtG')">Jangka panjang</span></div></div>
+  </div>
+  <div class="card">
+    <div class="ct">Terapi Tambahan</div>
+    <div class="f"><label>Radiasi</label><div class="chips" id="radiasiG"><span class="chip" onclick="pick(this,'radiasiG')">Tidak</span><span class="chip" onclick="pick(this,'radiasiG')">Adjuvan</span><span class="chip" onclick="pick(this,'radiasiG')">Salvage</span><span class="chip" onclick="pick(this,'radiasiG')">SBRT</span></div></div>
+    <div class="f"><label>Kemoterapi (Docetaxel)</label><div class="chips" id="chemoG"><span class="chip" onclick="pick(this,'chemoG')">Tidak</span><span class="chip" onclick="pick(this,'chemoG')">Ya — 6 siklus</span><span class="chip" onclick="pick(this,'chemoG')">Ya — &lt;6 siklus</span></div></div>
+    <div class="f"><label>Catatan Terapi</label><textarea id="catatanTerapi"></textarea></div>
+  </div>
+  <div style="display:flex;gap:8px"><button class="btn btn-sec" onclick="goTab(4)">← Kembali</button><button class="btn btn-ok" onclick="goTab(6)">Lanjut →</button></div>
+</div>
+
+<!-- TAB 6 -->
+<div class="sec" id="tab6">
+  <div class="sec-title">Komplikasi</div>
+  <div class="card">
+    <div class="f"><label>Inkontinensia Urin</label><div class="chips" id="inkontG"><span class="chip" onclick="pick(this,'inkontG')">Tidak</span><span class="chip" onclick="pick(this,'inkontG')">Stres ringan</span><span class="chip" onclick="pick(this,'inkontG')">Urgensi</span><span class="chip" onclick="pick(this,'inkontG')">Total</span></div></div>
+    <div class="f"><label>Disfungsi Ereksi (ED)</label><div class="chips" id="edG"><span class="chip" onclick="pick(this,'edG')">Tidak</span><span class="chip" onclick="pick(this,'edG')">Ringan</span><span class="chip" onclick="pick(this,'edG')">Sedang</span><span class="chip" onclick="pick(this,'edG')">Berat</span></div></div>
+    <div class="f"><label>Anastomosis Leak</label><div class="chips" id="leakG"><span class="chip" onclick="pick(this,'leakG')">Tidak</span><span class="chip" onclick="pick(this,'leakG')">Ya</span></div></div>
+    <div class="f"><label>Stenosis Anastomosis</label><div class="chips" id="stenosisG"><span class="chip" onclick="pick(this,'stenosisG')">Tidak</span><span class="chip" onclick="pick(this,'stenosisG')">Ya</span></div></div>
+    <div class="f"><label>DVT / PE</label><div class="chips" id="dvtG"><span class="chip" onclick="pick(this,'dvtG')">Tidak</span><span class="chip" onclick="pick(this,'dvtG')">DVT</span><span class="chip" onclick="pick(this,'dvtG')">PE</span></div></div>
+    <div class="f"><label>Clavien-Dindo</label><div class="chips" id="clavienG"><span class="chip" onclick="pick(this,'clavienG')">I</span><span class="chip" onclick="pick(this,'clavienG')">II</span><span class="chip" onclick="pick(this,'clavienG')">IIIa</span><span class="chip" onclick="pick(this,'clavienG')">IIIb</span><span class="chip" onclick="pick(this,'clavienG')">IVa</span><span class="chip" onclick="pick(this,'clavienG')">V</span></div></div>
+    <div class="f"><label>Catatan</label><textarea id="kompLainNote"></textarea></div>
+  </div>
+  <div style="display:flex;gap:8px"><button class="btn btn-sec" onclick="goTab(5)">← Kembali</button><button class="btn btn-ok" onclick="goTab(7)">Lanjut →</button></div>
+</div>
+
+<!-- TAB 7 -->
+<div class="sec" id="tab7">
+  <div class="sec-title">Follow-up PSA</div>
+  <div class="card">
+    <div class="g2"><div class="f"><label>PSA 3 Bulan</label><input type="number" id="psa3" step="0.001"></div><div class="f"><label>PSA 6 Bulan</label><input type="number" id="psa6" step="0.001"></div></div>
+    <div class="g2"><div class="f"><label>PSA 12 Bulan</label><input type="number" id="psa12" step="0.001"></div><div class="f"><label>PSA 24 Bulan</label><input type="number" id="psa24" step="0.001"></div></div>
+    <div class="f"><label>Biokimia Rekurensi (BCR)</label><div class="chips" id="bcrG"><span class="chip" onclick="pick(this,'bcrG')">Tidak</span><span class="chip" onclick="pick(this,'bcrG')">Ya (PSA ≥0.2 post-RP)</span><span class="chip" onclick="pick(this,'bcrG')">Ya (nadir+2 post-RT)</span></div></div>
+    <div class="f"><label>Testosteron jika ADT (ng/dL)</label><input type="number" id="testosteron" step="0.1"></div>
+  </div>
+  <div class="card">
+    <div class="ct">Status Akhir</div>
+    <div class="f"><div class="chips" id="statusAkhirG"><span class="chip" onclick="pick(this,'statusAkhirG')">NED</span><span class="chip" onclick="pick(this,'statusAkhirG')">BCR</span><span class="chip" onclick="pick(this,'statusAkhirG')">Metastasis</span><span class="chip" onclick="pick(this,'statusAkhirG')">CRPC</span><span class="chip" onclick="pick(this,'statusAkhirG')">Meninggal Ca</span><span class="chip" onclick="pick(this,'statusAkhirG')">Meninggal sebab lain</span><span class="chip" onclick="pick(this,'statusAkhirG')">Lost FU</span></div></div>
+    <div class="f"><label>Catatan Follow-up</label><textarea id="catatanFu"></textarea></div>
+  </div>
+  <div style="display:flex;gap:8px"><button class="btn btn-sec" onclick="goTab(6)">← Kembali</button><button class="btn btn-ok" onclick="saveRec()">💾 Simpan Data</button></div>
+</div>
+
+<!-- TAB 8 -->
+<div class="sec" id="tab8">
+  <div class="sec-title">Data Pasien</div>
+  <div class="sec-sub">Onkologi Prostat Registry</div>
+  <div class="card">
+    <input type="text" placeholder="🔍 Cari nama / no. reg…" oninput="renderList(this.value)" style="margin-bottom:12px">
+    <div id="dataList"></div>
+  </div>
+  <button class="btn btn-ok" onclick="goTab(0)">➕ Tambah Pasien Baru</button>
+</div>
+
+<!-- TAB 9 -->
+<div class="sec" id="tab9">
+  <div class="sec-title">Setup & Export</div>
+  <div class="card">
+    <div class="ct">🔗 Google Sheets URL</div>
+    <div class="f"><label>URL Web App Apps Script</label><input type="text" id="sheetUrl" placeholder="https://script.google.com/macros/s/..."></div>
+    <div style="display:flex;gap:8px">
+      <div class="hbtn" onclick="testConn()" style="flex:1;text-align:center;background:var(--acc);color:#fff;border-color:var(--acc)">🔌 Test Koneksi</div>
+      <div class="hbtn" onclick="saveUrl()" style="flex:1;text-align:center;background:var(--acc2);color:#fff;border-color:var(--acc2)">💾 Simpan URL</div>
+    </div>
+    <div id="connStatus" style="margin-top:8px;font-size:12px;color:var(--muted)"></div>
+  </div>
+  <div class="card">
+    <div class="ct">📊 Statistik</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <div style="background:var(--bg);border:1px solid var(--bdr);border-radius:8px;padding:12px;text-align:center"><div id="statTotal" style="font-family:var(--mono);font-size:28px;font-weight:700;color:var(--acc)">0</div><div style="font-size:10px;color:var(--muted)">Total Pasien</div></div>
+      <div style="background:var(--bg);border:1px solid var(--bdr);border-radius:8px;padding:12px;text-align:center"><div id="statQueue" style="font-family:var(--mono);font-size:28px;font-weight:700;color:var(--warn)">0</div><div style="font-size:10px;color:var(--muted)">Antri Kirim</div></div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:10px">
+      <div class="hbtn" onclick="flushQueue()" style="flex:1;text-align:center;font-size:11px">📤 Kirim Antrian</div>
+      <div class="hbtn" onclick="refreshStats()" style="flex:1;text-align:center;font-size:11px">🔄 Refresh</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ct">📁 Export / Import</div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div class="hbtn" onclick="exportJSON()" style="text-align:center">⬇️ Export JSON</div>
+      <div class="hbtn" onclick="exportCSV()" style="text-align:center">⬇️ Export CSV</div>
+      <label class="hbtn" style="text-align:center;cursor:pointer;display:block">⬆️ Import JSON<input type="file" id="importFile" accept=".json" onchange="importJSON(this)" style="display:none"></label>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="detailModal">
+  <div class="modal-box">
+    <div class="modal-title" id="modalTitle">Detail Pasien</div>
+    <div id="modalBody"></div>
+    <div style="display:flex;gap:8px;margin-top:16px">
+      <button class="btn btn-sec" onclick="editRec()" style="background:var(--acc);color:#fff">✏️ Edit</button>
+      <button class="btn btn-danger" onclick="deleteRec()">🗑 Hapus</button>
+      <button class="btn btn-sec" onclick="closeModal()">Tutup</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const FORM_KEY  = 'prostat_v1';
+const FORM_NAME = 'onkologi_prostat';  // ← ROUTING KEY — jangan ubah
+const TINDAKAN  = 'onkologi_prostat';
+
+let DB = JSON.parse(localStorage.getItem(FORM_KEY)||'[]');
+let SURL = localStorage.getItem(FORM_KEY+'_url')||'';
+let sendQueue = JSON.parse(localStorage.getItem(FORM_KEY+'_queue')||'[]');
+let editId = null, currentRec = null;
+
+function goTab(i){document.querySelectorAll('.sec').forEach((s,idx)=>s.classList.toggle('on',idx===i));document.querySelectorAll('.ntab').forEach((t,idx)=>t.classList.toggle('on',idx===i));document.getElementById('progBar').style.width=Math.round((i+1)/10*100)+'%';window.scrollTo(0,0);if(i===8)renderList('');if(i===9)refreshStats();}
+function pick(el,g){document.querySelectorAll('#'+g+' .chip').forEach(c=>c.classList.remove('on'));el.classList.add('on');}
+function getChip(g){const o=document.querySelector('#'+g+' .chip.on');return o?o.textContent.trim():'';}
+function hitungUmur(){const tgl=document.getElementById('tglLahir').value;if(!tgl)return;const l=new Date(tgl),n=new Date();let t=n.getFullYear()-l.getFullYear(),b=n.getMonth()-l.getMonth();if(b<0){t--;b+=12;}document.getElementById('umur').value=`${t} tahun ${b} bulan`;}
+function v(id){return(document.getElementById(id)||{}).value||'';}
+
+async function saveRec(){
+  const nama=v('nama');if(!nama){toast('Nama pasien wajib diisi','er');goTab(0);return;}
+  const id=editId||Date.now();
+  const rec={id,_form:FORM_NAME,tindakan:TINDAKAN,timestamp:new Date().toISOString(),
+    nama,noReg:v('noReg'),tglLahir:v('tglLahir'),umur:v('umur'),tglMasuk:v('tglMasuk'),tglPulang:v('tglPulang'),
+    merokok:getChip('merokokG'),riwKel:getChip('riwKelG'),dm:getChip('dmG'),ht:getChip('htG'),keluhan:getChip('keluhanG'),
+    psaTotal:v('psaTotal'),psaFree:v('psaFree'),psaRatio:v('psaRatio'),psaDensity:v('psaDensity'),
+    dre:getChip('dreG'),metodeBiops:getChip('metodeBiopsG'),coreAmbil:v('coreAmbil'),corePositif:v('corePositif'),volProstat:v('volProstat'),
+    pirads:getChip('piradsG'),invasi:getChip('invasiG'),
+    stagingT:getChip('stagingTG'),stagingN:getChip('stagingNG'),stagingM:getChip('stagingMG'),stadium:getChip('stadiumG'),risiko:getChip('risikoG'),
+    boneScan:getChip('boneScanG'),psmaPet:getChip('psmaPetG'),
+    tindakan2:getChip('tindakanG'),pendekatan:getChip('pendekatanG'),
+    tglOp:v('tglOp'),lamaOp:v('lamaOp'),operator:v('operator'),perdarahanMl:v('perdarahanMl'),transfusi:getChip('transfusiG'),
+    nerve:getChip('nerveG'),plnd:getChip('plndG'),lamaRawat:v('lamaRawat'),
+    gleasonBiops:getChip('gleasonBiopsG'),gleasonOp:getChip('gleasonOpG'),
+    margin:getChip('marginG'),ece:getChip('eceG'),svi:getChip('sviG'),lvi:getChip('lviG'),plndHasil:getChip('plndHasilG'),catatanPato:v('catatanPato'),
+    adt:getChip('adtG'),jenisAdt:getChip('jenisAdtG'),durasiAdt:getChip('durasiAdtG'),radiasi:getChip('radiasiG'),chemo:getChip('chemoG'),catatanTerapi:v('catatanTerapi'),
+    inkont:getChip('inkontG'),ed:getChip('edG'),leak:getChip('leakG'),stenosis:getChip('stenosisG'),dvt:getChip('dvtG'),clavien:getChip('clavienG'),kompLainNote:v('kompLainNote'),
+    psa3:v('psa3'),psa6:v('psa6'),psa12:v('psa12'),psa24:v('psa24'),bcr:getChip('bcrG'),testosteron:v('testosteron'),
+    statusAkhir:getChip('statusAkhirG'),catatanFu:v('catatanFu'),
+  };
+  if(editId){const i=DB.findIndex(r=>r.id===editId);if(i>=0)DB[i]=rec;else DB.push(rec);}else DB.push(rec);
+  localStorage.setItem(FORM_KEY,JSON.stringify(DB));
+  if(SURL){const ok=await sendToSheets(rec);if(ok)toast('✅ Tersimpan & terkirim','ok');else{sendQueue.push(rec);saveQueue();toast('✅ Lokal — antri kirim','wn');}}
+  else toast(editId?'✅ Data diperbarui':'✅ Data tersimpan!','ok');
+  refreshStats();editId=null;reset();goTab(8);
+}
+async function sendToSheets(rec){
+  if(!SURL)return false;
+  try{await fetch(SURL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify({...rec,_form:FORM_NAME,tindakan:TINDAKAN})});return true;}catch{return false;}
+}
+function saveQueue(){localStorage.setItem(FORM_KEY+'_queue',JSON.stringify(sendQueue));}
+async function flushQueue(){
+  if(!SURL){toast('URL belum disimpan','er');return;}if(!sendQueue.length){toast('Tidak ada antrian','ok');return;}
+  const failed=[];for(const rec of sendQueue){const ok=await sendToSheets(rec);if(!ok)failed.push(rec);}
+  sendQueue=failed;saveQueue();refreshStats();toast(failed.length?'⚠ '+failed.length+' gagal':'✅ Semua terkirim','ok');
+}
+window.addEventListener('online',()=>{if(sendQueue.length)flushQueue();});
+function reset(){document.querySelectorAll('input:not([type=file]),textarea').forEach(el=>{if(!['button','submit'].includes(el.type))el.value='';});document.querySelectorAll('.chip.on').forEach(el=>el.classList.remove('on'));}
+function renderList(q=''){
+  const el=document.getElementById('dataList');
+  const f=DB.filter(r=>(r.nama||'').toLowerCase().includes(q.toLowerCase())||(r.noReg||'').toLowerCase().includes(q.toLowerCase())).reverse();
+  if(!f.length){el.innerHTML='<div class="empty">📋<br>Belum ada data</div>';return;}
+  el.innerHTML=f.map(r=>`<div class="rec-card" onclick="showDetail('${r.id}')"><div class="rec-name">${r.nama||'—'}</div><div class="rec-sub">No.Reg: ${r.noReg||'—'} · PSA: ${r.psaTotal||'—'} ng/mL · Stadium: ${r.stadium||'—'}</div><div class="rec-sub">Risiko: ${r.risiko||'—'} · Gleason: ${r.gleasonOp||r.gleasonBiops||'—'} · Status: ${r.statusAkhir||'—'}</div></div>`).join('');
+}
+function showDetail(id){
+  currentRec=DB.find(r=>String(r.id)===String(id));if(!currentRec)return;
+  const r=currentRec;document.getElementById('modalTitle').textContent=r.nama||'Detail';
+  const rows=[['No. Register',r.noReg],['Umur',r.umur],['PSA Total',r.psaTotal+' ng/mL'],['Gleason',r.gleasonOp||r.gleasonBiops],['Stadium',r.stagingT+' '+r.stagingN+' '+r.stagingM],['Risiko',r.risiko],['Tindakan',r.tindakan2],['Margin',r.margin],['BCR',r.bcr],['Status',r.statusAkhir]];
+  document.getElementById('modalBody').innerHTML=rows.map(([k,v])=>`<div class="detail-row"><span class="detail-key">${k}</span><span class="detail-val">${v||'—'}</span></div>`).join('');
+  document.getElementById('detailModal').classList.add('on');
+}
+function closeModal(){document.getElementById('detailModal').classList.remove('on');}
+function editRec(){if(!currentRec){closeModal();return;}editId=currentRec.id;closeModal();const r=currentRec;
+  ['nama','noReg','tglLahir','umur','tglMasuk','tglPulang','psaTotal','psaFree','psaRatio','psaDensity','coreAmbil','corePositif','volProstat','tglOp','lamaOp','operator','perdarahanMl','lamaRawat','catatanPato','catatanTerapi','kompLainNote','psa3','psa6','psa12','psa24','testosteron','catatanFu'].forEach(id=>{const el=document.getElementById(id);if(el&&r[id])el.value=r[id];});
+  const chips={merokokG:'merokok',riwKelG:'riwKel',dmG:'dm',htG:'ht',keluhanG:'keluhan',dreG:'dre',metodeBiopsG:'metodeBiops',piradsG:'pirads',invasiG:'invasi',stagingTG:'stagingT',stagingNG:'stagingN',stagingMG:'stagingM',stadiumG:'stadium',risikoG:'risiko',boneScanG:'boneScan',psmaPetG:'psmaPet',tindakanG:'tindakan2',pendekatanG:'pendekatan',transfusiG:'transfusi',nerveG:'nerve',plndG:'plnd',gleasonBiopsG:'gleasonBiops',gleasonOpG:'gleasonOp',marginG:'margin',eceG:'ece',sviG:'svi',lviG:'lvi',plndHasilG:'plndHasil',adtG:'adt',jenisAdtG:'jenisAdt',durasiAdtG:'durasiAdt',radiasiG:'radiasi',chemoG:'chemo',inkontG:'inkont',edG:'ed',leakG:'leak',stenosisG:'stenosis',dvtG:'dvt',clavienG:'clavien',bcrG:'bcr',statusAkhirG:'statusAkhir'};
+  Object.entries(chips).forEach(([gId,key])=>{if(!r[key])return;document.querySelectorAll('#'+gId+' .chip').forEach(c=>{if(c.textContent.trim()===r[key])c.classList.add('on');});});
+  goTab(0);toast('Mode edit','wn');}
+function deleteRec(){if(!currentRec)return;if(!confirm('Hapus data '+currentRec.nama+'?'))return;DB=DB.filter(r=>r.id!==currentRec.id);localStorage.setItem(FORM_KEY,JSON.stringify(DB));closeModal();renderList('');refreshStats();toast('🗑 Data dihapus','er');}
+function refreshStats(){document.getElementById('statTotal').textContent=DB.length;document.getElementById('statQueue').textContent=sendQueue.length;}
+async function testConn(){const url=document.getElementById('sheetUrl').value.trim();if(!url){toast('Isi URL dulu','er');return;}const el=document.getElementById('connStatus');el.textContent='⏳ Testing…';try{await fetch(url,{mode:'no-cors'});el.textContent='✅ OK — koneksi berhasil';el.style.color='var(--acc2)';}catch{el.textContent='❌ Gagal';el.style.color='var(--danger)';}}
+function saveUrl(){const url=document.getElementById('sheetUrl').value.trim();if(!url){toast('Isi URL dulu','er');return;}SURL=url;localStorage.setItem(FORM_KEY+'_url',url);toast('✅ URL disimpan','ok');document.getElementById('connStatus').textContent='✅ URL tersimpan';document.getElementById('connStatus').style.color='var(--acc2)';}
+function exportJSON(){if(!DB.length){toast('Tidak ada data','er');return;}const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(DB,null,2)],{type:'application/json'}));a.download='prostat_'+new Date().toISOString().slice(0,10)+'.json';a.click();}
+function exportCSV(){if(!DB.length){toast('Tidak ada data','er');return;}const keys=Object.keys(DB[0]);const rows=[keys.join(',')];DB.forEach(r=>rows.push(keys.map(k=>{const val=String(r[k]??'').replace(/"/g,'""');return val.includes(',')||val.includes('"')?`"${val}"`:val;}).join(',')));const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\uFEFF'+rows.join('\n')],{type:'text/csv;charset=utf-8'}));a.download='prostat_'+new Date().toISOString().slice(0,10)+'.csv';a.click();}
+function importJSON(input){const file=input.files[0];if(!file)return;const reader=new FileReader();reader.onload=e=>{try{const imported=JSON.parse(e.target.result);if(!Array.isArray(imported))throw new Error();const existing=new Set(DB.map(r=>r.id));const newRecs=imported.filter(r=>!existing.has(r.id));DB=[...DB,...newRecs];localStorage.setItem(FORM_KEY,JSON.stringify(DB));renderList('');refreshStats();toast('✅ '+newRecs.length+' data baru','ok');}catch{toast('❌ Format tidak valid','er');}input.value='';};reader.readAsText(file);}
+function toast(msg,type=''){const t=document.getElementById('toast');t.textContent=msg;t.className='toast show '+type;clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2600);}
+if(SURL)document.getElementById('sheetUrl').value=SURL;
+goTab(0);renderList('');refreshStats();
+</script>
+</body>
+</html>
